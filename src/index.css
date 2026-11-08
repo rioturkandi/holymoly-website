@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+:root {
+  font-family: 'Inter', sans-serif;
+  color: #F2F2F2;
+  background-color: #080808;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+/* ========================================
+   HOLYMOLY - GLOBAL SPACING SYSTEM
+======================================== */
+
+/* Jarak konten halaman dari fixed navbar */
+.page-top-spacing {
+  padding-top: 88px;
+}
+
+/* Jarak vertikal antar-section */
+.section-spacing {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+/* Lebar konten dan jarak horizontal */
+.page-container {
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
