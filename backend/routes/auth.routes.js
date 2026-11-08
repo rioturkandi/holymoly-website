@@ -1,13 +1,25 @@
 const express = require('express')
+const { rateLimit } = require('express-rate-limit')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
 
 const router = express.Router()
+// Membatasi percobaan login administrator
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.',
+  },
+})
 
 // Endpoint untuk login administrator
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   try {
     // Memastikan JWT_SECRET tersedia
     if (!process.env.JWT_SECRET) {
