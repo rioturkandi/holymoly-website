@@ -1,6 +1,10 @@
+# Dependencies
 node_modules/
-.env
+
 # Environment variables and secrets
 .env
 .env.*
 !.env.example
+
+# Uploaded images
+uploads/
