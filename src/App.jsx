@@ -12,6 +12,7 @@ import ProjectDetail from './pages/ProjectDetail'
 import Achievements from './pages/Achievements'
 import AdminLogin from './pages/AdminLogin'
 import AdminOverview from './pages/admin/AdminOverview'
+import AdminHome from './pages/admin/AdminHome'
 
 function AdminPlaceholder({ title }) {
   return (
@@ -61,7 +62,7 @@ function AppContent() {
           <Route index element={<AdminOverview />} />
           <Route
             path="home"
-            element={<AdminPlaceholder title="Home" />}
+            element={<AdminHome />}
           />
           <Route
             path="about"

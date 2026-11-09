@@ -21,12 +21,17 @@ function Hero({ content }) {
   const buttonUrl =
     content?.button_url || '/projects'
 
+  // Gunakan gambar upload dari database jika tersedia.
+  // Jika belum ada, gunakan gambar lokal sebagai fallback.
+  const backgroundImage =
+    content?.image_path || heroImage
+
   return (
     <section
       id="home"
       className="relative flex min-h-screen items-start overflow-hidden bg-[#080808] bg-no-repeat px-6 pb-20 pt-[104px] sm:pt-[112px] md:pt-[120px]"
       style={{
-        backgroundImage: `url(${heroImage})`,
+        backgroundImage: `url(${backgroundImage})`,
         backgroundSize: '150% auto',
         backgroundPosition: '100% 50%',
       }}
