@@ -3,6 +3,7 @@ const path = require('path')
 const db = require('./config/database')
 
 const homeRoutes = require('./routes/home.routes')
+const adminHomeRoutes = require('./routes/admin.home.routes')
 const aboutRoutes = require('./routes/about.routes')
 const projectsRoutes = require('./routes/projects.routes')
 const achievementsRoutes = require('./routes/achievements.routes')
@@ -33,6 +34,9 @@ app.use(
 
 // Menggunakan router untuk halaman Home
 app.use('/api/home', homeRoutes)
+
+// Menggunakan router untuk pengelolaan konten Home oleh administrator
+app.use('/api/admin/home', adminHomeRoutes)
 
 // Menggunakan router untuk halaman About
 app.use('/api/about', aboutRoutes)
