@@ -2,7 +2,25 @@
 import heroImage from '../assets/images/hero-logo2.jpeg'
 import { Link } from 'react-router-dom'
 
-function Hero() {
+function Hero({ content }) {
+  // Menggunakan data database jika tersedia.
+  // Jika belum tersedia, gunakan konten fallback.
+  const eyebrow =
+    content?.eyebrow || 'Automotive Culture & Customization'
+
+  const title =
+    content?.title || 'Built Different.'
+
+  const description =
+    content?.description ||
+    'More than a vehicle. A statement of character. Discover a different perspective on automotive customization.'
+
+  const buttonText =
+    content?.button_text || 'Explore Projects'
+
+  const buttonUrl =
+    content?.button_url || '/projects'
+
   return (
     <section
       id="home"
@@ -20,27 +38,24 @@ function Hero() {
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
-            Automotive Culture & Customization
+            {eyebrow}
           </p>
 
           <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
-            Built
-            <br />
-            Different.
+            {title}
           </h1>
 
           <p className="mt-6 max-w-lg text-sm leading-7 text-neutral-400 md:text-base">
-            More than a vehicle. A statement of character.
-            Discover a different perspective on automotive customization.
+            {description}
           </p>
 
           {/* Hero CTA */}
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
-              to="/projects"
+              to={buttonUrl}
               className="bg-white px-7 py-4 text-xs font-bold uppercase tracking-widest text-black transition-colors hover:bg-neutral-300"
             >
-              Explore Projects
+              {buttonText}
             </Link>
 
             <a
