@@ -1,28 +1,94 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
+import ProtectedRoute from './components/admin/ProtectedRoute'
+import AdminLayout from './components/admin/AdminLayout'
 
 import Home from './pages/Home'
 import About from './pages/About'
 import Projects from './pages/Projects'
 import ProjectDetail from './pages/ProjectDetail'
 import Achievements from './pages/Achievements'
+import AdminLogin from './pages/AdminLogin'
+import AdminOverview from './pages/admin/AdminOverview'
 
-function App() {
+function AdminPlaceholder({ title }) {
   return (
-    <BrowserRouter>
-      <ScrollToTop />
+    <div>
+      <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
+        Content Management
+      </p>
+      <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl">
+        {title}.
+      </h1>
+      <p className="mt-3 text-sm text-neutral-400">
+        Halaman pengelolaan {title} sedang disiapkan.
+      </p>
+    </div>
+  )
+}
 
-      <Navbar />
+function AppContent() {
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
+
+  return (
+    <>
+      <ScrollToTop />
+      {!isAdminRoute && <Navbar />}
 
       <Routes>
+        {/* Halaman publik */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:id" element={<ProjectDetail />} />
         <Route path="/achievements" element={<Achievements />} />
+
+        {/* Login administrator */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Semua halaman dashboard dilindungi autentikasi */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminOverview />} />
+          <Route
+            path="home"
+            element={<AdminPlaceholder title="Home" />}
+          />
+          <Route
+            path="about"
+            element={<AdminPlaceholder title="About" />}
+          />
+          <Route
+            path="projects"
+            element={<AdminPlaceholder title="Projects" />}
+          />
+          <Route
+            path="achievements"
+            element={<AdminPlaceholder title="Achievements" />}
+          />
+          <Route
+            path="workshop"
+            element={<AdminPlaceholder title="Workshop" />}
+          />
+        </Route>
       </Routes>
+    </>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   )
 }
