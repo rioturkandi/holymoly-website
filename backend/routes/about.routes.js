@@ -3,18 +3,14 @@ const db = require('../config/database')
 
 const router = express.Router()
 
-// Mengambil seluruh konten halaman About
 router.get('/', async (req, res) => {
   try {
-    // Mengambil konten About yang aktif
     const [aboutContent] = await db.query(
-      `SELECT *
+      `SELECT section_key, eyebrow, title, description
        FROM about_content
-       WHERE is_active = TRUE
        ORDER BY id ASC`
     )
 
-    // Mengirimkan data kepada frontend
     res.status(200).json({
       success: true,
       data: aboutContent,
