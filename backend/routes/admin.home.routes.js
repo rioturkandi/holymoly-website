@@ -1,6 +1,8 @@
 const express = require('express')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
+const fs = require('node:fs/promises')
+const path = require('node:path')
 
 const router = express.Router()
 
@@ -58,6 +60,35 @@ function validateImagePath(value) {
   }
 
   return imagePath
+}
+
+// Menghapus file upload hanya jika tidak digunakan tabel lain
+async function deleteUnusedImage(imagePath) {
+  if (!imagePath) return
+
+  const [rows] = await db.query(
+    `SELECT
+      (SELECT COUNT(*) FROM about_content WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?)
+      AS usage_count`,
+    [imagePath, imagePath, imagePath, imagePath, imagePath]
+  )
+
+  if (Number(rows[0].usage_count) > 0) return
+
+  const uploadDirectory = path.resolve(__dirname, '../uploads')
+  const filePath = path.resolve(uploadDirectory, path.basename(imagePath))
+
+  if (path.dirname(filePath) !== uploadDirectory) return
+
+  try {
+    await fs.unlink(filePath)
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
+  }
 }
 
 // Memvalidasi URL tombol agar hanya mengarah ke halaman internal
@@ -260,6 +291,84 @@ router.put('/hero', async (req, res) => {
 
     console.error('Gagal menyimpan konten Hero:', error.message)
 
+    res.status(500).json({
+      success: false,
+      message: 'Terjadi kesalahan pada server.',
+    })
+  }
+})
+
+
+// Menghapus gambar Hero tanpa menghapus konten teks
+router.delete('/hero/image', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT image_path FROM home_content
+       WHERE section_key = ? LIMIT 1`,
+      ['hero']
+    )
+
+    if (!rows.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Konten Hero tidak ditemukan.',
+      })
+    }
+
+    const imagePath = rows[0].image_path
+
+    await db.query(
+      `UPDATE home_content
+       SET image_path = NULL
+       WHERE section_key = ?`,
+      ['hero']
+    )
+
+    await deleteUnusedImage(imagePath)
+
+    res.status(200).json({
+      success: true,
+      message: 'Gambar Hero berhasil dihapus.',
+    })
+  } catch (error) {
+    console.error('Gagal menghapus gambar Hero:', error.message)
+
+    res.status(500).json({
+      success: false,
+      message: 'Terjadi kesalahan pada server.',
+    })
+  }
+})
+
+
+// Menghapus seluruh konten Hero admin
+router.delete('/hero', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT image_path FROM home_content WHERE section_key = ? LIMIT 1',
+      ['hero']
+    )
+
+    if (!rows.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'Konten Hero tidak ditemukan.',
+      })
+    }
+
+    await db.query(
+      'DELETE FROM home_content WHERE section_key = ?',
+      ['hero']
+    )
+
+    await deleteUnusedImage(rows[0].image_path)
+
+    res.status(200).json({
+      success: true,
+      message: 'Seluruh konten Hero berhasil dihapus.',
+    })
+  } catch (error) {
+    console.error('Gagal menghapus konten Hero:', error.message)
     res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',

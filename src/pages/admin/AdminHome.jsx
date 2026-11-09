@@ -16,6 +16,7 @@ function AdminHome() {
 
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isDeletingHero, setIsDeletingHero] = useState(false)
   const [formMessage, setFormMessage] = useState('')
   const [formError, setFormError] = useState('')
 
@@ -265,6 +266,76 @@ function AdminHome() {
       setFormError(error.message)
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  async function handleDeleteHeroImage() {
+    const confirmed = window.confirm(
+      'Hapus gambar Hero? Website akan menggunakan gambar default.'
+    )
+
+    if (!confirmed) return
+
+    setIsDeletingHero(true)
+    setFormMessage('')
+    setFormError('')
+
+    try {
+      await apiRequest('/api/admin/home/hero/image', {
+        method: 'DELETE',
+        auth: true,
+      })
+
+      setHero((current) => current
+        ? { ...current, image_path: null }
+        : current
+      )
+      setHeroForm((current) => ({
+        ...current,
+        image_path: '',
+      }))
+
+      setFormMessage('Gambar Hero berhasil dihapus. Gambar default akan digunakan.')
+    } catch (error) {
+      setFormError(error.message)
+    } finally {
+      setIsDeletingHero(false)
+    }
+  }
+
+  async function handleDeleteHero() {
+    const confirmed = window.confirm(
+      'Hapus seluruh konten Hero? Website akan kembali menggunakan konten default.'
+    )
+
+    if (!confirmed) return
+
+    setIsDeletingHero(true)
+    setFormMessage('')
+    setFormError('')
+
+    try {
+      await apiRequest('/api/admin/home/hero', {
+        method: 'DELETE',
+        auth: true,
+      })
+
+      setHero(null)
+      setHeroForm({
+        eyebrow: '',
+        title: '',
+        description: '',
+        button_text: '',
+        button_url: '/projects',
+        image_path: '',
+        is_active: true,
+      })
+
+      setFormMessage('Seluruh konten Hero berhasil dihapus. Konten default akan digunakan.')
+    } catch (error) {
+      setFormError(error.message)
+    } finally {
+      setIsDeletingHero(false)
     }
   }
 
@@ -566,6 +637,14 @@ function AdminHome() {
                       alt="Hero preview"
                       className="max-h-64 w-full object-cover"
                     />
+                    <button
+                      type="button"
+                      onClick={handleDeleteHeroImage}
+                      disabled={isDeletingHero || isSaving || isUploading}
+                      className="mt-3 border border-red-500 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Delete Hero Image
+                    </button>
                   </div>
                 )}
               </div>
@@ -591,13 +670,26 @@ function AdminHome() {
                 <p className="text-sm text-red-400">{formError}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={isSaving || isUploading}
-                className="border border-white bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {isSaving ? 'Saving...' : 'Save Hero'}
-              </button>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  type="submit"
+                  disabled={isSaving || isUploading || isDeletingHero}
+                  className="border border-white bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isSaving ? 'Saving...' : 'Save Hero'}
+                </button>
+
+                {hero && (
+                  <button
+                    type="button"
+                    onClick={handleDeleteHero}
+                    disabled={isSaving || isUploading || isDeletingHero}
+                    className="border border-red-500 px-6 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {isDeletingHero ? 'Deleting...' : 'Delete Hero Content'}
+                  </button>
+                )}
+              </div>
             </form>
           </section>
 
