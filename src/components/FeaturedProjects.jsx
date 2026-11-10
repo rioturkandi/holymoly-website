@@ -1,28 +1,41 @@
-
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-
-const projects = [
-  {
-    id: 1,
-    number: '01',
-    title: 'Featured Project 01',
-    category: 'Project Preview',
-  },
-  {
-    id: 2,
-    number: '02',
-    title: 'Featured Project 02',
-    category: 'Project Preview',
-  },
-  {
-    id: 3,
-    number: '03',
-    title: 'Featured Project 03',
-    category: 'Project Preview',
-  },
-]
+import { apiRequest } from '../services/api'
+import ProjectShowcaseCard from './ProjectShowcaseCard'
 
 function FeaturedProjects() {
+  const [projects, setProjects] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadProjects() {
+      try {
+        const response = await apiRequest('/api/projects')
+
+        if (isMounted) {
+          setProjects(response.data || [])
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error.message || 'Failed to load projects.')
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadProjects()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <section className="bg-[#080808] section-spacing">
       <div className="page-container">
@@ -48,30 +61,30 @@ function FeaturedProjects() {
         </div>
 
         {/* Project Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <article key={project.id} className="group">
-              {/* Image Placeholder */}
-              <div className="relative flex aspect-[4/5] items-end overflow-hidden bg-neutral-900 p-6">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                <div className="relative z-10">
-                  <p className="mb-2 text-xs uppercase tracking-[0.3em] text-neutral-400">
-                    {project.category}
-                  </p>
-
-                  <h3 className="text-2xl font-bold uppercase text-white">
-                    {project.title}
-                  </h3>
-                </div>
-
-                <span className="absolute right-6 top-6 text-sm text-neutral-400">
-                  {project.number}
-                </span>
-              </div>
-            </article>
-          ))}
-        </div>
+        {isLoading ? (
+          <p className="text-sm text-neutral-500">
+            Loading projects...
+          </p>
+        ) : error ? (
+          <p className="text-sm text-red-400">
+            {error}
+          </p>
+        ) : projects.length === 0 ? (
+          <p className="text-sm text-neutral-500">
+            No projects available yet.
+          </p>
+        ) : (
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,32rem),1fr))] gap-4">
+            {projects.slice(0, 4).map((project) => (
+              <ProjectShowcaseCard
+                key={project.id}
+                project={project}
+                linkTo={`/projects/${project.id}`}
+                clampDescription
+              />
+            ))}
+          </div>
+        )}
 
         {/* View All Projects */}
         <div className="mt-10 flex justify-center md:mt-12">

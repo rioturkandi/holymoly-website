@@ -5,6 +5,7 @@ const db = require('./config/database')
 const homeRoutes = require('./routes/home.routes')
 const adminHomeRoutes = require('./routes/admin.home.routes')
 const adminAboutRoutes = require('./routes/admin.about.routes')
+const adminProjectsRoutes = require('./routes/admin.projects.routes')
 const aboutRoutes = require('./routes/about.routes')
 const projectsRoutes = require('./routes/projects.routes')
 const achievementsRoutes = require('./routes/achievements.routes')
@@ -41,6 +42,7 @@ app.use('/api/admin/home', adminHomeRoutes)
 
 // Menggunakan router untuk pengelolaan konten About oleh administrator
 app.use('/api/admin/about', adminAboutRoutes)
+app.use('/api/admin/projects', adminProjectsRoutes)
 
 // Menggunakan router untuk halaman About
 app.use('/api/about', aboutRoutes)

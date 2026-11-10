@@ -23,7 +23,9 @@ router.get('/', async (req, res) => {
          project_images.image_path,
          project_images.image_type,
          project_images.alt_text,
-         project_images.display_order
+         project_images.display_order,
+         project_images.position_x,
+         project_images.position_y
        FROM project_images
        INNER JOIN projects
          ON project_images.project_id = projects.id

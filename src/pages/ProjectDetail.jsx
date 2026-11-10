@@ -1,15 +1,51 @@
-
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import projects from '../data/projects'
+import { apiRequest } from '../services/api'
 
 function ProjectDetail() {
   const { id } = useParams()
+
+  const [project, setProject] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const project = projects.find(
-    (item) => item.id === Number(id)
-  )
+  // Mengambil data proyek berdasarkan ID dari database.
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadProject() {
+      try {
+        const response = await apiRequest('/api/projects')
+        const selectedProject = (response.data || []).find(
+          (item) => String(item.id) === String(id)
+        )
+
+        if (isMounted) {
+          setProject(selectedProject || null)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error.message || 'Failed to load project.')
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    setIsLoading(true)
+    setProject(null)
+    setError('')
+    setSelectedImage(null)
+
+    loadProject()
+
+    return () => {
+      isMounted = false
+    }
+  }, [id])
 
   // Menutup lightbox ketika tombol Escape ditekan.
   useEffect(() => {
@@ -26,13 +62,25 @@ function ProjectDetail() {
     }
   }, [])
 
-  if (!project) {
+  if (isLoading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 text-neutral-500">
+        Loading project...
+      </main>
+    )
+  }
+
+  if (error || !project) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 text-white">
         <div className="text-center">
           <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
-            Project Not Found
+            {error ? 'Unable To Load Project' : 'Project Not Found'}
           </h1>
+
+          {error && (
+            <p className="mt-4 text-sm text-red-400">{error}</p>
+          )}
 
           <Link
             to="/projects"
@@ -44,6 +92,9 @@ function ProjectDetail() {
       </main>
     )
   }
+
+  const cover = project.cover
+  const gallery = project.gallery || []
 
   return (
     <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
@@ -63,32 +114,38 @@ function ProjectDetail() {
             Project / {String(project.id).padStart(2, '0')}
           </p>
 
-          <h1 className="max-w-5xl text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
-            {project.vehicle}
+          <h1 className="max-w-5xl break-words text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+            {project.vehicle_name}
           </h1>
 
-          <p className="mt-8 max-w-2xl text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="mt-8 w-full max-w-4xl min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] text-sm leading-8 text-neutral-400 md:text-base">
             {project.description}
           </p>
         </div>
 
         {/* COVER IMAGE */}
-        <div className="mx-auto mb-20 max-w-3xl overflow-hidden bg-neutral-900">
-          <button
-            type="button"
-            onClick={() => setSelectedImage(project.image)}
-            className="block w-full cursor-zoom-in"
-            aria-label="Enlarge project cover photo"
-          >
-            <img
-              src={project.image}
-              alt={project.vehicle}
-              className="aspect-[4/3] max-h-[480px] w-full object-cover"
-            />
-          </button>
-        </div>
+        {cover?.image_path && (
+          <div className="mx-auto mb-20 max-w-3xl overflow-hidden bg-neutral-900">
+            <button
+              type="button"
+              onClick={() => setSelectedImage(cover.image_path)}
+              className="block w-full cursor-zoom-in"
+              aria-label="Enlarge project cover photo"
+            >
+              <img
+                src={cover.image_path}
+                alt={project.vehicle_name}
+                loading="lazy"
+                style={{
+                  objectPosition: `${cover.position_x ?? 50}% ${cover.position_y ?? 50}%`,
+                }}
+                className="aspect-square w-full object-cover"
+              />
+            </button>
+          </div>
+        )}
 
-        {/* PROJECT GALLERY */}
+        {/* PROJECT DETAIL PHOTOS */}
         <section className="mb-20">
           <div className="mb-8 border-b border-neutral-800 pb-5">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
@@ -96,23 +153,23 @@ function ProjectDetail() {
             </p>
 
             <h2 className="text-3xl font-bold uppercase leading-tight md:text-5xl">
-              Project Gallery.
+              Project Detail.
             </h2>
           </div>
 
-          {project.gallery.length > 0 ? (
+          {gallery.length > 0 ? (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:gap-4">
-              {project.gallery.map((photo, index) => (
+              {gallery.map((photo, index) => (
                 <button
-                  key={photo}
+                  key={photo.id || photo.image_path}
                   type="button"
-                  onClick={() => setSelectedImage(photo)}
-                  className="group relative block overflow-hidden bg-neutral-900"
+                  onClick={() => setSelectedImage(photo.image_path)}
+                  className="group relative block min-w-0 overflow-hidden bg-neutral-900"
                   aria-label={`Enlarge project photo ${index + 1}`}
                 >
                   <img
-                    src={photo}
-                    alt={`${project.vehicle} detail ${index + 1}`}
+                    src={photo.image_path}
+                    alt={`${project.vehicle_name} detail ${index + 1}`}
                     loading="lazy"
                     className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -126,57 +183,6 @@ function ProjectDetail() {
           ) : (
             <p className="border border-neutral-800 p-8 text-sm leading-7 text-neutral-500">
               Additional project photos will be displayed here.
-            </p>
-          )}
-        </section>
-
-        {/* PROJECT DESCRIPTION */}
-        <section className="mb-20 grid gap-8 border-t border-neutral-800 pt-10 md:grid-cols-2">
-          <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-              Behind The Build
-            </p>
-
-            <h2 className="text-3xl font-bold uppercase leading-tight md:text-5xl">
-              The Story<br />Behind It.
-            </h2>
-          </div>
-
-          <p className="text-sm leading-8 text-neutral-400 md:text-base">
-            {project.description}
-          </p>
-        </section>
-
-        {/* SPEC SHEET */}
-        <section className="border-t border-neutral-800 pt-10">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-            Project Details
-          </p>
-
-          <h2 className="mb-8 text-3xl font-bold uppercase leading-tight md:text-5xl">
-            Spec-Sheet.
-          </h2>
-
-          {project.specs.length > 0 ? (
-            <div className="divide-y divide-neutral-800 border-y border-neutral-800">
-              {project.specs.map((spec, index) => (
-                <div
-                  key={`${spec.category}-${index}`}
-                  className="grid gap-2 py-5 md:grid-cols-2"
-                >
-                  <h3 className="text-sm font-bold uppercase text-white">
-                    {spec.category}
-                  </h3>
-
-                  <p className="text-sm leading-7 text-neutral-400">
-                    {spec.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="border border-neutral-800 p-8 text-sm leading-7 text-neutral-500">
-              Project specifications will be updated here.
             </p>
           )}
         </section>
