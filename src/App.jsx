@@ -15,6 +15,7 @@ import AdminOverview from './pages/admin/AdminOverview'
 import AdminHome from './pages/admin/AdminHome'
 import AdminAbout from './pages/admin/AdminAbout'
 import AdminProjects from './pages/admin/AdminProjects'
+import AdminAchievements from './pages/admin/AdminAchievements'
 
 function AdminPlaceholder({ title }) {
   return (
@@ -76,7 +77,7 @@ function AppContent() {
           />
           <Route
             path="achievements"
-            element={<AdminPlaceholder title="Achievements" />}
+            element={<AdminAchievements />}
           />
           <Route
             path="workshop"

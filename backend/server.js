@@ -6,9 +6,12 @@ const homeRoutes = require('./routes/home.routes')
 const adminHomeRoutes = require('./routes/admin.home.routes')
 const adminAboutRoutes = require('./routes/admin.about.routes')
 const adminProjectsRoutes = require('./routes/admin.projects.routes')
+const adminAchievementsRoutes = require('./routes/admin.achievements.routes')
+const adminMediaCoverageRoutes = require('./routes/admin.media-coverage.routes')
 const aboutRoutes = require('./routes/about.routes')
 const projectsRoutes = require('./routes/projects.routes')
 const achievementsRoutes = require('./routes/achievements.routes')
+const mediaCoverageRoutes = require('./routes/media-coverage.routes')
 const workshopRoutes = require('./routes/workshop.routes')
 const authRoutes = require('./routes/auth.routes')
 const uploadsRoutes = require('./routes/uploads.routes')
@@ -43,6 +46,8 @@ app.use('/api/admin/home', adminHomeRoutes)
 // Menggunakan router untuk pengelolaan konten About oleh administrator
 app.use('/api/admin/about', adminAboutRoutes)
 app.use('/api/admin/projects', adminProjectsRoutes)
+app.use('/api/admin/achievements', adminAchievementsRoutes)
+app.use('/api/admin/media-coverage', adminMediaCoverageRoutes)
 
 // Menggunakan router untuk halaman About
 app.use('/api/about', aboutRoutes)
@@ -52,6 +57,7 @@ app.use('/api/projects', projectsRoutes)
 
 // Menggunakan router untuk halaman Achievements
 app.use('/api/achievements', achievementsRoutes)
+app.use('/api/media-coverage', mediaCoverageRoutes)
 
 // Menggunakan router untuk halaman Workshop
 app.use('/api/workshop', workshopRoutes)
