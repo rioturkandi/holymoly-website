@@ -40,7 +40,7 @@ function Hero({ content }) {
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/20" />
 
       {/* Hero content */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
         <div className="max-w-2xl">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
             {eyebrow}
@@ -58,18 +58,18 @@ function Hero({ content }) {
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               to={buttonUrl}
-              className="bg-white px-7 py-4 text-xs font-bold uppercase tracking-widest text-black transition-colors hover:bg-neutral-300"
+              className="group inline-flex items-center rounded-full bg-white py-2.5 px-7 text-xs font-bold uppercase tracking-[0.16em] text-black shadow-[0_2px_12px_rgba(255,255,255,0.08)] transition-all duration-500 ease-out hover:bg-neutral-200 hover:shadow-[0_0_24px_rgba(255,255,255,0.16)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
-              {buttonText}
+              <span>{buttonText}</span>
             </Link>
 
             <a
               href="https://wa.me/6282129841597?text=Halo%2C%20saya%20tertarik%20untuk%20mengetahui%20lebih%20lanjut%20tentang%20layanan%20HOLYMOLY."
               target="_blank"
               rel="noopener noreferrer"
-              className="border border-white px-7 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+              className="group inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] py-2.5 px-7 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
-              Contact Us
+              <span>Contact Us</span>
             </a>
           </div>
         </div>

@@ -1,12 +1,31 @@
-
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { apiRequest } from '../services/api'
 
 function WorkshopPreview() {
-  const workshopImages = [
-    { id: 1, label: 'Workshop Area 01' },
-    { id: 2, label: 'Workshop Area 02' },
-    { id: 3, label: 'Workshop Area 03' },
-  ]
+  const [workshopImages, setWorkshopImages] = useState([])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadWorkshopImages() {
+      try {
+        const response = await apiRequest('/api/workshop')
+
+        if (isMounted) {
+          setWorkshopImages(response.data?.[0]?.images || [])
+        }
+      } catch (error) {
+        console.error('Gagal mengambil foto Workshop:', error.message)
+      }
+    }
+
+    loadWorkshopImages()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   return (
     <section className="bg-[#080808] section-spacing">
@@ -37,13 +56,16 @@ function WorkshopPreview() {
           {workshopImages.map((image) => (
             <div
               key={image.id}
-              className="group relative flex aspect-[4/5] items-end overflow-hidden bg-neutral-900 p-6"
+              className="group relative aspect-[16/9] overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
             >
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+              <img
+                src={image.image_path}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-900 ease-in-out group-hover:scale-[1.02]"
+              />
 
-              <p className="relative z-10 text-sm font-bold uppercase tracking-widest text-white">
-                {image.label}
-              </p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           ))}
         </div>
@@ -52,9 +74,9 @@ function WorkshopPreview() {
         <div className="mt-10 md:mt-12">
           <Link
             to="/about#workshop"
-            className="inline-block border border-neutral-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+            className="group inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] py-2.5 px-7 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
-            Explore Our Workshop
+            <span>Explore Our Workshop</span>
           </Link>
         </div>
 

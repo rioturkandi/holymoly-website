@@ -30,9 +30,9 @@ function AboutPreview() {
 
             <Link
               to="/about"
-              className="mt-8 inline-block border border-neutral-500 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:border-white hover:bg-white hover:text-black"
+              className="group mt-8 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] py-2.5 px-7 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
             >
-              Discover Our Story
+              <span>Discover Our Story</span>
             </Link>
           </div>
 

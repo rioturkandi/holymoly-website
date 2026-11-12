@@ -1,18 +1,18 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { apiRequest, setAdminToken } from '../services/api'
 
 function AdminLogin() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [successMessage, setSuccessMessage] = useState('')
 
   async function handleSubmit(event) {
     event.preventDefault()
 
     setErrorMessage('')
-    setSuccessMessage('')
     setIsLoading(true)
 
     try {
@@ -31,8 +31,8 @@ function AdminLogin() {
       }
 
       setAdminToken(token)
-      setSuccessMessage('Login berhasil. Sesi administrator tersimpan.')
       setPassword('')
+      navigate('/admin', { replace: true })
     } catch (error) {
       setErrorMessage(error.message)
     } finally {
@@ -108,15 +108,6 @@ function AdminLogin() {
               className="mb-5 border border-red-900 bg-red-950/30 p-3 text-sm text-red-400"
             >
               {errorMessage}
-            </p>
-          )}
-
-          {successMessage && (
-            <p
-              role="status"
-              className="mb-5 border border-green-900 bg-green-950/30 p-3 text-sm text-green-400"
-            >
-              {successMessage}
             </p>
           )}
 

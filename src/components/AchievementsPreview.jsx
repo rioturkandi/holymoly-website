@@ -94,7 +94,7 @@ function AchievementsPreview() {
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
           {/* LATEST AWARD */}
-          <article className="flex h-full flex-col overflow-hidden border border-neutral-700 transition-colors duration-300 hover:border-neutral-400">
+          <article className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
             <div className="border-b border-neutral-700 p-5 md:p-6">
               <p className="text-sm font-bold tracking-widest text-neutral-500">
                 / 01
@@ -153,12 +153,14 @@ function AchievementsPreview() {
                     </p>
                   )}
 
+                  <div className="mt-auto pt-5">
                   <Link
                     to="/achievements"
-                    className="mt-auto self-start border-b border-neutral-500 pt-6 pb-1 text-xs font-bold uppercase tracking-widest text-neutral-300 transition hover:border-white hover:text-white"
+                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3 py-1 text-center text-[8px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     Explore Achievement
                   </Link>
+                  </div>
                 </div>
               </>
             ) : (
@@ -169,7 +171,7 @@ function AchievementsPreview() {
           </article>
 
           {/* LATEST MEDIA COVERAGE */}
-          <article className="flex h-full flex-col overflow-hidden border border-neutral-700 transition-colors duration-300 hover:border-neutral-400">
+          <article className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
             <div className="border-b border-neutral-700 p-5 md:p-6">
               <p className="text-sm font-bold tracking-widest text-neutral-500">
                 / 02
@@ -206,14 +208,16 @@ function AchievementsPreview() {
                     {latestMedia.title}
                   </h4>
 
+                  <div className="mt-auto pt-5">
                   <a
                     href={latestMedia.article_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-auto self-start border-b border-neutral-500 pt-6 pb-1 text-xs font-bold uppercase tracking-widest text-neutral-300 transition hover:border-white hover:text-white"
+                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3 py-1 text-center text-[8px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     Read Article
                   </a>
+                  </div>
                 </div>
               </>
             ) : (
@@ -224,14 +228,6 @@ function AchievementsPreview() {
           </article>
         </div>
 
-        <div className="mt-10 md:mt-12">
-          <Link
-            to="/achievements"
-            className="inline-block border border-neutral-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
-          >
-            Explore Recognition
-          </Link>
-        </div>
       </div>
     </section>
   )

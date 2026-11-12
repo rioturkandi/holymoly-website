@@ -1,5 +1,13 @@
-const express = require('express')
 const path = require('path')
+const dotenv = require('dotenv')
+
+// Memuat konfigurasi environment sebelum modul aplikasi lainnya
+dotenv.config({
+  path: path.resolve(__dirname, '.env'),
+})
+
+const express = require('express')
+const helmet = require('helmet')
 const db = require('./config/database')
 
 const homeRoutes = require('./routes/home.routes')
@@ -8,6 +16,7 @@ const adminAboutRoutes = require('./routes/admin.about.routes')
 const adminProjectsRoutes = require('./routes/admin.projects.routes')
 const adminAchievementsRoutes = require('./routes/admin.achievements.routes')
 const adminMediaCoverageRoutes = require('./routes/admin.media-coverage.routes')
+const adminWorkshopRoutes = require('./routes/admin.workshop.routes')
 const aboutRoutes = require('./routes/about.routes')
 const projectsRoutes = require('./routes/projects.routes')
 const achievementsRoutes = require('./routes/achievements.routes')
@@ -18,6 +27,14 @@ const uploadsRoutes = require('./routes/uploads.routes')
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+// Memasang HTTP security headers
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    strictTransportSecurity: false,
+  })
+)
 
 // Membaca request dengan format JSON
 app.use(express.json({ limit: '100kb' }))
@@ -48,6 +65,7 @@ app.use('/api/admin/about', adminAboutRoutes)
 app.use('/api/admin/projects', adminProjectsRoutes)
 app.use('/api/admin/achievements', adminAchievementsRoutes)
 app.use('/api/admin/media-coverage', adminMediaCoverageRoutes)
+app.use('/api/admin/workshop', adminWorkshopRoutes)
 
 // Menggunakan router untuk halaman About
 app.use('/api/about', aboutRoutes)
@@ -85,6 +103,50 @@ app.get('/api/health', async (req, res) => {
       message: 'Database tidak dapat diakses.',
     })
   }
+})
+
+// Menangani endpoint yang tidak ditemukan
+app.use((req, res) => {
+  return res.status(404).json({
+    success: false,
+    message: 'Endpoint tidak ditemukan.',
+  })
+})
+
+// Menangani error yang belum ditangani oleh route
+app.use((error, req, res, next) => {
+  if (res.headersSent) {
+    return next(error)
+  }
+
+  const statusCode =
+    Number.isInteger(error.status) &&
+    error.status >= 400 &&
+    error.status < 500
+      ? error.status
+      : 500
+
+  console.error('Kesalahan API:', {
+    method: req.method,
+    path: req.path,
+    status: statusCode,
+    message: error.message,
+  })
+
+  let message = 'Terjadi kesalahan pada server.'
+
+  if (statusCode === 404) {
+    message = 'Resource tidak ditemukan.'
+  } else if (statusCode === 413) {
+    message = 'Ukuran permintaan terlalu besar.'
+  } else if (statusCode < 500) {
+    message = 'Permintaan tidak valid.'
+  }
+
+  return res.status(statusCode).json({
+    success: false,
+    message,
+  })
 })
 
 // Menjalankan server

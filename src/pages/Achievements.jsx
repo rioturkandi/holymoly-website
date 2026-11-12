@@ -73,7 +73,7 @@ function Achievements() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
+    <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing lg:pt-28">
       <div className="page-container">
 
         {/* PAGE INTRODUCTION */}
@@ -92,7 +92,7 @@ function Achievements() {
         </div>
 
         {/* ACHIEVEMENTS CONTENT */}
-        <section className="mt-16">
+        <section className="mt-10">
 
           {isLoading && (
             <p className="py-12 text-center text-sm text-neutral-500">
@@ -107,7 +107,7 @@ function Achievements() {
           )}
 
           {!isLoading && !error && achievements.length === 0 && (
-            <div className="border border-white/10 px-6 py-16 text-center">
+            <div className="rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
                 Recognition
               </p>
@@ -127,7 +127,7 @@ function Achievements() {
               {achievements.map((achievement) => (
                 <article
                   key={achievement.id}
-                  className="overflow-hidden border border-white/10 bg-[#101010]"
+                  className="overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
                 >
                   {/* TROPHY AND WINNING CAR PHOTOS */}
                   <div className="mt-4 px-4">
@@ -180,7 +180,7 @@ function Achievements() {
         </section>
 
         {/* MEDIA COVERAGE CONTENT */}
-        <section className="mt-20 border-t border-white/10 pt-16">
+        <section className="mt-12 border-t border-white/10 pt-10">
           <div className="mb-10">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
               Press & Publications
@@ -208,7 +208,7 @@ function Achievements() {
           )}
 
           {!isMediaLoading && !mediaError && mediaCoverage.length === 0 && (
-            <div className="border border-white/10 px-6 py-16 text-center">
+            <div className="rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
                 Press & Publications
               </p>
@@ -228,9 +228,9 @@ function Achievements() {
               {mediaCoverage.map((item) => (
                 <article
                   key={item.id}
-                  className="overflow-hidden border border-white/10 bg-[#101010]"
+                  className="overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
                 >
-                  <div className="aspect-[16/9] overflow-hidden bg-[#191919]">
+                  <div className="mx-4 mt-4 aspect-[16/9] overflow-hidden rounded-lg border border-neutral-700 bg-[#101010]">
                     <img
                       src={item.image_path}
                       alt={item.title}
@@ -239,7 +239,7 @@ function Achievements() {
                     />
                   </div>
 
-                  <div className="p-6 md:p-8">
+                  <div className="p-5 md:p-6">
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
                       {formatPublicationDate(item.publication_date)}
                     </p>
@@ -252,7 +252,7 @@ function Achievements() {
                       href={item.article_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-6 inline-flex items-center border-b border-neutral-500/50 pb-1 text-xs font-bold uppercase tracking-wider text-neutral-300 transition hover:border-neutral-300 hover:text-white"
+                      className="mt-6 inline-flex w-fit items-center justify-center rounded-full border border-white/30 bg-white/[0.02] px-3 py-1 text-[8px] font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                     >
                       Read Article
                     </a>

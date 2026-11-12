@@ -1,24 +1,31 @@
+import { Link } from 'react-router-dom'
+
 function AdminOverview() {
   const sections = [
     {
       title: 'Home',
       description: 'Manage hero content and services.',
+      path: '/admin/home',
     },
     {
       title: 'About',
       description: 'Manage company information.',
+      path: '/admin/about',
     },
     {
       title: 'Projects',
       description: 'Manage automotive project galleries.',
+      path: '/admin/projects',
     },
     {
       title: 'Achievements',
       description: 'Manage awards and achievements.',
+      path: '/admin/achievements',
     },
     {
       title: 'Workshop',
       description: 'Manage workshop information and photos.',
+      path: '/admin/workshop',
     },
   ]
 
@@ -38,15 +45,16 @@ function AdminOverview() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {sections.map((section) => (
-          <div
+          <Link
             key={section.title}
-            className="border border-white/10 bg-[#101010] p-6"
+            to={section.path}
+            className="block border border-white/10 bg-[#101010] p-6 transition-colors hover:border-white/30 hover:bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             <h2 className="text-lg font-semibold">{section.title}</h2>
             <p className="mt-2 text-sm text-neutral-400">
               {section.description}
             </p>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

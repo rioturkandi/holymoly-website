@@ -17,12 +17,17 @@ function ProjectDetail() {
     async function loadProject() {
       try {
         const response = await apiRequest('/api/projects')
-        const selectedProject = (response.data || []).find(
+        const projects = response.data || []
+        const selectedIndex = projects.findIndex(
           (item) => String(item.id) === String(id)
         )
+        const selectedProject =
+          selectedIndex >= 0
+            ? { ...projects[selectedIndex], display_number: selectedIndex + 1 }
+            : null
 
         if (isMounted) {
-          setProject(selectedProject || null)
+          setProject(selectedProject)
         }
       } catch (error) {
         if (isMounted) {
@@ -84,7 +89,7 @@ function ProjectDetail() {
 
           <Link
             to="/projects"
-            className="mt-6 inline-block border border-neutral-600 px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black"
+            className="group mt-6 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-7 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Back To Projects
           </Link>
@@ -100,18 +105,10 @@ function ProjectDetail() {
     <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
       <div className="page-container">
 
-        {/* BACK NAVIGATION */}
-        <Link
-          to="/projects"
-          className="mb-10 inline-block text-xs font-bold uppercase tracking-widest text-neutral-500 transition-colors hover:text-white"
-        >
-          ← Back To Projects
-        </Link>
-
         {/* PROJECT INTRODUCTION */}
-        <div className="mb-12">
+        <div className="mb-8">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-            Project / {String(project.id).padStart(2, '0')}
+            Project / {String(project.display_number).padStart(2, '0')}
           </p>
 
           <h1 className="max-w-5xl break-words text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
@@ -125,7 +122,7 @@ function ProjectDetail() {
 
         {/* COVER IMAGE */}
         {cover?.image_path && (
-          <div className="mx-auto mb-20 max-w-3xl overflow-hidden bg-neutral-900">
+          <div className="mx-auto mb-12 max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
             <button
               type="button"
               onClick={() => setSelectedImage(cover.image_path)}
@@ -146,7 +143,7 @@ function ProjectDetail() {
         )}
 
         {/* PROJECT DETAIL PHOTOS */}
-        <section className="mb-20">
+        <section className="mb-0">
           <div className="mb-8 border-b border-neutral-800 pb-5">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
               Visual Documentation
@@ -164,14 +161,14 @@ function ProjectDetail() {
                   key={photo.id || photo.image_path}
                   type="button"
                   onClick={() => setSelectedImage(photo.image_path)}
-                  className="group relative block min-w-0 overflow-hidden bg-neutral-900"
+                  className="relative block min-w-0 cursor-zoom-in overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
                   aria-label={`Enlarge project photo ${index + 1}`}
                 >
                   <img
                     src={photo.image_path}
                     alt={`${project.vehicle_name} detail ${index + 1}`}
                     loading="lazy"
-                    className="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="aspect-square w-full object-cover"
                   />
 
                   <span className="absolute bottom-4 right-4 bg-black/70 px-3 py-2 text-xs uppercase tracking-widest text-white">
@@ -188,10 +185,10 @@ function ProjectDetail() {
         </section>
 
         {/* NEXT PROJECTS */}
-        <div className="mt-20 border-t border-neutral-800 pt-8">
+        <div className="mt-8 border-t border-neutral-800 pt-5">
           <Link
             to="/projects"
-            className="inline-block border border-neutral-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
+            className="group inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Explore More Projects
           </Link>
@@ -211,7 +208,7 @@ function ProjectDetail() {
           <button
             type="button"
             onClick={() => setSelectedImage(null)}
-            className="absolute right-6 top-6 z-10 border border-neutral-600 px-4 py-3 text-xs font-bold uppercase tracking-widest text-white hover:bg-white hover:text-black"
+            className="absolute right-6 top-6 z-10 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-6 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Close ×
           </button>

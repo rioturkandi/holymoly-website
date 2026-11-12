@@ -36,13 +36,19 @@ a {
 
 /* Jarak konten halaman dari fixed navbar */
 .page-top-spacing {
-  padding-top: 88px;
+  padding-top: 104px;
+}
+
+@media (min-width: 1024px) {
+  .page-top-spacing {
+    padding-top: 112px;
+  }
 }
 
 /* Jarak vertikal antar-section */
 .section-spacing {
-  padding-top: 72px;
-  padding-bottom: 72px;
+  padding-top: 48px;
+  padding-bottom: 48px;
 }
 
 /* Lebar konten dan jarak horizontal */

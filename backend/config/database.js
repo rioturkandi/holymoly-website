@@ -1,11 +1,4 @@
 const mysql = require('mysql2/promise')
-const dotenv = require('dotenv')
-const path = require('path')
-
-// Membaca konfigurasi dari file .env
-dotenv.config({
-  path: path.resolve(__dirname, '../.env'),
-})
 
 // Membuat pool koneksi database
 const db = mysql.createPool({

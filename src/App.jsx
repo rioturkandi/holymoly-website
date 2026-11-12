@@ -16,6 +16,7 @@ import AdminHome from './pages/admin/AdminHome'
 import AdminAbout from './pages/admin/AdminAbout'
 import AdminProjects from './pages/admin/AdminProjects'
 import AdminAchievements from './pages/admin/AdminAchievements'
+import AdminWorkshop from './pages/admin/AdminWorkshop'
 
 function AdminPlaceholder({ title }) {
   return (
@@ -81,7 +82,7 @@ function AppContent() {
           />
           <Route
             path="workshop"
-            element={<AdminPlaceholder title="Workshop" />}
+            element={<AdminWorkshop />}
           />
         </Route>
       </Routes>

@@ -36,11 +36,11 @@ function Projects() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#080808] page-top-spacing pb-24 text-[#F2F2F2]">
+    <main className="min-h-screen bg-[#080808] page-top-spacing lg:pt-28 pb-24 text-[#F2F2F2]">
       <div className="page-container">
 
         {/* PAGE INTRODUCTION */}
-        <div className="mb-16 md:mb-20">
+        <div className="mb-8 md:mb-10">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
             Selected Works
           </p>
@@ -75,7 +75,7 @@ function Projects() {
               <Link
                 key={project.id}
                 to={`/projects/${project.id}`}
-                className="group block min-w-0 overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 p-4 transition-colors hover:border-neutral-600"
+                className="group block min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
               >
                 {/* PROJECT TITLE */}
                 <h2 className="mb-4 break-words text-xl font-bold uppercase text-white transition-colors group-hover:text-neutral-300 md:text-2xl">
@@ -92,7 +92,7 @@ function Projects() {
                       style={{
                         objectPosition: `${project.cover.position_x ?? 50}% ${project.cover.position_y ?? 50}%`,
                       }}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 )}
@@ -108,8 +108,8 @@ function Projects() {
                       Project / {String(index + 1).padStart(2, '0')}
                     </p>
 
-                    <span className="text-xs text-neutral-500 transition-colors group-hover:text-white">
-                      View Project ↗
+                    <span className="inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white transition-colors group-hover:border-white group-hover:bg-white/[0.06]">
+                      View Project
                     </span>
                   </div>
                 </div>

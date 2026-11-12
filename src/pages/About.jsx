@@ -1,6 +1,5 @@
 
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { apiRequest } from '../services/api'
 import WorkshopGallery from '../components/WorkshopGallery'
 
@@ -72,10 +71,10 @@ function About() {
   })
 
   return (
-    <main className="bg-[#080808] text-[#F2F2F2]">
+    <main className="bg-[#080808] pb-12 text-[#F2F2F2] md:pb-8">
 
       {/* ABOUT INTRODUCTION */}
-      <section className="page-top-spacing px-6 pb-16 md:pb-24">
+      <section className="page-top-spacing lg:pt-28 pb-12 md:pb-12">
         <div className="page-container">
           <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
             {introduction.eyebrow}
@@ -94,7 +93,7 @@ function About() {
       </section>
 
       {/* OUR JOURNEY */}
-      <section className="border-t border-[#262626] section-spacing px-6">
+      <section className="border-t border-[#262626] section-spacing">
         <div className="page-container grid gap-10 md:grid-cols-2">
           <div>
             <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
@@ -115,7 +114,7 @@ function About() {
       </section>
 
       {/* VISION & PHILOSOPHY */}
-      <section className="bg-[#191919] section-spacing px-6">
+      <section className="bg-[#191919] section-spacing">
         <div className="page-container">
           <div className="grid gap-10 md:grid-cols-3">
             <div>
@@ -165,28 +164,6 @@ function About() {
 
       {/* WORKSHOP GALLERY */}
       <WorkshopGallery />
-
-      {/* ABOUT PAGE CTA */}
-      <section className="border-t border-neutral-800 section-spacing px-6">
-        <div className="page-container flex flex-col justify-between gap-8 md:flex-row md:items-end">
-          <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-              Discover More
-            </p>
-
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
-              Explore<br />Our Projects.
-            </h2>
-          </div>
-
-          <Link
-            to="/projects"
-            className="w-fit border border-neutral-600 px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-white hover:text-black"
-          >
-            View Projects
-          </Link>
-        </div>
-      </section>
 
     </main>
   )
