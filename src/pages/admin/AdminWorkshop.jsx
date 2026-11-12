@@ -197,7 +197,7 @@ function AdminWorkshop() {
           {images.map((image, index) => (
             <div
               key={index}
-              className="rounded-lg border border-white/10 bg-[#101010] p-4"
+              className="admin-card p-4"
             >
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-bold uppercase">

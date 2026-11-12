@@ -48,7 +48,7 @@ function AdminOverview() {
           <Link
             key={section.title}
             to={section.path}
-            className="block border border-white/10 bg-[#101010] p-6 transition-colors hover:border-white/30 hover:bg-white/[0.03] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+            className="admin-card block p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
             <h2 className="text-lg font-semibold">{section.title}</h2>
             <p className="mt-2 text-sm text-neutral-400">

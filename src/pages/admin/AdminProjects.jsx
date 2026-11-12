@@ -322,7 +322,7 @@ function AdminProjects() {
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+      <form onSubmit={handleSave} className="admin-card space-y-6 p-6">
         <h2 className="text-xl font-bold uppercase text-white">Add New Project</h2>
 
         <div>
@@ -409,7 +409,7 @@ function AdminProjects() {
             {form.detail_image_paths.map((imagePath, index) => (
               <div
                 key={imagePath}
-                className="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900"
+                className="admin-card overflow-hidden"
               >
                 <img
                   src={imagePath}

@@ -17,6 +17,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -53,10 +54,141 @@ a {
 
 /* Lebar konten dan jarak horizontal */
 .page-container {
-  width: 100%;
+  width: calc(100% - 2rem);
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
   padding-left: 24px;
   padding-right: 24px;
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+
+/* ========================================
+   HOLYMOLY ADMIN - INDUSTRIAL 3D DESIGN
+======================================== */
+
+.admin-shell {
+  --admin-surface: #111111;
+  --admin-surface-raised: #191919;
+  --admin-border: rgba(255, 255, 255, 0.1);
+  --admin-highlight: rgba(255, 255, 255, 0.07);
+  --admin-shadow: 0 4px 0 rgba(0, 0, 0, 0.55),
+                  0 10px 24px rgba(0, 0, 0, 0.28),
+                  inset 0 1px 0 var(--admin-highlight);
+}
+
+.admin-shell aside {
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.025);
+}
+
+.admin-shell nav a {
+  border: 1px solid transparent;
+  border-radius: 9px;
+  transition: background-color 180ms ease,
+              color 180ms ease,
+              border-color 180ms ease,
+              box-shadow 180ms ease;
+}
+
+.admin-shell nav a[aria-current="page"] {
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.admin-shell main button {
+  border-radius: 9px;
+  box-shadow: var(--admin-shadow);
+  transition: background-color 180ms ease,
+              border-color 180ms ease,
+              color 180ms ease,
+              box-shadow 180ms ease;
+}
+
+.admin-shell main button:active {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.6),
+              inset 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.admin-shell main input,
+.admin-shell main textarea,
+.admin-shell main select {
+  border: 1px solid var(--admin-border);
+  border-radius: 9px;
+  background-color: #111111;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  transition: border-color 180ms ease,
+              box-shadow 180ms ease;
+}
+
+.admin-shell main input:focus,
+.admin-shell main textarea:focus,
+.admin-shell main select:focus {
+  border-color: rgba(255, 255, 255, 0.38);
+  outline: none;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3),
+              0 0 0 3px rgba(255, 255, 255, 0.06);
+}
+
+.admin-shell main input::placeholder,
+.admin-shell main textarea::placeholder {
+  color: #737373;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell nav a,
+  .admin-shell main button,
+  .admin-shell main input,
+  .admin-shell main textarea,
+  .admin-shell main select {
+    transition: none;
+  }
+}
+
+
+
+
+/* Admin static 3D section cards */
+.admin-shell .admin-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #202020 0%, #151515 48%, #101010 100%);
+  box-shadow:
+    0 5px 0 #080808,
+    0 12px 24px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-shell .admin-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.2), transparent);
+  pointer-events: none;
+}
+
+.admin-shell .admin-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 6px 0 #080808,
+    0 16px 28px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.11);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell .admin-card {
+    transition: none;
+  }
 }

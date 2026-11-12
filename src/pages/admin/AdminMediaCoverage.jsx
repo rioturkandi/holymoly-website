@@ -302,7 +302,7 @@ function AdminMediaCoverage() {
         </p>
       </div>
 
-      <div className="mb-10 rounded-lg border border-white/10 bg-[#101010] p-5 sm:p-7">
+      <div className="admin-card mb-10 p-5 sm:p-7">
         <div className="mb-7">
           <h3 className="text-lg font-bold uppercase">
             {editingId ? 'Edit Media Coverage' : 'Add Media Coverage'}
@@ -455,7 +455,7 @@ function AdminMediaCoverage() {
           Loading Media Coverage...
         </p>
       ) : mediaItems.length === 0 ? (
-        <p className="rounded border border-white/10 bg-[#101010] p-6 text-sm text-neutral-500">
+        <p className="admin-card p-6 text-sm text-neutral-500">
           Belum ada data Media Coverage.
         </p>
       ) : (
@@ -463,7 +463,7 @@ function AdminMediaCoverage() {
           {mediaItems.map((item) => (
             <article
               key={item.id}
-              className="overflow-hidden rounded-lg border border-white/10 bg-[#101010]"
+              className="admin-card overflow-hidden"
             >
               <img
                 src={item.image_path}

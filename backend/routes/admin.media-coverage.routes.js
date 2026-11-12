@@ -104,8 +104,8 @@ async function deleteUnusedImage(imagePath) {
 
   const [rows] = await db.query(
     `SELECT
-      (SELECT COUNT(*) FROM about_content WHERE image_path = ?) +
       (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
       (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
       (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
       (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +
@@ -114,17 +114,7 @@ async function deleteUnusedImage(imagePath) {
       (SELECT COUNT(*) FROM media_coverage WHERE image_path = ?) +
       (SELECT COUNT(*) FROM media_coverage WHERE original_image_path = ?)
       AS usage_count`,
-    [
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-      imagePath,
-    ]
+    Array(9).fill(imagePath)
   )
 
   if (Number(rows[0].usage_count) > 0) return

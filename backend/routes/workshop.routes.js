@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   try {
     // Mengambil konten Workshop yang aktif
     const [workshopContent] = await db.query(
-      `SELECT *
+      `SELECT id, section_key
        FROM workshop_content
        WHERE is_active = TRUE
        ORDER BY id ASC`

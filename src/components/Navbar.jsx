@@ -27,13 +27,13 @@ function Navbar() {
           HOLYMOLY<span className="text-neutral-500">.</span>
         </Link>
 
-        <div className="hidden items-center gap-9 lg:flex lg:gap-12">
+        <div className="hidden items-center gap-5 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.label}
               to={link.to}
               className={({ isActive }) =>
-                `relative isolate rounded-full px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-white/20 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
+                `relative isolate rounded-full px-2 last:pr-0 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-white/20 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
                   isActive
                     ? 'text-white'
                     : 'text-neutral-400 hover:text-white'

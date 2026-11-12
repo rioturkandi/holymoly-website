@@ -27,6 +27,10 @@ function isValidBody(body) {
 
 // Memvalidasi string yang boleh bernilai null
 function validateNullableString(value, maxLength, fieldName) {
+  if (value === undefined) {
+    return null
+  }
+
   if (value !== null && typeof value !== 'string') {
     throw new ValidationError(`${fieldName} harus berupa teks atau null.`)
   }
@@ -68,13 +72,17 @@ async function deleteUnusedImage(imagePath) {
 
   const [rows] = await db.query(
     `SELECT
-      (SELECT COUNT(*) FROM about_content WHERE image_path = ?) +
       (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
       (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
       (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?)
+      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM achievements WHERE trophy_image_path = ?) +
+      (SELECT COUNT(*) FROM achievements WHERE vehicle_image_path = ?) +
+      (SELECT COUNT(*) FROM media_coverage WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM media_coverage WHERE original_image_path = ?)
       AS usage_count`,
-    [imagePath, imagePath, imagePath, imagePath, imagePath]
+    Array(9).fill(imagePath)
   )
 
   if (Number(rows[0].usage_count) > 0) return
@@ -187,7 +195,6 @@ router.put('/hero', async (req, res) => {
       'button_text',
       'button_url',
       'image_path',
-      'is_active',
     ]
 
     const missingFields = requiredFields.filter(
@@ -227,7 +234,12 @@ router.put('/hero', async (req, res) => {
 
     const buttonUrl = validateButtonUrl(req.body.button_url)
     const imagePath = validateImagePath(req.body.image_path)
-    const isActive = validateActive(req.body.is_active)
+    const originalImagePath = Object.hasOwn(
+      req.body,
+      'original_image_path'
+    )
+      ? validateImagePath(req.body.original_image_path)
+      : imagePath
 
     await db.query(
       `INSERT INTO home_content (
@@ -238,9 +250,10 @@ router.put('/hero', async (req, res) => {
         button_text,
         button_url,
         image_path,
+        original_image_path,
         is_active
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)
       ON DUPLICATE KEY UPDATE
         eyebrow = ?,
         title = ?,
@@ -248,7 +261,8 @@ router.put('/hero', async (req, res) => {
         button_text = ?,
         button_url = ?,
         image_path = ?,
-        is_active = ?`,
+        original_image_path = ?,
+        is_active = TRUE`,
       [
         'hero',
         eyebrow,
@@ -257,14 +271,14 @@ router.put('/hero', async (req, res) => {
         buttonText,
         buttonUrl,
         imagePath,
-        isActive,
+        originalImagePath,
         eyebrow,
         title,
         description,
         buttonText,
         buttonUrl,
         imagePath,
-        isActive,
+        originalImagePath,
       ]
     )
 
@@ -303,7 +317,7 @@ router.put('/hero', async (req, res) => {
 router.delete('/hero/image', async (req, res) => {
   try {
     const [rows] = await db.query(
-      `SELECT image_path FROM home_content
+      `SELECT image_path, original_image_path FROM home_content
        WHERE section_key = ? LIMIT 1`,
       ['hero']
     )
@@ -315,16 +329,22 @@ router.delete('/hero/image', async (req, res) => {
       })
     }
 
-    const imagePath = rows[0].image_path
+    const imagePaths = [
+      rows[0].image_path,
+      rows[0].original_image_path,
+    ]
 
     await db.query(
       `UPDATE home_content
-       SET image_path = NULL
+       SET image_path = NULL,
+           original_image_path = NULL
        WHERE section_key = ?`,
       ['hero']
     )
 
-    await deleteUnusedImage(imagePath)
+    for (const imagePath of new Set(imagePaths)) {
+      await deleteUnusedImage(imagePath)
+    }
 
     res.status(200).json({
       success: true,
@@ -345,7 +365,9 @@ router.delete('/hero/image', async (req, res) => {
 router.delete('/hero', async (req, res) => {
   try {
     const [rows] = await db.query(
-      'SELECT image_path FROM home_content WHERE section_key = ? LIMIT 1',
+      `SELECT image_path, original_image_path
+       FROM home_content
+       WHERE section_key = ? LIMIT 1`,
       ['hero']
     )
 
@@ -361,7 +383,12 @@ router.delete('/hero', async (req, res) => {
       ['hero']
     )
 
-    await deleteUnusedImage(rows[0].image_path)
+    for (const imagePath of new Set([
+      rows[0].image_path,
+      rows[0].original_image_path,
+    ])) {
+      await deleteUnusedImage(imagePath)
+    }
 
     res.status(200).json({
       success: true,
@@ -619,7 +646,7 @@ router.put('/services/:id', async (req, res) => {
   }
 })
 
-// Menonaktifkan layanan tanpa menghapus data permanen
+// Menghapus layanan secara permanen
 router.delete('/services/:id', async (req, res) => {
   try {
     const id = validateId(req.params.id)
@@ -644,18 +671,16 @@ router.delete('/services/:id', async (req, res) => {
     }
 
     await db.query(
-      `UPDATE home_services
-       SET is_active = FALSE
-       WHERE id = ?`,
+      'DELETE FROM home_services WHERE id = ?',
       [id]
     )
 
     res.status(200).json({
       success: true,
-      message: 'Layanan berhasil dinonaktifkan.',
+      message: 'Layanan berhasil dihapus.',
     })
   } catch (error) {
-    console.error('Gagal menonaktifkan layanan:', error.message)
+    console.error('Gagal menghapus layanan:', error.message)
 
     res.status(500).json({
       success: false,

@@ -31,8 +31,8 @@ function validateImages(images) {
 async function deleteUnusedImage(imagePath) {
   const [rows] = await db.query(
     `SELECT
-      (SELECT COUNT(*) FROM about_content WHERE image_path = ?) +
       (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
+      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
       (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
       (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
       (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +

@@ -183,14 +183,6 @@ function AdminAbout() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className="border border-white/20 px-5 py-3 text-sm transition hover:bg-white hover:text-black disabled:opacity-50"
-        >
-          {isLoading ? 'Loading...' : 'Refresh Data'}
-        </button>
       </div>
 
       {isLoading && (
@@ -228,7 +220,7 @@ function AdminAbout() {
               <form
                 key={section.section_key}
                 onSubmit={(event) => handleSave(event, section)}
-                className="border border-white/10 bg-white/[0.02] p-5 sm:p-7"
+                className="admin-card p-5 sm:p-7"
               >
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-xl font-bold uppercase">

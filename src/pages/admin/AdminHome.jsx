@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../../services/api'
+import ImageCropEditor from '../../components/ImageCropEditor'
 
 function AdminHome() {
   const [hero, setHero] = useState(null)
@@ -11,8 +12,15 @@ function AdminHome() {
     button_text: '',
     button_url: '/projects',
     image_path: '',
-    is_active: true,
+    original_image_path: '',
   })
+
+  const [cropSource, setCropSource] = useState('')
+  const [isCropOpen, setIsCropOpen] = useState(false)
+  const [pendingOriginalFile, setPendingOriginalFile] = useState(null)
+  const [pendingCropBlob, setPendingCropBlob] = useState(null)
+  const [originalImagePath, setOriginalImagePath] = useState('')
+  const [imagePreview, setImagePreview] = useState('')
 
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -64,10 +72,17 @@ function AdminHome() {
             button_text: heroResponse.data?.button_text || '',
             button_url: heroResponse.data?.button_url || '/projects',
             image_path: heroResponse.data?.image_path || '',
-            is_active: heroResponse.data
-              ? Boolean(heroResponse.data.is_active)
-              : true,
+            original_image_path: heroResponse.data?.original_image_path || '',
           })
+
+          const savedOriginal =
+            heroResponse.data?.original_image_path ||
+            heroResponse.data?.image_path ||
+            ''
+
+          setOriginalImagePath(savedOriginal)
+          setCropSource(savedOriginal)
+          setImagePreview(heroResponse.data?.image_path || '')
 
           setServices(servicesResponse.data)
         }
@@ -88,6 +103,22 @@ function AdminHome() {
       isMounted = false
     }
   }, [refreshKey])
+
+  useEffect(() => {
+    if (!cropSource.startsWith('blob:')) return
+
+    return () => {
+      URL.revokeObjectURL(cropSource)
+    }
+  }, [cropSource])
+
+  useEffect(() => {
+    if (!imagePreview.startsWith('blob:')) return
+
+    return () => {
+      URL.revokeObjectURL(imagePreview)
+    }
+  }, [imagePreview])
 
   function resetServiceForm() {
     setServiceForm({
@@ -128,7 +159,7 @@ function AdminHome() {
     setServiceError('')
   }
 
-  async function handleImageUpload(event) {
+  function handleImageUpload(event) {
     const file = event.target.files?.[0]
     if (!file) return
 
@@ -153,30 +184,56 @@ function AdminHome() {
       return
     }
 
+    setPendingOriginalFile(file)
+    setPendingCropBlob(null)
+    setCropSource(URL.createObjectURL(file))
+    setIsCropOpen(true)
+    event.target.value = ''
+  }
+
+  function handleApplyCrop(blob) {
+    setPendingCropBlob(blob)
+    setImagePreview(URL.createObjectURL(blob))
+    setIsCropOpen(false)
+    setFormMessage('Crop gambar siap disimpan.')
+  }
+
+  function handleCancelCrop() {
+    setIsCropOpen(false)
+
+    if (pendingOriginalFile) {
+      setPendingOriginalFile(null)
+      setPendingCropBlob(null)
+      setCropSource(originalImagePath || heroForm.image_path || '')
+      setImagePreview(heroForm.image_path || '')
+    }
+  }
+
+  function handleOpenCropEditor() {
+    const sourceImage = originalImagePath || heroForm.image_path
+
+    if (!sourceImage) {
+      setFormError('Pilih gambar terlebih dahulu.')
+      return
+    }
+
+    setCropSource(sourceImage)
+    setIsCropOpen(true)
+    setFormMessage('')
+    setFormError('')
+  }
+
+  async function uploadImage(file) {
     const formData = new FormData()
     formData.append('image', file)
 
-    setIsUploading(true)
+    const response = await apiRequest('/api/uploads/image', {
+      method: 'POST',
+      body: formData,
+      auth: true,
+    })
 
-    try {
-      const response = await apiRequest('/api/uploads/image', {
-        method: 'POST',
-        body: formData,
-        auth: true,
-      })
-
-      setHeroForm((current) => ({
-        ...current,
-        image_path: response.data.path,
-      }))
-
-      setFormMessage('Gambar berhasil diunggah.')
-    } catch (error) {
-      setFormError(error.message)
-    } finally {
-      setIsUploading(false)
-      event.target.value = ''
-    }
+    return response.data.path
   }
 
   async function handleServiceImageUpload(event) {
@@ -241,12 +298,49 @@ function AdminHome() {
       return
     }
 
+    if (isCropOpen) {
+      setFormError('Terapkan atau batalkan crop gambar terlebih dahulu.')
+      return
+    }
+
+    if (pendingOriginalFile && !pendingCropBlob) {
+      setFormError('Terapkan crop gambar terlebih dahulu.')
+      return
+    }
+
     setIsSaving(true)
 
     try {
+      let savedOriginalPath =
+        originalImagePath || heroForm.image_path || null
+
+      let savedImagePath = heroForm.image_path || null
+
+      if (pendingOriginalFile || pendingCropBlob) {
+        setIsUploading(true)
+
+        if (pendingOriginalFile) {
+          savedOriginalPath = await uploadImage(pendingOriginalFile)
+        }
+
+        if (pendingCropBlob) {
+          const croppedFile = new File(
+            [pendingCropBlob],
+            'hero-crop.webp',
+            { type: 'image/webp' }
+          )
+
+          savedImagePath = await uploadImage(croppedFile)
+        }
+      }
+
       const response = await apiRequest('/api/admin/home/hero', {
         method: 'PUT',
-        body: heroForm,
+        body: {
+          ...heroForm,
+          image_path: savedImagePath,
+          original_image_path: savedOriginalPath,
+        },
         auth: true,
       })
 
@@ -258,13 +352,25 @@ function AdminHome() {
         button_text: response.data.button_text || '',
         button_url: response.data.button_url || '/projects',
         image_path: response.data.image_path || '',
-        is_active: Boolean(response.data.is_active),
+        original_image_path: response.data.original_image_path || '',
       })
 
-      setFormMessage('Hero berhasil disimpan.')
+      const savedOriginal =
+        response.data.original_image_path ||
+        response.data.image_path ||
+        ''
+
+      setOriginalImagePath(savedOriginal)
+      setCropSource(savedOriginal)
+      setImagePreview(response.data.image_path || '')
+      setPendingOriginalFile(null)
+      setPendingCropBlob(null)
+
+      setFormMessage('Konten berhasil disimpan dan ditampilkan.')
     } catch (error) {
       setFormError(error.message)
     } finally {
+      setIsUploading(false)
       setIsSaving(false)
     }
   }
@@ -293,7 +399,15 @@ function AdminHome() {
       setHeroForm((current) => ({
         ...current,
         image_path: '',
+        original_image_path: '',
       }))
+
+      setOriginalImagePath('')
+      setCropSource('')
+      setImagePreview('')
+      setPendingOriginalFile(null)
+      setPendingCropBlob(null)
+      setIsCropOpen(false)
 
       setFormMessage('Gambar Hero berhasil dihapus. Gambar default akan digunakan.')
     } catch (error) {
@@ -328,10 +442,17 @@ function AdminHome() {
         button_text: '',
         button_url: '/projects',
         image_path: '',
-        is_active: true,
+        original_image_path: '',
       })
 
-      setFormMessage('Seluruh konten Hero berhasil dihapus. Konten default akan digunakan.')
+      setOriginalImagePath('')
+      setCropSource('')
+      setImagePreview('')
+      setPendingOriginalFile(null)
+      setPendingCropBlob(null)
+      setIsCropOpen(false)
+
+      setFormMessage('Konten admin di hapus, Tampilan automatis konten default')
     } catch (error) {
       setFormError(error.message)
     } finally {
@@ -354,14 +475,6 @@ function AdminHome() {
 
     if (!serviceForm.title.trim()) {
       setServiceError('Judul layanan wajib diisi.')
-      return
-    }
-
-    if (
-      !Number.isSafeInteger(serviceForm.display_order) ||
-      serviceForm.display_order < 0
-    ) {
-      setServiceError('Display Order harus berupa bilangan bulat minimal 0.')
       return
     }
 
@@ -395,7 +508,7 @@ function AdminHome() {
     }
   }
 
-  async function handleToggleServiceStatus(service) {
+  async function handleDeleteService(service) {
     if (
       updatingServiceId !== null ||
       isServiceSaving ||
@@ -404,12 +517,8 @@ function AdminHome() {
       return
     }
 
-    const isCurrentlyActive = Boolean(service.is_active)
-
     const confirmed = window.confirm(
-      isCurrentlyActive
-        ? `Nonaktifkan layanan "${service.title}"?`
-        : `Aktifkan kembali layanan "${service.title}"?`
+      `Hapus layanan "${service.title}" secara permanen?`
     )
 
     if (!confirmed) return
@@ -419,31 +528,12 @@ function AdminHome() {
     setServiceError('')
 
     try {
-      if (isCurrentlyActive) {
-        await apiRequest(`/api/admin/home/services/${service.id}`, {
-          method: 'DELETE',
-          auth: true,
-        })
-      } else {
-        await apiRequest(`/api/admin/home/services/${service.id}`, {
-          method: 'PUT',
-          body: {
-            title: service.title,
-            description: service.description || '',
-            image_path: service.image_path || null,
-            is_active: true,
-            display_order: Number(service.display_order),
-          },
-          auth: true,
-        })
-      }
+      await apiRequest(`/api/admin/home/services/${service.id}`, {
+        method: 'DELETE',
+        auth: true,
+      })
 
-      setServiceMessage(
-        isCurrentlyActive
-          ? 'Layanan berhasil dinonaktifkan.'
-          : 'Layanan berhasil diaktifkan.'
-      )
-
+      setServiceMessage('Layanan berhasil dihapus.')
       setRefreshKey((current) => current + 1)
     } catch (error) {
       setServiceError(error.message)
@@ -454,12 +544,6 @@ function AdminHome() {
 
   function handleRefresh() {
     setRefreshKey((current) => current + 1)
-  }
-
-  function renderStatus(isActive) {
-    return isActive
-      ? 'Active'
-      : 'Inactive'
   }
 
   return (
@@ -477,14 +561,6 @@ function AdminHome() {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={handleRefresh}
-          disabled={isLoading}
-          className="border border-white/20 px-5 py-3 text-sm transition hover:bg-white hover:text-black disabled:opacity-50"
-        >
-          {isLoading ? 'Loading...' : 'Refresh Data'}
-        </button>
       </div>
 
       {isLoading && (
@@ -521,7 +597,7 @@ function AdminHome() {
 
             <form
               onSubmit={handleSaveHero}
-              className="space-y-6 border border-white/10 bg-[#101010] p-6"
+              className="admin-card space-y-6 p-6"
             >
               <div>
                 <label className="mb-2 block text-sm text-neutral-300">
@@ -551,7 +627,6 @@ function AdminHome() {
                     title: event.target.value,
                   })}
                   maxLength={255}
-                  required
                   className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
                 />
               </div>
@@ -614,53 +689,56 @@ function AdminHome() {
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handleImageUpload}
-                  disabled={isUploading || isSaving}
+                  disabled={isSaving || isDeletingHero}
                   className="block w-full text-sm text-neutral-400 file:mr-4 file:border-0 file:bg-white file:px-4 file:py-2 file:font-semibold file:text-black disabled:opacity-50"
                 />
                 <p className="mt-2 text-xs text-neutral-500">
                   Format JPEG, PNG, atau WebP. Maksimal 5 MB.
+                  Rasio crop 16:9.
                 </p>
 
                 {isUploading && (
                   <p className="mt-3 text-sm text-neutral-400">
-                    Mengunggah gambar...
+                    Mengunggah gambar Hero...
                   </p>
                 )}
 
-                {heroForm.image_path && (
+                {(imagePreview || heroForm.image_path) && (
                   <div className="mt-4">
                     <p className="mb-2 text-xs text-neutral-500">
-                      Image Preview
+                      Image Preview (16:9)
                     </p>
-                    <img
-                      src={heroForm.image_path}
-                      alt="Hero preview"
-                      className="max-h-64 w-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleDeleteHeroImage}
-                      disabled={isDeletingHero || isSaving || isUploading}
-                      className="mt-3 border border-red-500 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      Delete Hero Image
-                    </button>
+
+                    <div className="aspect-[16/9] w-full overflow-hidden border border-white/10 bg-[#080808]">
+                      <img
+                        src={imagePreview || heroForm.image_path}
+                        alt="Hero preview"
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={handleOpenCropEditor}
+                        disabled={isSaving || isUploading || isDeletingHero}
+                        className="border border-white/30 px-4 py-2 text-sm transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Adjust Crop
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleDeleteHeroImage}
+                        disabled={isDeletingHero || isSaving || isUploading}
+                        className="border border-red-500 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        Delete Hero Image
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
-
-              <label className="flex items-center gap-3 text-sm text-neutral-300">
-                <input
-                  type="checkbox"
-                  checked={heroForm.is_active}
-                  onChange={(event) => setHeroForm({
-                    ...heroForm,
-                    is_active: event.target.checked,
-                  })}
-                  className="h-4 w-4 accent-white"
-                />
-                Aktifkan Hero Section
-              </label>
 
               {formMessage && (
                 <p className="text-sm text-green-400">{formMessage}</p>
@@ -679,16 +757,14 @@ function AdminHome() {
                   {isSaving ? 'Saving...' : 'Save Hero'}
                 </button>
 
-                {hero && (
-                  <button
-                    type="button"
-                    onClick={handleDeleteHero}
-                    disabled={isSaving || isUploading || isDeletingHero}
-                    className="border border-red-500 px-6 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {isDeletingHero ? 'Deleting...' : 'Delete Hero Content'}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={handleDeleteHero}
+                  disabled={isSaving || isUploading || isDeletingHero}
+                  className="border border-red-500 px-6 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isDeletingHero ? 'Deleting...' : 'Delete Hero Content'}
+                </button>
               </div>
             </form>
           </section>
@@ -727,7 +803,7 @@ function AdminHome() {
             {isServiceFormOpen && (
               <form
                 onSubmit={handleSaveService}
-                className="mb-8 space-y-5 border border-white/20 bg-[#101010] p-6"
+                className="admin-card mb-8 space-y-5 p-6"
               >
                 <div>
                   <h3 className="text-lg font-semibold">
@@ -811,44 +887,6 @@ function AdminHome() {
                   )}
                 </div>
 
-                <div>
-                  <label htmlFor="service-order" className="mb-2 block text-sm">
-                    Display Order
-                  </label>
-                  <input
-                    id="service-order"
-                    type="number"
-                    min="0"
-                    step="1"
-                    required
-                    value={serviceForm.display_order}
-                    onChange={(event) =>
-                      setServiceForm((current) => ({
-                        ...current,
-                        display_order: event.target.value === ''
-                          ? ''
-                          : Number(event.target.value),
-                      }))
-                    }
-                    className="w-full border border-white/20 bg-black px-4 py-3 text-sm outline-none focus:border-white"
-                  />
-                </div>
-
-                <label className="flex items-center gap-3 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={serviceForm.is_active}
-                    onChange={(event) =>
-                      setServiceForm((current) => ({
-                        ...current,
-                        is_active: event.target.checked,
-                      }))
-                    }
-                    className="h-4 w-4 accent-white"
-                  />
-                  Active
-                </label>
-
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="submit"
@@ -875,7 +913,7 @@ function AdminHome() {
                 {services.map((service) => (
                   <div
                     key={service.id}
-                    className="border border-white/10 bg-[#101010] p-6"
+                    className="admin-card min-w-0 p-6"
                   >
                     {service.image_path && (
                       <img
@@ -887,14 +925,9 @@ function AdminHome() {
 
                     <h3 className="font-semibold">{service.title}</h3>
 
-                    <p className="mt-2 text-sm text-neutral-400">
+                    <p className="mt-2 max-w-full break-words [overflow-wrap:anywhere] text-sm text-neutral-400">
                       {service.description || 'No description'}
                     </p>
-
-                    <div className="mt-5 flex justify-between text-xs text-neutral-500">
-                      <span>Order: {service.display_order}</span>
-                      <span>{renderStatus(service.is_active)}</span>
-                    </div>
 
                     <div className="mt-5 flex flex-wrap gap-3">
                       <button
@@ -908,15 +941,11 @@ function AdminHome() {
 
                       <button
                         type="button"
-                        onClick={() => handleToggleServiceStatus(service)}
+                        onClick={() => handleDeleteService(service)}
                         disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                        className="border border-white/30 px-4 py-2 text-xs transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border border-red-500/50 px-4 py-2 text-xs text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {updatingServiceId === service.id
-                          ? 'Updating...'
-                          : service.is_active
-                            ? 'Deactivate'
-                            : 'Activate'}
+                        {updatingServiceId === service.id ? 'Deleting...' : 'Delete'}
                       </button>
                     </div>
                   </div>
@@ -931,6 +960,14 @@ function AdminHome() {
             )}
           </section>
         </div>
+      )}
+
+      {isCropOpen && cropSource && (
+        <ImageCropEditor
+          src={cropSource}
+          onApply={handleApplyCrop}
+          onCancel={handleCancelCrop}
+        />
       )}
     </div>
   )

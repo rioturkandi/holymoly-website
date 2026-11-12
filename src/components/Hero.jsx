@@ -29,18 +29,20 @@ function Hero({ content }) {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-start overflow-hidden bg-[#080808] bg-no-repeat px-6 pb-20 pt-[104px] sm:pt-[112px] md:pt-[120px]"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: '150% auto',
-        backgroundPosition: '100% 50%',
-      }}
+      className="relative flex min-h-screen items-start overflow-hidden bg-[#080808] pb-20 pt-[104px] sm:pt-[112px] md:pt-[120px]"
     >
+      {/* Hero image: memenuhi area Hero tanpa mengubah proporsi gambar */}
+      <img
+        src={backgroundImage}
+        alt="HOLYMOLY automotive"
+        className="absolute inset-0 h-full w-full object-cover object-center"
+      />
+
       {/* Background overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/20" />
 
       {/* Hero content */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl">
+      <div className="relative z-10 page-container">
         <div className="max-w-2xl">
           <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
             {eyebrow}
@@ -76,7 +78,7 @@ function Hero({ content }) {
       </div>
 
       {/* Bottom right information */}
-      <div className="absolute bottom-8 right-6 hidden text-right md:block">
+      <div className="absolute inset-x-0 bottom-8 page-container hidden text-right md:block">
         <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-500">
           HOLYMOLY Automotive
         </p>

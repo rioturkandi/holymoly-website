@@ -1,9 +1,6 @@
 function Services({ content, services = [] }) {
-  // Mengambil konten pengantar Services dari database
   const eyebrow = content?.eyebrow || 'What We Do'
-
   const title = content?.title || 'Our Services.'
-
   const description =
     content?.description ||
     'Explore automotive customization and services offered by HOLYMOLY.'
@@ -11,11 +8,11 @@ function Services({ content, services = [] }) {
   return (
     <section
       id="services"
-      className="bg-[#191919] section-spacing"
+      className="section-spacing overflow-hidden bg-[#191919]"
     >
       <div className="page-container">
         {/* Services heading */}
-        <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-10 md:flex-row md:items-end md:gap-12 md:pb-12">
           <div>
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
               {eyebrow}
@@ -32,50 +29,52 @@ function Services({ content, services = [] }) {
         </div>
 
         {/* Services list */}
-        <div className="mt-12 border-t border-white/10 md:mt-16">
+        <div className="mt-5">
           {services.length > 0 ? (
             services.map((service, index) => (
               <article
                 key={service.id}
-                className="flex items-center justify-between gap-4 border-b border-white/10 py-6 md:py-8"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-white/[0.08] py-6 sm:gap-6 sm:py-8 md:gap-8"
               >
-                <div className="flex items-center gap-5">
-                  {service.image_path && (
+                {service.image_path ? (
+                  <div className="h-20 w-20 shrink-0 overflow-hidden rounded-sm bg-[#242424] sm:h-24 sm:w-28 md:h-28 md:w-36">
                     <img
                       src={service.image_path}
                       alt={service.title}
                       loading="lazy"
-                      className="h-20 w-20 shrink-0 object-cover md:h-24 md:w-24"
+                      className="h-full w-full object-cover"
                     />
-                  )}
-
-                  <div>
-                    <h3 className="text-xl font-bold uppercase text-white md:text-3xl">
-                      {service.title}
-                    </h3>
-
-                    {service.description && (
-                      <p className="mt-2 max-w-2xl text-sm leading-7 text-neutral-400">
-                        {service.description}
-                      </p>
-                    )}
                   </div>
+                ) : (
+                  <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-sm bg-gradient-to-br from-[#292929] to-[#171717] sm:h-24 sm:w-28 md:h-28 md:w-36">
+                    <span className="text-[9px] font-bold tracking-[0.2em] text-neutral-600">
+                      HOLYMOLY
+                    </span>
+                  </div>
+                )}
+
+                <div className="min-w-0 py-1">
+                  <h3 className="break-words text-lg font-bold uppercase leading-snug text-white sm:text-xl md:text-2xl">
+                    {service.title}
+                  </h3>
+
+                  {service.description && (
+                    <p className="mt-2 max-w-2xl break-words text-xs leading-6 text-neutral-400 sm:text-sm sm:leading-7">
+                      {service.description}
+                    </p>
+                  )}
                 </div>
 
-                <span className="shrink-0 text-xs text-neutral-500">
+                <span className="self-start pt-1 text-[10px] font-semibold tracking-[0.15em] text-neutral-500 sm:text-xs">
                   {String(index + 1).padStart(2, '0')}
                 </span>
               </article>
             ))
           ) : (
-            <div className="flex items-center justify-between gap-4 border-b border-white/10 py-6 md:py-8">
-              <h3 className="text-xl font-bold uppercase text-white md:text-3xl">
+            <div className="border-b border-white/[0.08] py-8">
+              <h3 className="text-xl font-bold uppercase text-white md:text-2xl">
                 Service Information
               </h3>
-
-              <span className="text-xs text-neutral-500">
-                01
-              </span>
             </div>
           )}
         </div>

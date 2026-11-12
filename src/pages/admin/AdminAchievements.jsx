@@ -235,7 +235,7 @@ function AdminAchievements() {
         </p>
       </div>
 
-      <section className="mb-12 rounded-lg border border-white/10 bg-[#101010] p-5 sm:p-7">
+      <section className="admin-card mb-12 p-5 sm:p-7">
         <div className="mb-7">
           <h2 className="text-xl font-bold uppercase">
             {editingId ? 'Edit Achievement' : 'Add Achievement'}
@@ -412,7 +412,7 @@ function AdminAchievements() {
         {isLoading ? (
           <p className="text-sm text-neutral-500">Loading achievements...</p>
         ) : achievements.length === 0 ? (
-          <p className="rounded border border-white/10 bg-[#101010] p-6 text-sm text-neutral-500">
+          <p className="admin-card p-6 text-sm text-neutral-500">
             Belum ada data penghargaan.
           </p>
         ) : (
@@ -420,7 +420,7 @@ function AdminAchievements() {
             {achievements.map((achievement) => (
               <article
                 key={achievement.id}
-                className="overflow-hidden rounded-lg border border-white/10 bg-[#101010]"
+                className="admin-card overflow-hidden"
               >
                 <div className="grid grid-cols-2 gap-px bg-white/10">
                   <div className="flex h-40 items-center justify-center bg-[#080808]">
