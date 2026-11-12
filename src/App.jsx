@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 
 import Navbar from './components/Navbar'
@@ -37,6 +38,55 @@ function AdminPlaceholder({ title }) {
 function AppContent() {
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin')
+
+  // Satu koneksi SSE untuk halaman website publik.
+  useEffect(() => {
+    if (isAdminRoute) return
+
+    const eventSource = new EventSource('/api/events')
+
+    const affectedPaths = {
+      home: (path) => path === '/',
+      about: (path) => path === '/about',
+      projects: (path) =>
+        path === '/' ||
+        path === '/projects' ||
+        path.startsWith('/projects/'),
+      achievements: (path) =>
+        path === '/' || path === '/achievements',
+      'media-coverage': (path) =>
+        path === '/' || path === '/achievements',
+      workshop: (path) =>
+        path === '/' || path === '/about',
+    }
+
+    function handleContentUpdate(event) {
+      try {
+        const { section } = JSON.parse(event.data)
+        const matchesPath = affectedPaths[section]
+
+        if (matchesPath && matchesPath(location.pathname)) {
+          window.location.reload()
+        }
+      } catch (error) {
+        console.error('Event pembaruan konten tidak valid:', error)
+      }
+    }
+
+    eventSource.addEventListener(
+      'content-updated',
+      handleContentUpdate
+    )
+
+    return () => {
+      eventSource.removeEventListener(
+        'content-updated',
+        handleContentUpdate
+      )
+      eventSource.close()
+    }
+  }, [isAdminRoute, location.pathname])
+
 
   return (
     <>

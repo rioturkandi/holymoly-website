@@ -9,6 +9,7 @@ dotenv.config({
 const express = require('express')
 const helmet = require('helmet')
 const db = require('./config/database')
+const { handleEventStream, publishContentUpdate } = require('./services/event-stream')
 
 const homeRoutes = require('./routes/home.routes')
 const adminHomeRoutes = require('./routes/admin.home.routes')
@@ -53,6 +54,49 @@ app.use(
     },
   })
 )
+
+
+// Endpoint SSE untuk pembaruan konten website publik.
+app.get('/api/events', handleEventStream)
+
+// Mengirim event hanya setelah operasi mutasi Admin berhasil.
+app.use('/api/admin', (req, res, next) => {
+  const allowedMethods = ['POST', 'PUT', 'PATCH', 'DELETE']
+
+  if (!allowedMethods.includes(req.method)) {
+    return next()
+  }
+
+  const section = req.path.split('/').filter(Boolean)[0]
+  const allowedSections = new Set([
+    'home',
+    'about',
+    'projects',
+    'achievements',
+    'media-coverage',
+    'workshop',
+  ])
+
+  if (!allowedSections.has(section)) {
+    return next()
+  }
+
+  const originalJson = res.json
+
+  res.json = function (body) {
+    if (
+      this.statusCode >= 200 &&
+      this.statusCode < 300 &&
+      body?.success !== false
+    ) {
+      publishContentUpdate(section)
+    }
+
+    return originalJson.call(this, body)
+  }
+
+  next()
+})
 
 // Menggunakan router untuk halaman Home
 app.use('/api/home', homeRoutes)
