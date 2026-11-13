@@ -41,14 +41,14 @@ function AdminLogin() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 py-16">
+    <main className="flex min-h-screen items-center justify-center bg-[#100C08] px-6 py-16">
       <div className="w-full max-w-md">
         <div className="mb-10 text-center">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
             HOLYMOLY Administration
           </p>
 
-          <h1 className="text-4xl font-bold uppercase leading-tight text-white">
+          <h1 className="text-4xl font-bold uppercase leading-tight text-[#E5E7EB]">
             Admin Login.
           </h1>
 

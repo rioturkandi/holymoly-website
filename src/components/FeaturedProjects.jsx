@@ -37,24 +37,24 @@ function FeaturedProjects() {
   }, [])
 
   return (
-    <section className="bg-[#080808] section-spacing">
+    <section className="bg-[#100C08] section-spacing">
       <div className="page-container">
 
         {/* Section Heading */}
         <div className="mb-12 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               Our Selected Works
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               Featured
               <br />
               Projects.
             </h2>
           </div>
 
-          <p className="max-w-sm text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="max-w-sm text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             A closer look at selected automotive projects.
             Every build has its own character and story.
           </p>

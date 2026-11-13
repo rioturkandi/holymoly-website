@@ -215,7 +215,7 @@ function AdminAchievements() {
   }
 
   const inputClass =
-    'mt-2 w-full rounded border border-white/10 bg-[#080808] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
+    'mt-2 w-full rounded border border-white/10 bg-[#100C08] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
 
   const labelClass = 'text-xs font-medium uppercase tracking-wider text-neutral-400'
 
@@ -226,7 +226,7 @@ function AdminAchievements() {
           Content Management
         </p>
 
-        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
           Achievements.
         </h1>
 
@@ -237,7 +237,7 @@ function AdminAchievements() {
 
       <section className="admin-card mb-12 p-5 sm:p-7">
         <div className="mb-7">
-          <h2 className="text-xl font-bold uppercase">
+          <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
             {editingId ? 'Edit Achievement' : 'Add Achievement'}
           </h2>
 
@@ -324,7 +324,7 @@ function AdminAchievements() {
               <div key={imageField.field}>
                 <p className={labelClass}>{imageField.label}</p>
 
-                <div className="mt-2 flex min-h-48 items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#080808]">
+                <div className="mt-2 flex min-h-48 items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08]">
                   {form[imageField.field] ? (
                     <img
                       src={form[imageField.field]}
@@ -401,7 +401,7 @@ function AdminAchievements() {
 
       <section>
         <div className="mb-6">
-          <h2 className="text-xl font-bold uppercase">
+          <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
             Achievement Records
           </h2>
           <p className="mt-1 text-xs text-neutral-500">
@@ -423,7 +423,7 @@ function AdminAchievements() {
                 className="admin-card overflow-hidden"
               >
                 <div className="grid grid-cols-2 gap-px bg-white/10">
-                  <div className="flex h-40 items-center justify-center bg-[#080808]">
+                  <div className="flex h-40 items-center justify-center bg-[#100C08]">
                     {achievement.trophy_image_path ? (
                       <img
                         src={achievement.trophy_image_path}
@@ -437,7 +437,7 @@ function AdminAchievements() {
                     )}
                   </div>
 
-                  <div className="flex h-40 items-center justify-center bg-[#080808]">
+                  <div className="flex h-40 items-center justify-center bg-[#100C08]">
                     {achievement.vehicle_image_path ? (
                       <img
                         src={achievement.vehicle_image_path}
@@ -453,7 +453,7 @@ function AdminAchievements() {
                 </div>
 
                 <div className="p-5">
-                  <h3 className="text-lg font-bold uppercase">
+                  <h3 className="text-lg font-bold uppercase text-[#E5E7EB]">
                     {achievement.title}
                   </h3>
 

@@ -53,7 +53,7 @@ function ImageCropEditor({ src, onApply, onCancel }) {
       <div className="my-auto w-full max-w-5xl rounded-lg border border-white/15 bg-[#111] p-5">
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold uppercase text-white">
+            <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
               Adjust Image
             </h2>
             <p className="mt-1 text-sm text-white/50">
@@ -116,7 +116,7 @@ function ImageCropEditor({ src, onApply, onCancel }) {
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-white">
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#E5E7EB]">
               Live Preview
             </h3>
 

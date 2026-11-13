@@ -35,7 +35,7 @@ function AdminOverview() {
         <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
           Administration
         </p>
-        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl">
+        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl text-[#E5E7EB]">
           Overview.
         </h1>
         <p className="mt-3 text-sm text-neutral-400">
@@ -50,7 +50,7 @@ function AdminOverview() {
             to={section.path}
             className="admin-card block p-6 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           >
-            <h2 className="text-lg font-semibold">{section.title}</h2>
+            <h2 className="text-lg font-semibold text-[#E5E7EB]">{section.title}</h2>
             <p className="mt-2 text-sm text-neutral-400">
               {section.description}
             </p>

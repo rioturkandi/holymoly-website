@@ -1,4 +1,4 @@
-function Services({ content, services = [] }) {
+function Services({ content, services = [], isLoading = false, hasError = false }) {
   const eyebrow = content?.eyebrow || 'What We Do'
   const title = content?.title || 'Our Services.'
   const description =
@@ -11,19 +11,40 @@ function Services({ content, services = [] }) {
       className="section-spacing overflow-hidden bg-[#191919]"
     >
       <div className="page-container">
+        {isLoading ? (
+          <div aria-hidden="true" className="animate-pulse">
+            <div className="h-3 w-28 rounded bg-[#E5E7EB]/20" />
+            <div className="mt-5 h-12 max-w-sm rounded bg-[#E5E7EB]/20" />
+            <div className="mt-5 h-4 max-w-md rounded bg-[#E5E7EB]/10" />
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="flex items-center gap-6 border-b border-white/[0.08] py-8">
+                <div className="h-20 w-20 shrink-0 rounded-sm bg-[#E5E7EB]/10 md:h-28 md:w-36" />
+                <div className="flex-1">
+                  <div className="h-5 max-w-xs rounded bg-[#E5E7EB]/20" />
+                  <div className="mt-3 h-3 max-w-md rounded bg-[#E5E7EB]/10" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : hasError ? (
+          <p className="text-sm text-[#E5E7EB]/70">
+            Konten layanan sementara tidak dapat dimuat. Silakan coba lagi.
+          </p>
+        ) : (
+          <>
         {/* Services heading */}
         <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-10 md:flex-row md:items-end md:gap-12 md:pb-12">
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               {eyebrow}
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               {title}
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="max-w-md text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             {description}
           </p>
         </div>
@@ -54,12 +75,12 @@ function Services({ content, services = [] }) {
                 )}
 
                 <div className="min-w-0 py-1">
-                  <h3 className="break-words text-lg font-bold uppercase leading-snug text-white sm:text-xl md:text-2xl">
+                  <h3 className="break-words text-lg font-bold uppercase leading-snug text-[#E5E7EB] sm:text-xl md:text-2xl">
                     {service.title}
                   </h3>
 
                   {service.description && (
-                    <p className="mt-2 max-w-2xl break-words text-xs leading-6 text-neutral-400 sm:text-sm sm:leading-7">
+                    <p className="mt-2 max-w-2xl break-words text-xs leading-6 text-[#E5E7EB]/80 sm:text-sm sm:leading-7">
                       {service.description}
                     </p>
                   )}
@@ -72,12 +93,14 @@ function Services({ content, services = [] }) {
             ))
           ) : (
             <div className="border-b border-white/[0.08] py-8">
-              <h3 className="text-xl font-bold uppercase text-white md:text-2xl">
+              <h3 className="text-xl font-bold uppercase text-[#E5E7EB] md:text-2xl">
                 Service Information
               </h3>
             </div>
           )}
         </div>
+          </>
+          )}
       </div>
     </section>
   )

@@ -31,3 +31,8 @@ backend/uploads/
 .env.*
 !.env.example
 !.env.*.example
+
+# Local backup and damaged copies
+*.backup*
+*.damaged-copy
+*-backup-*/

@@ -553,7 +553,7 @@ function AdminHome() {
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
             Content Management
           </p>
-          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl text-[#E5E7EB]">
             Home.
           </h1>
           <p className="mt-3 text-sm text-neutral-400">
@@ -591,7 +591,7 @@ function AdminHome() {
         <div className="mt-10 space-y-10">
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Hero Section</h2>
+              <h2 className="text-xl font-semibold text-[#E5E7EB]">Hero Section</h2>
               <span className="text-xs text-neutral-500">Homepage</span>
             </div>
 
@@ -611,7 +611,7 @@ function AdminHome() {
                     eyebrow: event.target.value,
                   })}
                   maxLength={150}
-                  className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
                 />
               </div>
 
@@ -627,7 +627,7 @@ function AdminHome() {
                     title: event.target.value,
                   })}
                   maxLength={255}
-                  className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
                 />
               </div>
 
@@ -642,7 +642,7 @@ function AdminHome() {
                     description: event.target.value,
                   })}
                   rows={4}
-                  className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
                 />
               </div>
 
@@ -659,7 +659,7 @@ function AdminHome() {
                       button_text: event.target.value,
                     })}
                     maxLength={100}
-                    className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
                   />
                 </div>
 
@@ -676,7 +676,7 @@ function AdminHome() {
                     })}
                     maxLength={500}
                     placeholder="/projects"
-                    className="w-full border border-white/20 bg-[#080808] px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
                   />
                 </div>
               </div>
@@ -709,7 +709,7 @@ function AdminHome() {
                       Image Preview (16:9)
                     </p>
 
-                    <div className="aspect-[16/9] w-full overflow-hidden border border-white/10 bg-[#080808]">
+                    <div className="aspect-[16/9] w-full overflow-hidden border border-white/10 bg-[#100C08]">
                       <img
                         src={imagePreview || heroForm.image_path}
                         alt="Hero preview"
@@ -772,7 +772,7 @@ function AdminHome() {
           <section>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold">Services</h2>
+                <h2 className="text-xl font-semibold text-[#E5E7EB]">Services</h2>
                 <p className="mt-1 text-xs text-neutral-500">
                   {services.length} items
                 </p>
@@ -806,7 +806,7 @@ function AdminHome() {
                 className="admin-card mb-8 space-y-5 p-6"
               >
                 <div>
-                  <h3 className="text-lg font-semibold">
+                  <h3 className="text-lg font-semibold text-[#E5E7EB]">
                     {editingServiceId !== null ? 'Edit Service' : 'Add New Service'}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-500">
@@ -923,7 +923,7 @@ function AdminHome() {
                       />
                     )}
 
-                    <h3 className="font-semibold">{service.title}</h3>
+                    <h3 className="font-semibold text-[#E5E7EB]">{service.title}</h3>
 
                     <p className="mt-2 max-w-full break-words [overflow-wrap:anywhere] text-sm text-neutral-400">
                       {service.description || 'No description'}

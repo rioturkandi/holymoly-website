@@ -175,7 +175,7 @@ function AdminAbout() {
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
             Content Management
           </p>
-          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
             About.
           </h1>
           <p className="mt-3 text-sm text-neutral-400">
@@ -223,7 +223,7 @@ function AdminAbout() {
                 className="admin-card p-5 sm:p-7"
               >
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-xl font-bold uppercase">
+                  <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
                     {section.label}
                   </h2>
 

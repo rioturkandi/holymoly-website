@@ -55,7 +55,7 @@ function ProtectedRoute({ children }) {
 
   if (isChecking) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#080808] text-sm text-neutral-400">
+      <main className="flex min-h-screen items-center justify-center bg-[#100C08] text-sm text-neutral-400">
         Verifying administrator session...
       </main>
     )
@@ -63,7 +63,7 @@ function ProtectedRoute({ children }) {
 
   if (errorMessage) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 text-center text-sm text-red-400">
+      <main className="flex min-h-screen items-center justify-center bg-[#100C08] px-6 text-center text-sm text-red-400">
         {errorMessage}
       </main>
     )

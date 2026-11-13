@@ -14,8 +14,12 @@ function Projects() {
       try {
         const response = await apiRequest('/api/projects')
 
+        if (!response?.success || !Array.isArray(response?.data)) {
+          throw new Error('Format respons API Projects tidak valid.')
+        }
+
         if (isMounted) {
-          setProjects(response.data || [])
+          setProjects(response.data)
         }
       } catch (error) {
         if (isMounted) {
@@ -36,20 +40,20 @@ function Projects() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#080808] page-top-spacing lg:pt-28 pb-24 text-[#F2F2F2]">
+    <main className="min-h-screen bg-[#100C08] page-top-spacing lg:pt-28 pb-24 text-[#F2F2F2]">
       <div className="page-container">
 
         {/* PAGE INTRODUCTION */}
         <div className="mb-8 md:mb-10">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             Selected Works
           </p>
 
-          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
             Our<br />Projects.
           </h1>
 
-          <p className="mt-8 max-w-xl text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="mt-8 max-w-xl text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             Every project has its own character and story.
             Explore the work and discover the details behind
             each automotive build.
@@ -58,9 +62,25 @@ function Projects() {
 
         {/* PROJECT GALLERY */}
         {isLoading ? (
-          <p className="text-sm text-neutral-500">
-            Loading projects...
-          </p>
+          <div
+            aria-hidden="true"
+            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="animate-pulse overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4"
+              >
+                <div className="mb-4 h-7 w-3/4 rounded bg-[#E5E7EB]/20" />
+                <div className="aspect-square bg-[#E5E7EB]/10" />
+                <div className="mt-5 h-3 w-full rounded bg-[#E5E7EB]/10" />
+                <div className="mt-3 h-3 w-2/3 rounded bg-[#E5E7EB]/10" />
+                <div className="mt-6 border-b border-white/10 pb-4">
+                  <div className="h-3 w-1/3 rounded bg-[#E5E7EB]/10" />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : error ? (
           <p className="text-sm text-red-400">
             {error}
@@ -70,7 +90,7 @@ function Projects() {
             No projects available yet.
           </p>
         ) : (
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="content-fade-in grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project, index) => (
               <Link
                 key={project.id}
@@ -78,7 +98,7 @@ function Projects() {
                 className="group block min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
               >
                 {/* PROJECT TITLE */}
-                <h2 className="mb-4 break-words text-xl font-bold uppercase text-white transition-colors group-hover:text-neutral-300 md:text-2xl">
+                <h2 className="mb-4 break-words text-xl font-bold uppercase text-[#E5E7EB] transition-colors group-hover:text-[#E5E7EB] md:text-2xl">
                   {project.vehicle_name}
                 </h2>
 
@@ -99,7 +119,7 @@ function Projects() {
 
                 {/* PROJECT DESCRIPTION */}
                 <div className="mt-4">
-                  <p className="w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] line-clamp-3 text-sm leading-7 text-neutral-400">
+                  <p className="w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] line-clamp-3 text-sm leading-7 text-[#E5E7EB]/80">
                     {project.description}
                   </p>
 

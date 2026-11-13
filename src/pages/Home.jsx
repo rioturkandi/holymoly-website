@@ -13,6 +13,8 @@ import Services from '../components/Services'
 function Home() {
   // Menyimpan data Home yang diterima dari backend
   const [homeData, setHomeData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
   // Mengambil data Home ketika halaman pertama kali dibuka
   useEffect(() => {
@@ -33,6 +35,14 @@ function Home() {
         }
       } catch (error) {
         console.error('Gagal memuat konten Home:', error)
+
+        if (isMounted) {
+          setHasError(true)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
       }
     }
 
@@ -59,11 +69,17 @@ function Home() {
 
   return (
     <main>
-      <Hero content={heroContent} />
+      <Hero
+        content={heroContent}
+        isLoading={isLoading}
+        hasError={hasError}
+      />
 
       <Services
         content={servicesContent}
         services={services}
+        isLoading={isLoading}
+        hasError={hasError}
       />
 
       <FeaturedProjects />

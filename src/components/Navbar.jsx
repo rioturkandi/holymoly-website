@@ -17,28 +17,29 @@ function Navbar() {
 
   return (
     <>
-      <header className="fixed left-1/2 top-5 z-50 w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2">
-      <nav className="flex items-center justify-between rounded-full border border-white/10 bg-neutral-950/70 px-6 py-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-8">
+      <header className="fixed left-1/2 top-5 z-50 hidden w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 md:block">
+      <nav className="flex items-center justify-between rounded-full border border-white/10 bg-[#E5E7EB]/45 px-5 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-6">
         <Link
           to="/"
           onClick={closeMenu}
-          className="text-xl font-black tracking-[0.08em] text-white transition-opacity duration-300 hover:opacity-75 sm:text-2xl"
+          className="text-lg font-black tracking-[0.08em] text-[#100C08] transition-opacity duration-300 hover:opacity-75 sm:text-xl"
         >
-          HOLYMOLY<span className="text-neutral-500">.</span>
+          HOLYMOLY<span className="text-[#45494B]">.</span>
         </Link>
 
-        <div className="hidden items-center gap-5 lg:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.label}
               to={link.to}
               className={({ isActive }) =>
-                `relative isolate rounded-full px-2 last:pr-0 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-white/20 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
+                `relative isolate inline-flex h-[32px] items-center rounded-full px-[16px] font-medium uppercase leading-none transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-[#45494B]/20 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
                   isActive
-                    ? 'text-white'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#11212D] text-[#E5E7EB] shadow-[0_4px_8px_rgba(17,33,45,0.45)]'
+                    : 'text-[#100C08]'
                 }`
               }
+              style={{ fontSize: '12px', letterSpacing: '0.08em', fontFamily: 'Inter Navbar', fontWeight: 600 }}
             >
               {link.label}
             </NavLink>
@@ -51,22 +52,22 @@ function Navbar() {
           aria-label={isMenuOpen ? 'Tutup menu' : 'Buka menu'}
           aria-expanded={isMenuOpen}
           aria-controls="tablet-navigation"
-          className="hidden h-10 w-10 flex-col items-center justify-center gap-1.5 md:flex lg:hidden"
+          className="hidden h-9 w-9 flex-col items-center justify-center gap-1.5 md:flex lg:hidden"
         >
           <span
-            className={`h-0.5 w-6 bg-white transition-transform ${
+            className={`h-0.5 w-5 bg-[#100C08] transition-transform ${
               isMenuOpen ? 'translate-y-2 rotate-45' : ''
             }`}
           />
 
           <span
-            className={`h-0.5 w-6 bg-white transition-opacity ${
+            className={`h-0.5 w-5 bg-[#100C08] transition-opacity ${
               isMenuOpen ? 'opacity-0' : ''
             }`}
           />
 
           <span
-            className={`h-0.5 w-6 bg-white transition-transform ${
+            className={`h-0.5 w-5 bg-[#100C08] transition-transform ${
               isMenuOpen ? '-translate-y-2 -rotate-45' : ''
             }`}
           />
@@ -76,7 +77,7 @@ function Navbar() {
       {isMenuOpen && (
         <div
           id="tablet-navigation"
-          className="mt-3 hidden rounded-2xl border border-white/10 bg-neutral-950/90 px-6 py-6 shadow-[0_16px_45px_rgba(0,0,0,0.4)] backdrop-blur-2xl md:block lg:hidden"
+          className="mt-3 hidden rounded-2xl border border-white/10 bg-[#E5E7EB]/45 px-6 py-6 shadow-[0_16px_45px_rgba(0,0,0,0.4)] backdrop-blur-2xl md:block lg:hidden"
         >
           <div className="flex flex-col gap-6">
             {navLinks.map((link) => (
@@ -85,12 +86,13 @@ function Navbar() {
                 to={link.to}
                 onClick={closeMenu}
                 className={({ isActive }) =>
-                  `relative isolate rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-white/15 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
+                  `relative isolate rounded-full px-4 py-2.5 text-xs font-medium uppercase tracking-[0.18em] transition-colors duration-300 before:pointer-events-none before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-[#45494B]/15 before:opacity-0 before:blur-lg before:transition-opacity before:duration-300 hover:before:opacity-100 ${
                     isActive
                       ? 'text-white'
-                      : 'text-neutral-400 hover:text-white'
+                      : 'text-[#100C08]'
                   }`
                 }
+                style={{ fontFamily: 'Inter Navbar', fontWeight: 600 }}
               >
                 {link.label}
               </NavLink>
@@ -102,7 +104,7 @@ function Navbar() {
 
       <nav
         aria-label="Mobile navigation"
-        className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-around rounded-full border border-white/10 bg-neutral-950/90 px-2 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden"
+        className="fixed inset-x-0 bottom-4 z-50 mx-auto flex w-[calc(100%-2rem)] max-w-md items-center justify-around rounded-full border border-white/10 bg-[#E5E7EB]/45 px-2 py-1 shadow-[0_12px_40px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-all duration-500 ease-in-out md:hidden"
       >
         {navLinks.map((link) => (
           <NavLink
@@ -110,8 +112,10 @@ function Navbar() {
             to={link.to}
             onClick={closeMenu}
             className={({ isActive }) =>
-              `flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl py-1 transition-all duration-500 ease-in-out ${
-                isActive ? 'text-white' : 'text-neutral-500 hover:text-white'
+              `flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-full py-0.5 transition-all duration-300 ease-out ${
+                isActive
+                  ? 'bg-[#11212D] text-[#E5E7EB] shadow-[0_4px_8px_rgba(17,33,45,0.45)]'
+                  : 'bg-transparent text-[#100C08]'
               }`
             }
           >
@@ -130,7 +134,10 @@ function Navbar() {
               {link.label === 'Projects' && <path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z" />}
               {link.label === 'Achievements' && <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z" />}
             </svg>
-            <span className="text-[9px] font-semibold uppercase tracking-[0.12em] transition-all duration-500 ease-in-out">
+            <span
+              className="text-[9px] font-medium uppercase tracking-[0.12em] transition-all duration-500 ease-in-out"
+              style={{ fontFamily: 'Inter Navbar', fontWeight: 600 }}
+            >
               {link.label}
             </span>
           </NavLink>

@@ -32,8 +32,12 @@ function Achievements() {
       try {
         const response = await apiRequest('/api/achievements')
 
+        if (!response?.success || !Array.isArray(response?.data)) {
+          throw new Error('Format respons API Achievements tidak valid.')
+        }
+
         if (isMounted) {
-          setAchievements(response.data || [])
+          setAchievements(response.data)
         }
       } catch (error) {
         if (isMounted) {
@@ -50,8 +54,12 @@ function Achievements() {
       try {
         const response = await apiRequest('/api/media-coverage')
 
+        if (!response?.success || !Array.isArray(response?.data)) {
+          throw new Error('Format respons API Media Coverage tidak valid.')
+        }
+
         if (isMounted) {
-          setMediaCoverage(response.data || [])
+          setMediaCoverage(response.data)
         }
       } catch (error) {
         if (isMounted) {
@@ -73,20 +81,20 @@ function Achievements() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing lg:pt-28">
+    <main className="min-h-screen bg-[#100C08] pb-24 pt-0 text-[#F2F2F2] page-top-spacing lg:pt-28">
       <div className="page-container">
 
         {/* PAGE INTRODUCTION */}
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+          <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             Recognition
           </p>
 
-          <h1 className="mt-5 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+          <h1 className="mt-5 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
             Achievements.
           </h1>
 
-          <p className="mt-8 max-w-xl text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="mt-8 max-w-xl text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             Penghargaan, pencapaian, dan publikasi HOLYMOLY.
           </p>
         </div>
@@ -95,9 +103,20 @@ function Achievements() {
         <section className="mt-10">
 
           {isLoading && (
-            <p className="py-12 text-center text-sm text-neutral-500">
-              Memuat data penghargaan...
-            </p>
+            <div aria-hidden="true" className="animate-pulse grid gap-8 md:grid-cols-2">
+              {[1, 2].map((item) => (
+                <div key={item} className="overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="aspect-[4/3] rounded-lg bg-[#E5E7EB]/10" />
+                    <div className="aspect-[4/3] rounded-lg bg-[#E5E7EB]/10" />
+                  </div>
+                  <div className="mt-6 h-3 w-2/3 rounded bg-[#E5E7EB]/20" />
+                  <div className="mt-4 h-6 w-4/5 rounded bg-[#E5E7EB]/20" />
+                  <div className="mt-5 h-3 w-full rounded bg-[#E5E7EB]/10" />
+                  <div className="mt-3 h-3 w-3/4 rounded bg-[#E5E7EB]/10" />
+                </div>
+              ))}
+            </div>
           )}
 
           {!isLoading && error && (
@@ -107,12 +126,12 @@ function Achievements() {
           )}
 
           {!isLoading && !error && achievements.length === 0 && (
-            <div className="rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
+            <div className="content-fade-in rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
                 Recognition
               </p>
 
-              <h2 className="mt-4 text-xl font-bold uppercase text-white">
+              <h2 className="mt-4 text-xl font-bold uppercase text-[#E5E7EB]">
                 No Achievements Yet.
               </h2>
 
@@ -123,7 +142,7 @@ function Achievements() {
           )}
 
           {!isLoading && !error && achievements.length > 0 && (
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="content-fade-in grid gap-8 md:grid-cols-2">
               {achievements.map((achievement) => (
                 <article
                   key={achievement.id}
@@ -162,12 +181,12 @@ function Achievements() {
                       {achievement.event_name} / {achievement.achievement_year}
                     </p>
 
-                    <h2 className="mt-2 text-lg font-bold uppercase leading-tight text-white md:text-xl">
+                    <h2 className="mt-2 text-lg font-bold uppercase leading-tight text-[#E5E7EB] md:text-xl">
                       {achievement.title}
                     </h2>
 
                     {achievement.description && (
-                      <p className="mt-3 w-full max-w-full break-words whitespace-pre-line text-sm leading-relaxed text-neutral-400">
+                      <p className="mt-3 w-full max-w-full break-words whitespace-pre-line text-sm leading-relaxed text-[#E5E7EB]/80">
                         {achievement.description}
                       </p>
                     )}
@@ -186,7 +205,7 @@ function Achievements() {
               Press & Publications
             </p>
 
-            <h2 className="mt-4 text-2xl font-bold uppercase leading-tight text-white sm:text-3xl">
+            <h2 className="mt-4 text-2xl font-bold uppercase leading-tight text-[#E5E7EB] sm:text-3xl">
               Media Coverage.
             </h2>
 
@@ -196,9 +215,16 @@ function Achievements() {
           </div>
 
           {isMediaLoading && (
-            <p className="py-12 text-center text-sm text-neutral-500">
-              Memuat Media Coverage...
-            </p>
+            <div aria-hidden="true" className="animate-pulse grid gap-8 md:grid-cols-2">
+              {[1, 2].map((item) => (
+                <div key={item} className="overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4">
+                  <div className="aspect-[16/9] rounded-lg bg-[#E5E7EB]/10" />
+                  <div className="mt-6 h-3 w-1/3 rounded bg-[#E5E7EB]/20" />
+                  <div className="mt-4 h-6 w-4/5 rounded bg-[#E5E7EB]/20" />
+                  <div className="mt-6 h-8 w-28 rounded-full bg-[#E5E7EB]/10" />
+                </div>
+              ))}
+            </div>
           )}
 
           {!isMediaLoading && mediaError && (
@@ -208,12 +234,12 @@ function Achievements() {
           )}
 
           {!isMediaLoading && !mediaError && mediaCoverage.length === 0 && (
-            <div className="rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
+            <div className="content-fade-in rounded-xl border border-white/10 bg-[#1b1b1b] px-6 py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
                 Press & Publications
               </p>
 
-              <h3 className="mt-4 text-xl font-bold uppercase text-white">
+              <h3 className="mt-4 text-xl font-bold uppercase text-[#E5E7EB]">
                 No Media Coverage Yet.
               </h3>
 
@@ -224,7 +250,7 @@ function Achievements() {
           )}
 
           {!isMediaLoading && !mediaError && mediaCoverage.length > 0 && (
-            <div className="grid gap-8 md:grid-cols-2">
+            <div className="content-fade-in grid gap-8 md:grid-cols-2">
               {mediaCoverage.map((item) => (
                 <article
                   key={item.id}
@@ -244,7 +270,7 @@ function Achievements() {
                       {formatPublicationDate(item.publication_date)}
                     </p>
 
-                    <h3 className="mt-4 text-xl font-bold uppercase leading-tight text-white">
+                    <h3 className="mt-4 text-xl font-bold uppercase leading-tight text-[#E5E7EB]">
                       {item.title}
                     </h3>
 

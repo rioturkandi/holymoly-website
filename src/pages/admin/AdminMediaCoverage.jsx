@@ -39,7 +39,7 @@ function AdminMediaCoverage() {
   }, [imagePreview])
 
   const inputClass =
-    'mt-2 w-full rounded border border-white/10 bg-[#080808] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
+    'mt-2 w-full rounded border border-white/10 bg-[#100C08] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
 
   const labelClass =
     'text-xs font-medium uppercase tracking-wider text-neutral-400'
@@ -293,7 +293,7 @@ function AdminMediaCoverage() {
           Press & Publications
         </p>
 
-        <h2 className="mt-3 text-2xl font-bold uppercase sm:text-3xl">
+        <h2 className="mt-3 text-2xl font-bold uppercase sm:text-3xl text-[#E5E7EB]">
           Media Coverage.
         </h2>
 
@@ -304,7 +304,7 @@ function AdminMediaCoverage() {
 
       <div className="admin-card mb-10 p-5 sm:p-7">
         <div className="mb-7">
-          <h3 className="text-lg font-bold uppercase">
+          <h3 className="text-lg font-bold uppercase text-[#E5E7EB]">
             {editingId ? 'Edit Media Coverage' : 'Add Media Coverage'}
           </h3>
 
@@ -333,7 +333,7 @@ function AdminMediaCoverage() {
           <div>
             <p className={labelClass}>Article Photo (16:9)</p>
 
-            <div className="mt-2 aspect-[16/9] w-full overflow-hidden rounded border border-dashed border-white/20 bg-[#080808]">
+            <div className="mt-2 aspect-[16/9] w-full overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08]">
               {imagePreview || form.image_path ? (
                 <img
                   src={imagePreview || form.image_path}
@@ -441,7 +441,7 @@ function AdminMediaCoverage() {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-xl font-bold uppercase">
+        <h3 className="text-xl font-bold uppercase text-[#E5E7EB]">
           Media Coverage Records
         </h3>
 
@@ -472,7 +472,7 @@ function AdminMediaCoverage() {
               />
 
               <div className="p-5">
-                <h4 className="text-lg font-bold uppercase">
+                <h4 className="text-lg font-bold uppercase text-[#E5E7EB]">
                   {item.title}
                 </h4>
 

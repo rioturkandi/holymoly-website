@@ -89,7 +89,7 @@ function AppContent() {
 
 
   return (
-    <>
+    <div className={isAdminRoute ? undefined : 'public-site'}>
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
 
@@ -136,7 +136,7 @@ function AppContent() {
           />
         </Route>
       </Routes>
-    </>
+    </div>
   )
 }
 

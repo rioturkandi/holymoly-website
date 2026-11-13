@@ -175,7 +175,7 @@ function AdminWorkshop() {
           Workshop Gallery
         </p>
 
-        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
           Workshop.
         </h1>
 
@@ -200,7 +200,7 @@ function AdminWorkshop() {
               className="admin-card p-4"
             >
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-bold uppercase">
+                <h2 className="text-sm font-bold uppercase text-[#E5E7EB]">
                   Photo {String(index + 1).padStart(2, '0')}
                 </h2>
 
@@ -220,7 +220,7 @@ function AdminWorkshop() {
                 </div>
               </div>
 
-              <div className="aspect-[16/9] overflow-hidden rounded border border-white/10 bg-[#080808]">
+              <div className="aspect-[16/9] overflow-hidden rounded border border-white/10 bg-[#100C08]">
                 {previews[index] || image ? (
                   <img
                     src={previews[index] || image}

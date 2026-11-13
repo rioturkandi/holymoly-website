@@ -75,18 +75,18 @@ function AchievementsPreview() {
       <div className="page-container">
         <div className="mb-12 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               Recognition
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               Beyond The
               <br />
               Build.
             </h2>
           </div>
 
-          <p className="max-w-sm text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="max-w-sm text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             A dedicated space for achievements, recognition, and stories
             featuring HOLYMOLY.
           </p>
@@ -100,7 +100,7 @@ function AchievementsPreview() {
                 / 01
               </p>
 
-              <h3 className="mt-3 text-2xl font-bold uppercase text-white md:text-3xl">
+              <h3 className="mt-3 text-2xl font-bold uppercase text-[#E5E7EB] md:text-3xl">
                 Awards & Recognition
               </h3>
             </div>
@@ -142,13 +142,13 @@ function AchievementsPreview() {
                     {latestAchievement.event_name} / {latestAchievement.achievement_year}
                   </p>
 
-                  <h4 className="mt-2 text-lg font-bold uppercase text-white">
+                  <h4 className="mt-2 text-lg font-bold uppercase text-[#E5E7EB]">
                     {latestAchievement.title}
                   </h4>
 
 
                   {latestAchievement.description && (
-                    <p className="mt-3 line-clamp-5 w-full max-w-full break-words whitespace-pre-line text-sm leading-relaxed text-neutral-400">
+                    <p className="mt-3 line-clamp-5 w-full max-w-full break-words whitespace-pre-line text-sm leading-relaxed text-[#E5E7EB]/80">
                       {latestAchievement.description}
                     </p>
                   )}
@@ -177,7 +177,7 @@ function AchievementsPreview() {
                 / 02
               </p>
 
-              <h3 className="mt-3 text-2xl font-bold uppercase text-white md:text-3xl">
+              <h3 className="mt-3 text-2xl font-bold uppercase text-[#E5E7EB] md:text-3xl">
                 Media Coverage
               </h3>
             </div>
@@ -204,7 +204,7 @@ function AchievementsPreview() {
                     {formatPublicationDate(latestMedia.publication_date)}
                   </p>
 
-                  <h4 className="mt-2 text-lg font-bold uppercase text-white">
+                  <h4 className="mt-2 text-lg font-bold uppercase text-[#E5E7EB]">
                     {latestMedia.title}
                   </h4>
 

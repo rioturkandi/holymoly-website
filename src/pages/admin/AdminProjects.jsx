@@ -314,7 +314,7 @@ function AdminProjects() {
         <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
           Content Management
         </p>
-        <h1 className="text-3xl font-bold uppercase text-white">
+        <h1 className="text-3xl font-bold uppercase text-[#E5E7EB]">
           Projects
         </h1>
         <p className="mt-2 text-sm text-zinc-400">
@@ -323,7 +323,7 @@ function AdminProjects() {
       </div>
 
       <form onSubmit={handleSave} className="admin-card space-y-6 p-6">
-        <h2 className="text-xl font-bold uppercase text-white">Add New Project</h2>
+        <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">Add New Project</h2>
 
         <div>
           <label className="mb-2 block text-sm text-zinc-300">Title</label>
@@ -462,7 +462,7 @@ function AdminProjects() {
       </form>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-bold uppercase text-white">
+        <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
           Existing Projects
         </h2>
 

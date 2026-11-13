@@ -9,11 +9,11 @@ function AboutPreview() {
 
           {/* Left Content */}
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               About HOLYMOLY
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               More Than
               <br />
               Just Cars.
@@ -22,7 +22,7 @@ function AboutPreview() {
 
           {/* Right Content */}
           <div>
-            <p className="max-w-xl text-sm leading-8 text-neutral-400 md:text-base">
+            <p className="max-w-xl text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
               We see every vehicle as an opportunity to express character.
               Our approach to automotive customization is built around
               individuality, detail, and a distinct point of view.

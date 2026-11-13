@@ -19,7 +19,7 @@ function AdminLayout() {
   }
 
   return (
-    <div className="admin-shell min-h-screen bg-[#080808] text-white md:flex">
+    <div className="admin-shell min-h-screen bg-[#100C08] text-white md:flex">
       <aside className="w-full border-b border-white/10 bg-[#101010] md:min-h-screen md:w-64 md:border-b-0 md:border-r">
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-6">
           <div>

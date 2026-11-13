@@ -17,7 +17,12 @@ function ProjectDetail() {
     async function loadProject() {
       try {
         const response = await apiRequest('/api/projects')
-        const projects = response.data || []
+
+        if (!response?.success || !Array.isArray(response?.data)) {
+          throw new Error('Format respons API Projects tidak valid.')
+        }
+
+        const projects = response.data
         const selectedIndex = projects.findIndex(
           (item) => String(item.id) === String(id)
         )
@@ -69,17 +74,40 @@ function ProjectDetail() {
 
   if (isLoading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 text-neutral-500">
-        Loading project...
+      <main className="min-h-screen bg-[#100C08] page-top-spacing pb-24 text-[#F2F2F2]">
+        <div className="page-container animate-pulse">
+          <div className="mb-8">
+            <div className="mb-5 h-3 w-28 rounded bg-[#E5E7EB]/20" />
+            <div className="h-12 max-w-2xl rounded bg-[#E5E7EB]/20 sm:h-16" />
+            <div className="mt-8 h-4 max-w-3xl rounded bg-[#E5E7EB]/10" />
+            <div className="mt-3 h-4 max-w-2xl rounded bg-[#E5E7EB]/10" />
+          </div>
+
+          <div className="mx-auto mb-12 aspect-square max-w-3xl rounded-xl border border-white/10 bg-[#E5E7EB]/10" />
+
+          <div className="mb-8 border-b border-neutral-800 pb-5">
+            <div className="mb-3 h-3 w-36 rounded bg-[#E5E7EB]/20" />
+            <div className="h-9 max-w-sm rounded bg-[#E5E7EB]/20" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:gap-4">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div
+                key={item}
+                className="aspect-square rounded-xl border border-white/10 bg-[#E5E7EB]/10"
+              />
+            ))}
+          </div>
+        </div>
       </main>
     )
   }
 
   if (error || !project) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#080808] px-6 text-white">
+      <main className="flex min-h-screen items-center justify-center bg-[#100C08] px-6 text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
             {error ? 'Unable To Load Project' : 'Project Not Found'}
           </h1>
 
@@ -102,20 +130,20 @@ function ProjectDetail() {
   const gallery = project.gallery || []
 
   return (
-    <main className="min-h-screen bg-[#080808] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
-      <div className="page-container">
+    <main className="min-h-screen bg-[#100C08] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
+      <div className="page-container content-fade-in">
 
         {/* PROJECT INTRODUCTION */}
         <div className="mb-8">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             Project / {String(project.display_number).padStart(2, '0')}
           </p>
 
-          <h1 className="max-w-5xl break-words text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl">
+          <h1 className="max-w-5xl break-words text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
             {project.vehicle_name}
           </h1>
 
-          <p className="mt-8 w-full max-w-4xl min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] text-sm leading-8 text-neutral-400 md:text-base">
+          <p className="mt-8 w-full max-w-4xl min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
             {project.description}
           </p>
         </div>
@@ -145,11 +173,11 @@ function ProjectDetail() {
         {/* PROJECT DETAIL PHOTOS */}
         <section className="mb-0">
           <div className="mb-8 border-b border-neutral-800 pb-5">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               Visual Documentation
             </p>
 
-            <h2 className="text-3xl font-bold uppercase leading-tight md:text-5xl">
+            <h2 className="text-3xl font-bold uppercase leading-tight md:text-5xl text-[#E5E7EB]">
               Project Detail.
             </h2>
           </div>
