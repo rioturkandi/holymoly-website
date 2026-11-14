@@ -123,19 +123,19 @@ function Navbar() {
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.7"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-5 w-5 transition-all duration-500 ease-in-out"
+              className="h-3.5 w-3.5 transition-all duration-500 ease-in-out min-[320px]:max-[639px]:h-5.5 min-[320px]:max-[639px]:w-5.5"
               aria-hidden="true"
             >
               {link.label === 'Home' && <path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9M9.5 20v-7h5v7" />}
-              {link.label === 'About' && <path d="M12 16v-4m0-4h.01M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0Z" />}
-              {link.label === 'Projects' && <path d="M3 3h8v8H3zM13 3h8v8h-8zM3 13h8v8H3zM13 13h8v8h-8z" />}
+              {link.label === 'About' && <><circle cx="12" cy="12" r="9" /><path d="M12 11v5m0-8h.01" /></>}
+              {link.label === 'Projects' && <><path d="M5 11 7 6h10l2 5 2 2v6H3v-6l2-2Z" /><path d="M7 11h10M5 14h2m10 0h2M9 19v1m6-1v1" /></>}
               {link.label === 'Achievements' && <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z" />}
             </svg>
             <span
-              className="text-[9px] font-medium uppercase tracking-[0.12em] transition-all duration-500 ease-in-out"
+              className="text-[8px] min-[390px]:text-[9px] font-medium uppercase tracking-[0.12em] transition-all duration-500 ease-in-out min-[320px]:max-[639px]:hidden"
               style={{ fontFamily: 'Inter Navbar', fontWeight: 600 }}
             >
               {link.label}

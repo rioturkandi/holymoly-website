@@ -133,16 +133,16 @@ function Hero({ content, isLoading = false, hasError = false }) {
           aria-hidden={!isImageReady}
         className={`relative z-10 w-full page-container text-center transition-opacity duration-700 ${isImageReady ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
       >
-        <div className="mx-auto max-w-2xl">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+        <div className="hero-copy mx-auto max-w-2xl">
+          <p className="mb-4 px-1 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] font-bold uppercase leading-relaxed tracking-[0.18em] text-[#E5E7EB]/70 sm:mb-5 sm:text-xs sm:tracking-[0.3em]">
             {eyebrow}
           </p>
 
-          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-[1.12] tracking-tight text-[#E5E7EB] sm:text-5xl md:text-6xl">
             {title}
           </h1>
 
-          <p className="mx-auto mt-6 max-w-lg text-sm leading-7 text-[#E5E7EB]/80 md:text-base">
+          <p className="mx-auto mt-5 max-w-lg text-[12px] min-[360px]:text-[13px] min-[390px]:text-[14px] leading-6 text-[#E5E7EB]/80 sm:mt-6 sm:text-sm sm:leading-7 md:text-base">
             {description}
           </p>
 
@@ -153,12 +153,12 @@ function Hero({ content, isLoading = false, hasError = false }) {
               setIsContactHovered(false)
               movePill(exploreRef.current)
             }}
-            className="relative mt-8 inline-flex flex-wrap justify-center gap-5 sm:gap-4"
+            className="hero-cta relative mt-7 inline-flex flex-wrap justify-center gap-2.5 sm:mt-8 sm:gap-4"
           >
             {/* Shared pill yang bergerak mengikuti tombol aktif */}
             <span
               aria-hidden="true"
-              className="pointer-events-none absolute top-0 z-0 h-full rounded-full bg-white shadow-[0_6px_2px_rgba(0,0,0,0.65)] transition-all duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
+              className="pointer-events-none absolute top-0 z-0 hidden h-full rounded-full bg-white sm:block shadow-[0_6px_2px_rgba(0,0,0,0.65)] transition-all duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)]"
               style={{
                 left: pillStyle.left,
                 width: pillStyle.width,
@@ -176,11 +176,11 @@ function Hero({ content, isLoading = false, hasError = false }) {
               style={{
                 transitionDelay: '100ms',
               }}
-              className={`relative z-10 inline-flex items-center rounded-full py-2 px-3 text-[10px] font-bold uppercase tracking-[0.08em] sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
+              className={`relative z-10 inline-flex items-center rounded-full border border-transparent bg-white px-2 py-1 text-[7px] font-bold uppercase tracking-[0.04em] sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
                 isContactHovered ? 'text-white' : 'text-black'
               }`}
             >
-              <span>{buttonText}</span>
+              <span className="text-[7px] leading-none sm:text-[11px]">{buttonText}</span>
             </Link>
 
             <a
@@ -195,11 +195,11 @@ function Hero({ content, isLoading = false, hasError = false }) {
               style={{
                 transitionDelay: '100ms',
               }}
-              className={`relative z-10 inline-flex items-center rounded-full py-2 px-3 text-[10px] font-bold uppercase tracking-[0.08em] sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
+              className={`relative z-10 inline-flex items-center rounded-full border border-[#E5E7EB]/60 bg-[#100C08]/40 px-2 py-1 text-[7px] font-bold uppercase tracking-[0.04em] sm:border-transparent sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
                 isContactHovered ? 'text-black' : 'text-white'
               }`}
             >
-              <span>Contact Us</span>
+              <span className="text-[7px] leading-none sm:text-[11px]">Contact Us</span>
             </a>
           </div>
         </div>

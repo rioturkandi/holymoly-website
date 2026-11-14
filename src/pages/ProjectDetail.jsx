@@ -74,23 +74,23 @@ function ProjectDetail() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-[#100C08] page-top-spacing pb-24 text-[#F2F2F2]">
+      <main className="min-h-screen bg-[#100C08] !pt-10 md:!pt-[104px] lg:!pt-28 pb-24 text-[#F2F2F2]">
         <div className="page-container animate-pulse">
-          <div className="mb-8">
+          <div className="mb-8 sm:mb-10 md:mb-12">
             <div className="mb-5 h-3 w-28 rounded bg-[#E5E7EB]/20" />
             <div className="h-12 max-w-2xl rounded bg-[#E5E7EB]/20 sm:h-16" />
             <div className="mt-8 h-4 max-w-3xl rounded bg-[#E5E7EB]/10" />
             <div className="mt-3 h-4 max-w-2xl rounded bg-[#E5E7EB]/10" />
           </div>
 
-          <div className="mx-auto mb-12 aspect-square max-w-3xl rounded-xl border border-white/10 bg-[#E5E7EB]/10" />
+          <div className="mx-auto mb-8 sm:mb-10 md:mb-12 aspect-square max-w-3xl rounded-xl border border-white/10 bg-[#E5E7EB]/10" />
 
-          <div className="mb-8 border-b border-neutral-800 pb-5">
+          <div className="mb-8 sm:mb-10 md:mb-12 border-b border-neutral-800 pb-5">
             <div className="mb-3 h-3 w-36 rounded bg-[#E5E7EB]/20" />
             <div className="h-9 max-w-sm rounded bg-[#E5E7EB]/20" />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-2 min-[390px]:gap-3 sm:grid-cols-3 sm:gap-4">
             {[1, 2, 3, 4, 5, 6].map((item) => (
               <div
                 key={item}
@@ -107,7 +107,7 @@ function ProjectDetail() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#100C08] px-6 text-white">
         <div className="text-center">
-          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
             {error ? 'Unable To Load Project' : 'Project Not Found'}
           </h1>
 
@@ -117,7 +117,7 @@ function ProjectDetail() {
 
           <Link
             to="/projects"
-            className="group mt-6 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-7 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            className="group mt-6 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-2 min-[390px]:px-5 min-[390px]:py-2.5 text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Back To Projects
           </Link>
@@ -130,27 +130,27 @@ function ProjectDetail() {
   const gallery = project.gallery || []
 
   return (
-    <main className="min-h-screen bg-[#100C08] pb-24 pt-0 text-[#F2F2F2] page-top-spacing">
+    <main className="min-h-screen bg-[#100C08] pb-24 !pt-10 md:!pt-[104px] lg:!pt-28 text-[#F2F2F2]">
       <div className="page-container content-fade-in">
 
         {/* PROJECT INTRODUCTION */}
-        <div className="mb-8">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             Project / {String(project.display_number).padStart(2, '0')}
           </p>
 
-          <h1 className="max-w-5xl break-words text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="max-w-5xl break-words text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
             {project.vehicle_name}
           </h1>
 
-          <p className="mt-8 w-full max-w-4xl min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <p className="mt-3 sm:mt-4 lg:mt-5 w-full max-w-4xl min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
             {project.description}
           </p>
         </div>
 
         {/* COVER IMAGE */}
         {cover?.image_path && (
-          <div className="mx-auto mb-12 max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
+          <div className="mx-auto mb-8 sm:mb-10 md:mb-12 max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
             <button
               type="button"
               onClick={() => setSelectedImage(cover.image_path)}
@@ -172,18 +172,18 @@ function ProjectDetail() {
 
         {/* PROJECT DETAIL PHOTOS */}
         <section className="mb-0">
-          <div className="mb-8 border-b border-neutral-800 pb-5">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+          <div className="mb-8 sm:mb-10 md:mb-12 border-b border-neutral-800 pb-5">
+            <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               Visual Documentation
             </p>
 
-            <h2 className="text-3xl font-bold uppercase leading-tight md:text-5xl text-[#E5E7EB]">
+            <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
               Project Detail.
             </h2>
           </div>
 
           {gallery.length > 0 ? (
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 gap-2 min-[390px]:gap-3 sm:grid-cols-3 sm:gap-4">
               {gallery.map((photo, index) => (
                 <button
                   key={photo.id || photo.image_path}
@@ -199,24 +199,24 @@ function ProjectDetail() {
                     className="aspect-square w-full object-cover"
                   />
 
-                  <span className="absolute bottom-4 right-4 bg-black/70 px-3 py-2 text-xs uppercase tracking-widest text-white">
+                  <span className="absolute bottom-2 right-2 min-[390px]:bottom-3 min-[390px]:right-3 sm:bottom-4 sm:right-4 bg-black/70 px-2 py-1.5 min-[390px]:px-3 min-[390px]:py-2 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs uppercase tracking-widest text-white">
                     View Photo +
                   </span>
                 </button>
               ))}
             </div>
           ) : (
-            <p className="border border-neutral-800 p-8 text-sm leading-7 text-neutral-500">
+            <p className="border border-neutral-800 p-4 min-[390px]:p-6 sm:p-8 text-xs min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-neutral-500">
               Additional project photos will be displayed here.
             </p>
           )}
         </section>
 
         {/* NEXT PROJECTS */}
-        <div className="mt-8 border-t border-neutral-800 pt-5">
+        <div className="mt-8 sm:mt-10 md:mt-12 border-t border-neutral-800 pt-5 sm:pt-6">
           <Link
             to="/projects"
-            className="group inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            className="group inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-2 min-[390px]:px-5 min-[390px]:py-2.5 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.12em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Explore More Projects
           </Link>
@@ -231,12 +231,12 @@ function ProjectDetail() {
           aria-modal="true"
           aria-label="Enlarged project photo"
           onClick={() => setSelectedImage(null)}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-5"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 sm:p-5"
         >
           <button
             type="button"
             onClick={() => setSelectedImage(null)}
-            className="absolute right-6 top-6 z-10 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-6 py-2.5 text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            className="absolute right-3 top-3 sm:right-6 sm:top-6 z-10 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-2 min-[390px]:px-5 sm:px-6 sm:py-2.5 text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
           >
             Close ×
           </button>
@@ -248,7 +248,7 @@ function ProjectDetail() {
             <img
               src={selectedImage}
               alt="Enlarged project"
-              className="max-h-[80vh] max-w-[90vw] rounded-sm object-contain"
+              className="max-h-[75vh] max-w-[94vw] sm:max-h-[80vh] sm:max-w-[90vw] rounded-sm object-contain"
             />
           </div>
         </div>

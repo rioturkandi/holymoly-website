@@ -71,48 +71,48 @@ function AchievementsPreview() {
   }
 
   return (
-    <section className="bg-[#191919] section-spacing">
+    <section className="bg-[#191919] py-10 min-[390px]:py-12 sm:py-14 md:py-16">
       <div className="page-container">
-        <div className="mb-12 flex flex-col justify-between gap-8 md:mb-16 md:flex-row md:items-end">
+        <div className="mb-8 flex flex-col justify-between gap-3 sm:mb-10 md:mb-12 md:flex-row md:items-end md:gap-12">
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+            <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               Recognition
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+            <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               Beyond The
               <br />
               Build.
             </h2>
           </div>
 
-          <p className="max-w-sm text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <p className="max-w-sm text-[12px] min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
             A dedicated space for achievements, recognition, and stories
             featuring HOLYMOLY.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+        <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2 md:gap-5">
           {/* LATEST AWARD */}
           <article className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
-            <div className="border-b border-neutral-700 p-5 md:p-6">
-              <p className="text-sm font-bold tracking-widest text-neutral-500">
+            <div className="border-b border-neutral-700 p-3 min-[360px]:p-4 sm:p-5 md:p-6">
+              <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-bold tracking-widest text-neutral-500">
                 / 01
               </p>
 
-              <h3 className="mt-3 text-2xl font-bold uppercase text-[#E5E7EB] md:text-3xl">
+              <h3 className="mt-2 sm:mt-3 text-[16px] min-[360px]:text-[17px] min-[390px]:text-lg sm:text-xl md:text-2xl font-bold uppercase text-[#E5E7EB]">
                 Awards & Recognition
               </h3>
             </div>
 
             {isLoading ? (
-              <p className="p-7 text-sm text-neutral-500">
+              <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
                 Loading latest achievement...
               </p>
             ) : latestAchievement ? (
               <>
-                <div className="mt-4 px-4">
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="mt-3 px-3 min-[390px]:px-4 sm:mt-4">
+                  <div className="grid grid-cols-2 gap-2 min-[390px]:gap-3">
                     <div className="aspect-[4/3] overflow-hidden rounded-lg border border-neutral-700 bg-[#101010]">
                       {latestAchievement.trophy_image_path && (
                         <img
@@ -137,26 +137,26 @@ function AchievementsPreview() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col p-5 md:p-6">
-                  <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                <div className="flex flex-1 flex-col p-4 sm:p-5 md:p-6">
+                  <p className="text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-400">
                     {latestAchievement.event_name} / {latestAchievement.achievement_year}
                   </p>
 
-                  <h4 className="mt-2 text-lg font-bold uppercase text-[#E5E7EB]">
+                  <h4 className="mt-2 text-[14px] min-[360px]:text-[15px] min-[390px]:text-base sm:text-lg md:text-xl font-bold uppercase text-[#E5E7EB]">
                     {latestAchievement.title}
                   </h4>
 
 
                   {latestAchievement.description && (
-                    <p className="mt-3 line-clamp-5 w-full max-w-full break-words whitespace-pre-line text-sm leading-relaxed text-[#E5E7EB]/80">
+                    <p className="mt-2 min-[390px]:mt-3 line-clamp-5 w-full max-w-full break-words whitespace-pre-line text-xs min-[390px]:text-[13px] sm:text-sm leading-relaxed text-[#E5E7EB]/80">
                       {latestAchievement.description}
                     </p>
                   )}
 
-                  <div className="mt-auto pt-5">
+                  <div className="mt-auto pt-4 sm:pt-5">
                   <Link
                     to="/achievements"
-                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3 py-1 text-center text-[8px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3.5 py-1.5 min-[360px]:px-4 min-[390px]:px-5 text-center text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     Explore Achievement
                   </Link>
@@ -164,7 +164,7 @@ function AchievementsPreview() {
                 </div>
               </>
             ) : (
-              <p className="p-7 text-sm text-neutral-500">
+              <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
                 No achievements available yet.
               </p>
             )}
@@ -172,23 +172,23 @@ function AchievementsPreview() {
 
           {/* LATEST MEDIA COVERAGE */}
           <article className="flex h-full flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
-            <div className="border-b border-neutral-700 p-5 md:p-6">
-              <p className="text-sm font-bold tracking-widest text-neutral-500">
+            <div className="border-b border-neutral-700 p-3 min-[360px]:p-4 sm:p-5 md:p-6">
+              <p className="text-[10px] min-[360px]:text-[11px] sm:text-xs font-bold tracking-widest text-neutral-500">
                 / 02
               </p>
 
-              <h3 className="mt-3 text-2xl font-bold uppercase text-[#E5E7EB] md:text-3xl">
+              <h3 className="mt-2 sm:mt-3 text-[16px] min-[360px]:text-[17px] min-[390px]:text-lg sm:text-xl md:text-2xl font-bold uppercase text-[#E5E7EB]">
                 Media Coverage
               </h3>
             </div>
 
             {isLoading ? (
-              <p className="p-7 text-sm text-neutral-500">
+              <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
                 Loading latest media coverage...
               </p>
             ) : latestMedia ? (
               <>
-                <div className="mt-4 px-4">
+                <div className="mt-3 px-3 min-[390px]:px-4 sm:mt-4">
                   <div className="aspect-[16/9] overflow-hidden rounded-lg border border-neutral-700 bg-[#101010]">
                     <img
                       src={latestMedia.image_path}
@@ -199,21 +199,21 @@ function AchievementsPreview() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col p-5 md:p-6">
-                  <p className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                <div className="flex flex-1 flex-col p-4 sm:p-5 md:p-6">
+                  <p className="text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-400">
                     {formatPublicationDate(latestMedia.publication_date)}
                   </p>
 
-                  <h4 className="mt-2 text-lg font-bold uppercase text-[#E5E7EB]">
+                  <h4 className="mt-2 text-[14px] min-[360px]:text-[15px] min-[390px]:text-base sm:text-lg md:text-xl font-bold uppercase text-[#E5E7EB]">
                     {latestMedia.title}
                   </h4>
 
-                  <div className="mt-auto pt-5">
+                  <div className="mt-auto pt-4 sm:pt-5">
                   <a
                     href={latestMedia.article_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3 py-1 text-center text-[8px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3.5 py-1.5 min-[360px]:px-4 min-[390px]:px-5 text-center text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
                     Read Article
                   </a>
@@ -221,7 +221,7 @@ function AchievementsPreview() {
                 </div>
               </>
             ) : (
-              <p className="p-7 text-sm text-neutral-500">
+              <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
                 No media coverage available yet.
               </p>
             )}

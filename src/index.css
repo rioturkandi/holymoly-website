@@ -53,7 +53,7 @@ body {
 
 button,
 a {
-  font: inherit;
+  font-family: inherit;
 }
 
 /* ========================================
@@ -305,3 +305,147 @@ select {
     animation: none;
   }
 }
+
+/* =========================================
+   HOLYMOLY - HERO RESPONSIVE SETTINGS
+   Semua pengaturan ukuran Hero ada di sini.
+========================================= */
+
+/* Nilai dasar */
+.hero-copy {
+  --hero-eyebrow-size: 9px;
+  --hero-title-size: 28px;
+  --hero-description-size: 13px;
+  --hero-eyebrow-gap: 16px;
+  --hero-description-gap: 20px;
+}
+
+.hero-copy > p:first-of-type {
+  margin-bottom: var(--hero-eyebrow-gap);
+  font-size: var(--hero-eyebrow-size);
+}
+
+.hero-copy > h1 {
+  font-size: var(--hero-title-size);
+}
+
+.hero-copy > p:nth-of-type(2) {
+  margin-top: var(--hero-description-gap);
+  font-size: var(--hero-description-size);
+}
+
+/* Pengaturan tombol */
+.hero-cta {
+  --hero-button-font: 7px;
+  --hero-button-py: 4px;
+  --hero-button-px: 8px;
+  --hero-button-gap: 10px;
+  --hero-button-top-gap: 28px;
+
+  gap: var(--hero-button-gap);
+  margin-top: var(--hero-button-top-gap);
+}
+
+.hero-cta > a {
+  padding: var(--hero-button-py) var(--hero-button-px);
+  font-size: var(--hero-button-font);
+  line-height: 1;
+}
+
+.hero-cta > a > span {
+  font-size: var(--hero-button-font);
+  line-height: 1;
+}
+
+/* MOBILE S: 320px - 359px */
+@media (max-width: 359px) {
+  .hero-copy {
+    --hero-eyebrow-size: 8px;
+    --hero-title-size: 26px;
+    --hero-description-size: 12px;
+  }
+
+  .hero-cta {
+    --hero-button-font: 10px;
+    --hero-button-py: 3px;
+    --hero-button-px: 7px;
+    --hero-button-gap: 8px;
+    --hero-button-top-gap: 24px;
+  }
+}
+
+/* MOBILE M: 360px - 389px */
+@media (min-width: 360px) and (max-width: 389px) {
+  .hero-copy {
+    --hero-eyebrow-size: 8px;
+    --hero-title-size: 28px;
+    --hero-description-size: 12px;
+  }
+
+  .hero-cta {
+    --hero-button-font: 11px;
+    --hero-button-py: 4px;
+    --hero-button-px: 8px;
+    --hero-button-gap: 9px;
+    --hero-button-top-gap: 26px;
+  }
+}
+
+/* MOBILE L: 390px - 639px */
+@media (min-width: 390px) and (max-width: 639px) {
+  .hero-copy {
+    --hero-eyebrow-size: 9px;
+    --hero-title-size: 30px;
+    --hero-description-size: 13px;
+  }
+
+  .hero-cta {
+    --hero-button-font: 11px;
+    --hero-button-py: 5px;
+    --hero-button-px: 10px;
+    --hero-button-gap: 10px;
+    --hero-button-top-gap: 28px;
+  }
+}
+
+/* TABLET: 640px - 767px */
+@media (min-width: 640px) and (max-width: 767px) {
+  .hero-copy {
+    --hero-eyebrow-size: 12px;
+    --hero-title-size: 48px;
+    --hero-description-size: 14px;
+    --hero-eyebrow-gap: 20px;
+    --hero-description-gap: 24px;
+  }
+
+  .hero-cta {
+    --hero-button-font: 12px;
+    --hero-button-py: 4px;
+    --hero-button-px: 20px;
+    --hero-button-gap: 16px;
+    --hero-button-top-gap: 32px;
+  }
+}
+
+/* DESKTOP: 768px ke atas */
+@media (min-width: 768px) {
+  .hero-copy {
+    --hero-eyebrow-size: 12px;
+    --hero-title-size: 60px;
+    --hero-description-size: 16px;
+    --hero-eyebrow-gap: 20px;
+    --hero-description-gap: 24px;
+  }
+
+  .hero-cta {
+    --hero-button-font: 12px;
+    --hero-button-py: 10px;
+    --hero-button-px: 28px;
+    --hero-button-gap: 16px;
+    --hero-button-top-gap: 32px;
+  }
+}
+
+/* =========================================
+   END - HERO RESPONSIVE SETTINGS
+========================================= */

@@ -99,8 +99,8 @@ function About() {
           </section>
 
           {/* JOURNEY SKELETON */}
-          <section className="border-t border-[#262626] section-spacing">
-            <div className="page-container grid gap-10 md:grid-cols-2">
+          <section className="border-t border-[#262626] py-10 min-[390px]:py-12 sm:py-14 md:py-16">
+            <div className="page-container grid gap-3 md:grid-cols-2 md:gap-12">
               <div>
                 <div className="h-3 w-28 rounded bg-[#E5E7EB]/20" />
                 <div className="mt-5 h-12 max-w-sm rounded bg-[#E5E7EB]/20" />
@@ -137,18 +137,18 @@ function About() {
       ) : (
         <div className="content-fade-in">
       {/* ABOUT INTRODUCTION */}
-      <section className="page-top-spacing lg:pt-28 pb-12 md:pb-12">
+      <section className="page-top-spacing !pt-10 md:!pt-[104px] lg:!pt-28 pb-10 min-[390px]:pb-12 sm:pb-14 md:pb-16">
         <div className="page-container">
-          <p className="mb-6 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+          <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             {introduction.eyebrow}
           </p>
 
-          <h1 className="whitespace-pre-line text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="whitespace-pre-line text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
             {introduction.title}
           </h1>
 
-          <div className="mt-10 grid gap-8 md:grid-cols-2">
-            <p className="min-w-0 max-w-xl [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <div className="mt-3 sm:mt-4 lg:mt-5">
+            <p className="min-w-0 max-w-sm [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 sm:text-base sm:leading-8 text-[#E5E7EB]/80">
               {introduction.description}
             </p>
           </div>
@@ -156,20 +156,20 @@ function About() {
       </section>
 
       {/* OUR JOURNEY */}
-      <section className="border-t border-[#262626] section-spacing">
-        <div className="page-container grid gap-10 md:grid-cols-2">
+      <section className="border-t border-[#262626] py-10 min-[390px]:py-12 sm:py-14 md:py-16">
+        <div className="page-container grid gap-3 md:grid-cols-2 md:gap-12">
           <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+            <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               {journey.eyebrow}
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+            <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
               {journey.title}
             </h2>
           </div>
 
           <div className="flex flex-col justify-end">
-            <p className="min-w-0 max-w-xl [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+            <p className="min-w-0 max-w-sm [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
               {journey.description}
             </p>
           </div>
@@ -177,47 +177,47 @@ function About() {
       </section>
 
       {/* VISION & PHILOSOPHY */}
-      <section className="bg-[#191919] section-spacing">
+      <section className="bg-[#191919] py-10 min-[390px]:py-12 sm:py-14 md:py-16">
         <div className="page-container">
-          <div className="grid gap-10 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-3 md:gap-8 lg:gap-10">
             <div>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#E5E7EB]/70">
+              <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
                 {vision.eyebrow}
               </p>
 
-              <h3 className="mb-4 text-2xl font-bold uppercase text-[#E5E7EB]">
+              <h3 className="mb-3 text-2xl font-bold uppercase text-[#E5E7EB]">
                 {vision.title}
               </h3>
 
-              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80">
+              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8">
                 {vision.description}
               </p>
             </div>
 
             <div>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#E5E7EB]/70">
+              <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
                 {mission.eyebrow}
               </p>
 
-              <h3 className="mb-4 text-2xl font-bold uppercase text-[#E5E7EB]">
+              <h3 className="mb-3 text-2xl font-bold uppercase text-[#E5E7EB]">
                 {mission.title}
               </h3>
 
-              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80">
+              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8">
                 {mission.description}
               </p>
             </div>
 
             <div>
-              <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[#E5E7EB]/70">
+              <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
                 {philosophy.eyebrow}
               </p>
 
-              <h3 className="mb-4 text-2xl font-bold uppercase text-[#E5E7EB]">
+              <h3 className="mb-3 text-2xl font-bold uppercase text-[#E5E7EB]">
                 {philosophy.title}
               </h3>
 
-              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-sm leading-8 text-[#E5E7EB]/80">
+              <p className="min-w-0 max-w-md [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8">
                 {philosophy.description}
               </p>
             </div>

@@ -7,6 +7,7 @@ function ProjectShowcaseCard({
   onDelete,
   isDeleting = false,
   clampDescription = false,
+  variant = 'default',
 }) {
   const [activeIndex, setActiveIndex] = useState(
     Math.min(1, (project.gallery || []).length - 1)
@@ -56,8 +57,12 @@ function ProjectShowcaseCard({
 
   return (
     <article className="@container min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
-      <div className="p-4 pb-0">
-        <h3 className="break-words text-lg font-bold uppercase text-[#E5E7EB]">
+      <div className={variant === 'featured' ? 'p-3 pb-0 min-[390px]:p-4' : 'p-4 pb-0'}>
+        <h3 className={`break-words font-bold uppercase text-[#E5E7EB] ${
+          variant === 'featured'
+            ? 'text-[14px] min-[360px]:text-[15px] min-[390px]:text-[16px] sm:text-xl md:text-2xl'
+            : 'text-lg'
+        }`}>
           {linkTo ? (
             <Link to={linkTo} className="transition-colors hover:text-zinc-300">
               {vehicleName}
@@ -69,7 +74,7 @@ function ProjectShowcaseCard({
       </div>
 
       {cover?.image_path && (
-        <div className="mt-4 px-4">
+        <div className={variant === 'featured' ? 'mt-3 px-3 min-[390px]:mt-4 min-[390px]:px-4' : 'mt-4 px-4'}>
           {linkTo ? (
             <Link to={linkTo} className="block">
               <img
@@ -94,10 +99,14 @@ function ProjectShowcaseCard({
         </div>
       )}
 
-      <div className="space-y-5 p-4">
+      <div className={variant === 'featured' ? 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4' : 'space-y-5 p-4'}>
         {total > 0 && (
           <section>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            <p className={`mb-3 font-semibold uppercase tracking-wider text-zinc-500 ${
+              variant === 'featured'
+                ? 'text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs'
+                : 'mb-4 text-xs'
+            }`}>
               Detail Photos
             </p>
 
@@ -106,7 +115,11 @@ function ProjectShowcaseCard({
                 type="button"
                 aria-label="Foto sebelumnya"
                 onClick={() => moveGallery(-1)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800"
+                className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
+                  variant === 'featured'
+                    ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
+                    : 'h-9 w-9'
+                }`}
               >
                 ←
               </button>
@@ -154,7 +167,11 @@ function ProjectShowcaseCard({
                 type="button"
                 aria-label="Foto berikutnya"
                 onClick={() => moveGallery(1)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800"
+                className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
+                  variant === 'featured'
+                    ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
+                    : 'h-9 w-9'
+                }`}
               >
                 →
               </button>
@@ -169,7 +186,11 @@ function ProjectShowcaseCard({
         )}
 
         <p
-          className={`w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] border-t border-zinc-800 pt-4 text-sm leading-relaxed text-zinc-400 ${
+          className={`w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] border-t border-zinc-800 leading-relaxed text-zinc-400 ${
+            variant === 'featured'
+              ? 'pt-3 text-[11px] min-[360px]:text-xs min-[390px]:pt-4 min-[390px]:text-[13px] sm:text-sm'
+              : 'pt-4 text-sm'
+          } ${
             clampDescription ? 'line-clamp-3' : ''
           }`}
         >

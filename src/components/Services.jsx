@@ -33,29 +33,29 @@ function Services({ content, services = [], isLoading = false, hasError = false 
         ) : (
           <>
         {/* Services heading */}
-        <div className="flex flex-col justify-between gap-6 border-b border-white/10 pb-10 md:flex-row md:items-end md:gap-12 md:pb-12">
+        <div className="flex flex-col justify-between gap-3 border-b border-white/10 pb-10 md:flex-row md:items-end md:gap-12 md:pb-12">
           <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+            <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
               {eyebrow}
             </p>
 
-            <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+            <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
               {title}
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <p className="max-w-md text-[12px] min-[360px]:text-[13px] min-[390px]:text-[14px] leading-8 text-[#E5E7EB]/80 md:text-base">
             {description}
           </p>
         </div>
 
         {/* Services list */}
-        <div className="mt-5">
+        <div className="mt-3 md:mt-5">
           {services.length > 0 ? (
             services.map((service, index) => (
               <article
                 key={service.id}
-                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-white/[0.08] py-6 sm:gap-6 sm:py-8 md:gap-8"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 border-b border-white/[0.08] py-5 sm:gap-6 sm:py-7 md:gap-8"
               >
                 {service.image_path ? (
                   <div className="h-20 w-20 shrink-0 overflow-hidden rounded-sm bg-[#242424] sm:h-24 sm:w-28 md:h-28 md:w-36">
@@ -75,12 +75,12 @@ function Services({ content, services = [], isLoading = false, hasError = false 
                 )}
 
                 <div className="min-w-0 py-1">
-                  <h3 className="break-words text-lg font-bold uppercase leading-snug text-[#E5E7EB] sm:text-xl md:text-2xl">
+                  <h3 className="break-words text-[14px] min-[360px]:text-[15px] min-[390px]:text-[16px] font-bold uppercase leading-snug text-[#E5E7EB] sm:text-xl md:text-2xl">
                     {service.title}
                   </h3>
 
                   {service.description && (
-                    <p className="mt-2 max-w-2xl break-words text-xs leading-6 text-[#E5E7EB]/80 sm:text-sm sm:leading-7">
+                    <p className="mt-2 max-w-2xl break-words text-[11px] min-[360px]:text-[12px] min-[390px]:text-[13px] leading-6 text-[#E5E7EB]/80 sm:text-sm sm:leading-7">
                       {service.description}
                     </p>
                   )}

@@ -44,21 +44,21 @@ function WorkshopGallery() {
   return (
     <section
       id="workshop"
-      className="scroll-mt-24 bg-[#100C08] section-spacing pb-32 md:pb-12"
+      className="scroll-mt-24 bg-[#100C08] pt-10 min-[390px]:pt-12 sm:pt-14 md:pt-16 pb-10 min-[390px]:pb-12 sm:pb-14 md:pb-16"
     >
       <div className="page-container">
 
         {/* WORKSHOP INTRODUCTION */}
-        <div className="mb-12">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             The Space
           </p>
 
-          <h2 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
             Inside Our<br />Workshop.
           </h2>
 
-          <p className="mt-6 max-w-xl text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <p className="mt-3 sm:mt-4 lg:mt-5 max-w-xl text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
             Take a closer look at the space behind HOLYMOLY.
             Discover the environment where automotive projects
             take shape.
@@ -69,7 +69,7 @@ function WorkshopGallery() {
         {isLoading ? (
           <div
             aria-hidden="true"
-            className="grid grid-cols-1 gap-4 md:grid-cols-3 animate-pulse"
+            className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3 animate-pulse"
           >
             {[1, 2, 3].map((item) => (
               <div
@@ -83,7 +83,7 @@ function WorkshopGallery() {
             Foto Workshop sementara tidak dapat dimuat.
           </p>
         ) : (
-          <div className="content-fade-in grid grid-cols-1 gap-4 md:grid-cols-3">
+          <div className="content-fade-in grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
             {workshopImages.map((image) => (
               <div
                 key={image.id}
@@ -93,7 +93,7 @@ function WorkshopGallery() {
                   src={image.image_path}
                   alt=""
                   loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-900 ease-in-out group-hover:scale-[1.02]"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />

@@ -40,20 +40,20 @@ function Projects() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-[#100C08] page-top-spacing lg:pt-28 pb-24 text-[#F2F2F2]">
+    <main className="min-h-screen bg-[#100C08] !pt-10 md:!pt-[104px] lg:!pt-28 pb-24 text-[#F2F2F2]">
       <div className="page-container">
 
         {/* PAGE INTRODUCTION */}
-        <div className="mb-8 md:mb-10">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
+        <div className="mb-8 sm:mb-10 md:mb-12">
+          <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
             Selected Works
           </p>
 
-          <h1 className="text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
             Our<br />Projects.
           </h1>
 
-          <p className="mt-8 max-w-xl text-sm leading-8 text-[#E5E7EB]/80 md:text-base">
+          <p className="mt-3 sm:mt-4 lg:mt-5 max-w-xl text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
             Every project has its own character and story.
             Explore the work and discover the details behind
             each automotive build.
@@ -64,12 +64,12 @@ function Projects() {
         {isLoading ? (
           <div
             aria-hidden="true"
-            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-3"
           >
             {[1, 2, 3].map((item) => (
               <div
                 key={item}
-                className="animate-pulse overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4"
+                className="animate-pulse overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-3 min-[390px]:p-4"
               >
                 <div className="mb-4 h-7 w-3/4 rounded bg-[#E5E7EB]/20" />
                 <div className="aspect-square bg-[#E5E7EB]/10" />
@@ -90,15 +90,15 @@ function Projects() {
             No projects available yet.
           </p>
         ) : (
-          <div className="content-fade-in grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="content-fade-in grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-3">
             {projects.map((project, index) => (
               <Link
                 key={project.id}
                 to={`/projects/${project.id}`}
-                className="group block min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
+                className="group block min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-3 min-[390px]:p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
               >
                 {/* PROJECT TITLE */}
-                <h2 className="mb-4 break-words text-xl font-bold uppercase text-[#E5E7EB] transition-colors group-hover:text-[#E5E7EB] md:text-2xl">
+                <h2 className="mb-3 min-[390px]:mb-4 break-words text-[14px] min-[360px]:text-[15px] min-[390px]:text-[16px] sm:text-xl md:text-2xl font-bold uppercase text-[#E5E7EB] transition-colors group-hover:text-[#E5E7EB]">
                   {project.vehicle_name}
                 </h2>
 
@@ -119,16 +119,16 @@ function Projects() {
 
                 {/* PROJECT DESCRIPTION */}
                 <div className="mt-4">
-                  <p className="w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] line-clamp-3 text-sm leading-7 text-[#E5E7EB]/80">
+                  <p className="w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] line-clamp-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
                     {project.description}
                   </p>
 
                   <div className="mt-5 flex items-center justify-between border-b border-neutral-800 pb-4">
-                    <p className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+                    <p className="text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-widest text-neutral-500">
                       Project / {String(index + 1).padStart(2, '0')}
                     </p>
 
-                    <span className="inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white transition-colors group-hover:border-white group-hover:bg-white/[0.06]">
+                    <span className="inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-3 py-1.5 min-[360px]:px-5 min-[360px]:py-2 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-white transition-colors group-hover:border-white group-hover:bg-white/[0.06]">
                       View Project
                     </span>
                   </div>
