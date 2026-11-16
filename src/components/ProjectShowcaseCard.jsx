@@ -57,11 +57,11 @@ function ProjectShowcaseCard({
 
   return (
     <article className="@container min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
-      <div className={variant === 'featured' ? 'p-3 pb-0 min-[390px]:p-4' : 'p-4 pb-0'}>
+      <div className={variant === 'featured' ? 'p-3 pb-0 min-[390px]:p-4' : 'p-3 pb-0 min-[390px]:p-4'}>
         <h3 className={`break-words font-bold uppercase text-[#E5E7EB] ${
           variant === 'featured'
             ? 'text-[14px] min-[360px]:text-[15px] min-[390px]:text-[16px] sm:text-xl md:text-2xl'
-            : 'text-lg'
+            : 'text-base min-[390px]:text-lg sm:text-xl'
         }`}>
           {linkTo ? (
             <Link to={linkTo} className="transition-colors hover:text-zinc-300">
@@ -74,7 +74,7 @@ function ProjectShowcaseCard({
       </div>
 
       {cover?.image_path && (
-        <div className={variant === 'featured' ? 'mt-3 px-3 min-[390px]:mt-4 min-[390px]:px-4' : 'mt-4 px-4'}>
+        <div className={variant === 'featured' ? 'mt-3 px-3 min-[390px]:mt-4 min-[390px]:px-4' : 'mt-3 px-3 min-[390px]:mt-4 min-[390px]:px-4'}>
           {linkTo ? (
             <Link to={linkTo} className="block">
               <img
@@ -99,13 +99,13 @@ function ProjectShowcaseCard({
         </div>
       )}
 
-      <div className={variant === 'featured' ? 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4' : 'space-y-5 p-4'}>
+      <div className={variant === 'featured' ? 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4' : 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4'}>
         {total > 0 && (
           <section>
             <p className={`mb-3 font-semibold uppercase tracking-wider text-zinc-500 ${
               variant === 'featured'
                 ? 'text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs'
-                : 'mb-4 text-xs'
+                : 'mb-3 text-[10px] min-[360px]:text-[11px] min-[390px]:mb-4 min-[390px]:text-xs'
             }`}>
               Detail Photos
             </p>
@@ -118,7 +118,7 @@ function ProjectShowcaseCard({
                 className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
                   variant === 'featured'
                     ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
-                    : 'h-9 w-9'
+                    : 'h-11 w-11 min-h-11 min-w-11'
                 }`}
               >
                 ←
@@ -170,7 +170,7 @@ function ProjectShowcaseCard({
                 className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
                   variant === 'featured'
                     ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
-                    : 'h-9 w-9'
+                    : 'h-11 w-11 min-h-11 min-w-11'
                 }`}
               >
                 →
@@ -189,7 +189,7 @@ function ProjectShowcaseCard({
           className={`w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] border-t border-zinc-800 leading-relaxed text-zinc-400 ${
             variant === 'featured'
               ? 'pt-3 text-[11px] min-[360px]:text-xs min-[390px]:pt-4 min-[390px]:text-[13px] sm:text-sm'
-              : 'pt-4 text-sm'
+              : 'pt-3 text-xs min-[360px]:text-[13px] min-[390px]:pt-4 min-[390px]:text-sm sm:text-base'
           } ${
             clampDescription ? 'line-clamp-3' : ''
           }`}
@@ -199,7 +199,7 @@ function ProjectShowcaseCard({
 
         {onDelete && (
           <div className="flex flex-col gap-3 border-t border-zinc-800 pt-3 @sm:flex-row @sm:items-center @sm:justify-between">
-            <p className="text-xs text-zinc-500">
+            <p className="text-[11px] min-[360px]:text-xs text-zinc-500">
               {total} detail photos
             </p>
 
@@ -207,7 +207,7 @@ function ProjectShowcaseCard({
               type="button"
               onClick={onDelete}
               disabled={isDeleting}
-              className="w-full rounded-lg border border-red-900 px-4 py-2 text-sm text-red-400 hover:bg-red-950 disabled:opacity-50 @sm:w-auto"
+              className="w-full min-h-11 rounded-lg border border-red-900 px-4 py-2 text-xs min-[390px]:text-sm text-red-400 hover:bg-red-950 disabled:opacity-50 @sm:w-auto"
             >
               {isDeleting ? 'Deleting...' : 'Delete Project'}
             </button>

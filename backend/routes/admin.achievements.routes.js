@@ -58,7 +58,7 @@ function validateYear(value) {
 function validateImagePath(value, fieldName) {
   const result = validateText(value, 500, fieldName)
 
-  if (!/^\/uploads\/[0-9a-f-]{36}\.webp$/i.test(result)) {
+  if (!/^\/uploads\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(result)) {
     throw new ValidationError(`${fieldName} tidak valid.`)
   }
 
@@ -188,8 +188,14 @@ router.post('/', async (req, res) => {
     })
   } catch (error) {
     if (transactionStarted) {
-      await connection.rollback().catch(() => {})
-      transactionStarted = false
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghargaan:',
+          rollbackError.message
+        )
+      }
     }
 
     if (error instanceof ValidationError) {
@@ -312,8 +318,14 @@ router.put('/:id', async (req, res) => {
     })
   } catch (error) {
     if (transactionStarted) {
-      await connection.rollback().catch(() => {})
-      transactionStarted = false
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghargaan:',
+          rollbackError.message
+        )
+      }
     }
 
     if (error instanceof ValidationError) {
@@ -336,6 +348,9 @@ router.put('/:id', async (req, res) => {
 
 // Menghapus penghargaan
 router.delete('/:id', async (req, res) => {
+  const connection = await db.getConnection()
+  let transactionStarted = false
+
   try {
     const achievementId = validateId(req.params.id)
 
@@ -346,24 +361,34 @@ router.delete('/:id', async (req, res) => {
       })
     }
 
-    const [rows] = await db.query(
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [rows] = await connection.query(
       `SELECT trophy_image_path, vehicle_image_path
        FROM achievements
-       WHERE id = ?`,
+       WHERE id = ?
+       FOR UPDATE`,
       [achievementId]
     )
 
     if (rows.length === 0) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Penghargaan tidak ditemukan.',
       })
     }
 
-    await db.query(
+    await connection.query(
       'DELETE FROM achievements WHERE id = ?',
       [achievementId]
     )
+
+    await connection.commit()
+    transactionStarted = false
 
     const imagePaths = new Set([
       rows[0].trophy_image_path,
@@ -385,12 +410,25 @@ router.delete('/:id', async (req, res) => {
       message: 'Penghargaan berhasil dihapus.',
     })
   } catch (error) {
+    if (transactionStarted) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghapusan penghargaan:',
+          rollbackError.message
+        )
+      }
+    }
+
     console.error('Gagal menghapus penghargaan:', error.message)
 
     return res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    connection.release()
   }
 })
 

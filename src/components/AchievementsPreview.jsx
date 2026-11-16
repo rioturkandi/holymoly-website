@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiRequest } from '../services/api'
+import { getSafeHttpUrl } from '../utils/url'
 
 function AchievementsPreview() {
   const [latestAchievement, setLatestAchievement] = useState(null)
@@ -210,7 +211,7 @@ function AchievementsPreview() {
 
                   <div className="mt-auto pt-4 sm:pt-5">
                   <a
-                    href={latestMedia.article_url}
+                    href={getSafeHttpUrl(latestMedia.article_url) || undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3.5 py-1.5 min-[360px]:px-4 min-[390px]:px-5 text-center text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"

@@ -29,17 +29,23 @@ function AdminProjects() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
-  // Mengambil daftar proyek dari backend
+  // Mengambil daftar proyek dari backend tanpa mengubah state.
+  async function fetchProjects() {
+    const response = await apiRequest('/api/admin/projects', {
+      auth: true,
+    })
+
+    return response.data || []
+  }
+
+  // Memuat ulang daftar proyek setelah proses tambah atau hapus.
   async function loadProjects() {
     setIsLoading(true)
     setError('')
 
     try {
-      const response = await apiRequest('/api/admin/projects', {
-        auth: true,
-      })
-
-      setProjects(response.data || [])
+      const data = await fetchProjects()
+      setProjects(data)
     } catch (error) {
       setError(error.message)
     } finally {
@@ -47,8 +53,33 @@ function AdminProjects() {
     }
   }
 
+  // Memuat proyek pertama kali dan mencegah update setelah komponen dilepas.
   useEffect(() => {
-    loadProjects()
+    let isMounted = true
+
+    async function loadInitialProjects() {
+      try {
+        const data = await fetchProjects()
+
+        if (isMounted) {
+          setProjects(data)
+        }
+      } catch (error) {
+        if (isMounted) {
+          setError(error.message)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadInitialProjects()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   // Mengunggah satu foto ke server
@@ -309,24 +340,24 @@ function AdminProjects() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-8">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-widest text-zinc-500">
+        <p className="text-[8px] font-semibold uppercase tracking-[0.25em] text-zinc-500 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
           Content Management
         </p>
-        <h1 className="text-3xl font-bold uppercase text-[#E5E7EB]">
+        <h1 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:mt-3 sm:text-5xl md:text-6xl">
           Projects
         </h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <p className="mt-2 max-w-xl text-[12px] leading-relaxed text-zinc-400 min-[360px]:text-[13px] min-[390px]:text-sm sm:mt-3">
           Tambahkan dan kelola project HOLYMOLY.
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="admin-card space-y-6 p-6">
-        <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">Add New Project</h2>
+      <form onSubmit={handleSave} className="admin-card min-w-0 space-y-5 p-3 min-[390px]:space-y-6 min-[390px]:p-4 sm:p-6">
+        <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">Add New Project</h2>
 
         <div>
-          <label className="mb-2 block text-sm text-zinc-300">Title</label>
+          <label className="mb-2 block text-xs text-zinc-300 min-[360px]:text-[13px] min-[390px]:text-sm">Title</label>
           <input
             type="text"
             name="vehicle_name"
@@ -334,12 +365,12 @@ function AdminProjects() {
             onChange={handleChange}
             maxLength={255}
             required
-            className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white"
+            className="min-h-11 w-full rounded-lg border border-zinc-700 bg-black px-3 py-2.5 text-xs text-white min-[360px]:text-[13px] min-[390px]:px-4 min-[390px]:py-3 min-[390px]:text-sm"
           />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-zinc-300">Cover Photo</label>
+          <label className="mb-2 block text-xs text-zinc-300 min-[360px]:text-[13px] min-[390px]:text-sm">Cover Photo</label>
           <input
             id="cover-photo-input"
             type="file"
@@ -350,7 +381,7 @@ function AdminProjects() {
           />
           <label
             htmlFor="cover-photo-input"
-            className={`inline-flex cursor-pointer items-center rounded-lg bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600 peer-focus-visible:ring-2 peer-focus-visible:ring-white ${isUploading ? 'pointer-events-none opacity-50' : ''}`}
+            className={`inline-flex min-h-11 cursor-pointer items-center rounded-lg bg-zinc-700 px-3 py-2.5 text-xs font-medium min-[360px]:text-[13px] min-[390px]:px-4 min-[390px]:text-sm text-white hover:bg-zinc-600 peer-focus-visible:ring-2 peer-focus-visible:ring-white ${isUploading ? 'pointer-events-none opacity-50' : ''}`}
           >
             Choose File
           </label>
@@ -375,10 +406,10 @@ function AdminProjects() {
                   className="h-full w-full pointer-events-none object-cover"
                 />
               </div>
-              <p className="text-xs text-zinc-400">
+              <p className="text-[11px] leading-relaxed text-zinc-400 min-[390px]:text-xs">
                 Geser foto di dalam kotak untuk mengatur bagian yang terlihat.
               </p>
-              <p className="text-sm text-green-400">
+              <p className="text-xs text-green-400 min-[390px]:text-sm">
                 Cover photo berhasil diunggah.
               </p>
             </div>
@@ -386,7 +417,7 @@ function AdminProjects() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-zinc-300">Detail Photos (3–8 photos)</label>
+          <label className="mb-2 block text-xs text-zinc-300 min-[360px]:text-[13px] min-[390px]:text-sm">Detail Photos (3–8 photos)</label>
           <input
             id="detail-photos-input"
             type="file"
@@ -398,14 +429,14 @@ function AdminProjects() {
           />
           <label
             htmlFor="detail-photos-input"
-            className={`inline-flex cursor-pointer items-center rounded-lg bg-zinc-700 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-600 peer-focus-visible:ring-2 peer-focus-visible:ring-white ${isUploading || form.detail_image_paths.length >= 8 ? 'pointer-events-none opacity-50' : ''}`}
+            className={`inline-flex min-h-11 cursor-pointer items-center rounded-lg bg-zinc-700 px-3 py-2.5 text-xs font-medium min-[360px]:text-[13px] min-[390px]:px-4 min-[390px]:text-sm text-white hover:bg-zinc-600 peer-focus-visible:ring-2 peer-focus-visible:ring-white ${isUploading || form.detail_image_paths.length >= 8 ? 'pointer-events-none opacity-50' : ''}`}
           >
             Choose File
           </label>
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 text-[11px] text-zinc-500 min-[390px]:text-xs">
             {form.detail_image_paths.length}/8 foto dipilih
           </p>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="mt-3 grid min-w-0 grid-cols-2 gap-2 min-[390px]:gap-3 sm:grid-cols-3">
             {form.detail_image_paths.map((imagePath, index) => (
               <div
                 key={imagePath}
@@ -414,16 +445,16 @@ function AdminProjects() {
                 <img
                   src={imagePath}
                   alt={`Detail Photo ${index + 1}`}
-                  className="h-32 w-full object-cover"
+                  className="h-24 w-full object-cover min-[390px]:h-28 sm:h-32"
                 />
-                <div className="flex items-center justify-between gap-2 p-2">
-                  <span className="text-xs text-zinc-300">
+                <div className="flex min-h-11 items-center justify-between gap-1 p-2 min-[390px]:gap-2">
+                  <span className="text-[10px] text-zinc-300 min-[360px]:text-[11px] min-[390px]:text-xs">
                     Detail {index + 1}
                   </span>
                   <button
                     type="button"
                     onClick={() => removeDetailPhoto(index)}
-                    className="text-xs text-red-400 hover:text-red-300"
+                    className="min-h-11 px-2 text-[11px] text-red-400 hover:text-red-300 min-[390px]:text-xs"
                   >
                     Remove
                   </button>
@@ -434,7 +465,7 @@ function AdminProjects() {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-zinc-300">Description</label>
+          <label className="mb-2 block text-xs text-zinc-300 min-[360px]:text-[13px] min-[390px]:text-sm">Description</label>
           <textarea
             name="description"
             value={form.description}
@@ -442,41 +473,41 @@ function AdminProjects() {
             maxLength={500}
             rows={5}
             required
-            className="w-full rounded-lg border border-zinc-700 bg-black px-4 py-3 text-white"
+            className="min-h-11 w-full rounded-lg border border-zinc-700 bg-black px-3 py-2.5 text-xs text-white min-[360px]:text-[13px] min-[390px]:px-4 min-[390px]:py-3 min-[390px]:text-sm"
           />
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-[11px] text-zinc-500 min-[390px]:text-xs">
             {form.description.length}/500 karakter
           </p>
         </div>
 
-        {error && <p className="text-sm text-red-400">{error}</p>}
-        {message && <p className="text-sm text-green-400">{message}</p>}
+        {error && <p className="text-xs leading-relaxed text-red-400 min-[390px]:text-sm">{error}</p>}
+        {message && <p className="text-xs text-green-400 min-[390px]:text-sm">{message}</p>}
 
         <button
           type="submit"
           disabled={isSaving || isUploading}
-          className="rounded-lg bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-300 disabled:opacity-50"
+          className="min-h-11 w-full rounded-lg bg-white px-5 py-3 text-xs font-semibold text-black transition hover:bg-zinc-300 disabled:opacity-50 min-[390px]:text-sm sm:w-auto sm:px-6"
         >
           {isSaving ? 'Saving...' : 'Save Project'}
         </button>
       </form>
 
-      <section className="space-y-4">
-        <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
+      <section className="min-w-0 space-y-4">
+        <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
           Existing Projects
         </h2>
 
         {isLoading && (
-          <p className="text-sm text-zinc-400">Loading projects...</p>
+          <p className="text-xs text-zinc-400 min-[390px]:text-sm">Loading projects...</p>
         )}
 
         {!isLoading && projects.length === 0 && (
-          <p className="rounded-lg border border-zinc-800 p-5 text-sm text-zinc-400">
+          <p className="rounded-lg border border-zinc-800 p-4 text-xs leading-relaxed text-zinc-400 min-[390px]:p-5 min-[390px]:text-sm">
             Belum ada project yang ditambahkan.
           </p>
         )}
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,32rem),1fr))] gap-4">
+        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,28rem),1fr))] gap-3 min-[390px]:gap-4">
           {projects.map((project) => (
             <ProjectShowcaseCard
               key={project.id}

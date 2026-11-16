@@ -1,5 +1,12 @@
 const TOKEN_KEY = 'holymoly_admin_token'
 
+// Handler untuk mengarahkan admin ketika sesi berakhir
+let unauthorizedHandler = null
+
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler
+}
+
 // Mengambil token admin dari sessionStorage
 export function getAdminToken() {
   return sessionStorage.getItem(TOKEN_KEY)
@@ -45,7 +52,15 @@ export async function apiRequest(path, options = {}) {
     const token = getAdminToken()
 
     if (!token) {
-      throw new Error('Sesi admin tidak ditemukan. Silakan login kembali.')
+      clearAdminToken()
+      unauthorizedHandler?.()
+
+      const error = new Error(
+        'Sesi admin tidak ditemukan. Silakan login kembali.'
+      )
+      error.status = 401
+
+      throw error
     }
 
     requestHeaders.set('Authorization', `Bearer ${token}`)
@@ -67,27 +82,50 @@ export async function apiRequest(path, options = {}) {
     body: requestBody,
   })
 
-  // Membaca respons berdasarkan Content-Type
+  // Membaca respons sebagai teks terlebih dahulu
   const contentType = response.headers.get('content-type') || ''
+  const responseText = await response.text()
+  const isJson = contentType.includes('application/json')
 
-  let data = null
+  let data = responseText
+  let hasInvalidJson = false
 
-  if (contentType.includes('application/json')) {
-    data = await response.json()
-  } else {
-    data = await response.text()
+  // Mem-parsing JSON tanpa menghentikan penanganan status HTTP
+  if (isJson) {
+    if (!responseText) {
+      data = null
+    } else {
+      try {
+        data = JSON.parse(responseText)
+      } catch {
+        hasInvalidJson = true
+      }
+    }
   }
 
   // Menangani respons HTTP yang gagal
   if (!response.ok) {
+    // Menghapus sesi admin jika token sudah tidak valid
+    if (auth && response.status === 401) {
+      clearAdminToken()
+      unauthorizedHandler?.()
+    }
+
     const message =
-      data?.message ||
+      (data && typeof data === 'object' && data.message) ||
       `Request gagal dengan status ${response.status}.`
 
     const error = new Error(message)
     error.status = response.status
     error.data = data
 
+    throw error
+  }
+
+  // JSON yang rusak pada respons sukses tetap dianggap sebagai error
+  if (hasInvalidJson) {
+    const error = new Error('Respons server bukan JSON yang valid.')
+    error.data = data
     throw error
   }
 

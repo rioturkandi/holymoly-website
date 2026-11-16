@@ -32,7 +32,7 @@ function validateText(value, maxLength, fieldName) {
 function validateImagePath(value, fieldName) {
   const result = validateText(value, 500, fieldName)
 
-  if (!/^\/uploads\/[0-9a-f-]{36}\.webp$/i.test(result)) {
+  if (!/^\/uploads\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(result)) {
     throw new ValidationError(`${fieldName} tidak valid.`)
   }
 
@@ -128,9 +128,11 @@ router.get('/', async (req, res) => {
 
 // Menambahkan proyek baru
 router.post('/', async (req, res) => {
-  const connection = await db.getConnection()
+  let connection
+  let transactionStarted = false
 
   try {
+    connection = await db.getConnection()
     const body = req.body
 
     const title = validateText(body?.vehicle_name, 255, 'Title')
@@ -162,6 +164,7 @@ router.post('/', async (req, res) => {
     }
 
     await connection.beginTransaction()
+    transactionStarted = true
 
     const [projectResult] = await connection.query(
       `INSERT INTO projects (vehicle_name, description)
@@ -188,6 +191,7 @@ router.post('/', async (req, res) => {
     }
 
     await connection.commit()
+    transactionStarted = false
 
     return res.status(201).json({
       success: true,
@@ -195,7 +199,16 @@ router.post('/', async (req, res) => {
       data: { id: projectId },
     })
   } catch (error) {
-    await connection.rollback()
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback proyek:',
+          rollbackError.message
+        )
+      }
+    }
 
     if (error instanceof ValidationError) {
       return res.status(400).json({
@@ -210,12 +223,16 @@ router.post('/', async (req, res) => {
       message: 'Terjadi kesalahan pada server.',
     })
   } finally {
-    connection.release()
+    if (connection) connection.release()
   }
 })
 
 // Menghapus proyek tanpa menghapus foto yang masih digunakan
 router.delete('/:id', async (req, res) => {
+  let connection
+  let transactionStarted = false
+  let imagePaths
+
   try {
     const projectId = validateId(req.params.id)
 
@@ -226,29 +243,50 @@ router.delete('/:id', async (req, res) => {
       })
     }
 
-    const [projects] = await db.query(
-      'SELECT id FROM projects WHERE id = ?',
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [projects] = await connection.query(
+      'SELECT id FROM projects WHERE id = ? FOR UPDATE',
       [projectId]
     )
 
     if (projects.length === 0) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Proyek tidak ditemukan.',
       })
     }
 
-    const [images] = await db.query(
+    const [images] = await connection.query(
       'SELECT image_path FROM project_images WHERE project_id = ?',
       [projectId]
     )
 
-    await db.query('DELETE FROM projects WHERE id = ?', [projectId])
+    imagePaths = [...new Set(images.map((image) => image.image_path))]
 
-    const imagePaths = [...new Set(images.map((image) => image.image_path))]
+    await connection.query(
+      'DELETE FROM projects WHERE id = ?',
+      [projectId]
+    )
+
+    await connection.commit()
+    transactionStarted = false
 
     for (const imagePath of imagePaths) {
-      await deleteUnusedImage(imagePath)
+      try {
+        await deleteUnusedImage(imagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan foto proyek:',
+          imagePath,
+          cleanupError.message
+        )
+      }
     }
 
     return res.status(200).json({
@@ -256,11 +294,24 @@ router.delete('/:id', async (req, res) => {
       message: 'Proyek berhasil dihapus.',
     })
   } catch (error) {
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghapusan proyek:',
+          rollbackError.message
+        )
+      }
+    }
+
     console.error('Gagal menghapus proyek:', error.message)
     return res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) connection.release()
   }
 })
 

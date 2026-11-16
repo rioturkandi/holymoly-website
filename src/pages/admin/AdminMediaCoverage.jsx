@@ -39,21 +39,26 @@ function AdminMediaCoverage() {
   }, [imagePreview])
 
   const inputClass =
-    'mt-2 w-full rounded border border-white/10 bg-[#100C08] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
+    'mt-2 min-h-11 w-full min-w-0 rounded border border-white/10 bg-[#100C08] px-3 py-2.5 text-xs text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400 min-[360px]:px-4 min-[390px]:text-[13px] sm:text-sm'
 
   const labelClass =
-    'text-xs font-medium uppercase tracking-wider text-neutral-400'
+    'text-[10px] font-medium uppercase tracking-wider text-neutral-400 min-[360px]:text-[11px] min-[390px]:text-xs'
+
+  async function fetchMediaCoverage() {
+    const response = await apiRequest('/api/admin/media-coverage', {
+      auth: true,
+    })
+
+    return response.data
+  }
 
   async function loadMediaCoverage() {
     setIsLoading(true)
     setError('')
 
     try {
-      const response = await apiRequest('/api/admin/media-coverage', {
-        auth: true,
-      })
-
-      setMediaItems(response.data)
+      const data = await fetchMediaCoverage()
+      setMediaItems(data)
     } catch (requestError) {
       setError(requestError.message)
     } finally {
@@ -62,7 +67,31 @@ function AdminMediaCoverage() {
   }
 
   useEffect(() => {
-    loadMediaCoverage()
+    let isMounted = true
+
+    async function loadInitialMediaCoverage() {
+      try {
+        const data = await fetchMediaCoverage()
+
+        if (isMounted) {
+          setMediaItems(data)
+        }
+      } catch (requestError) {
+        if (isMounted) {
+          setError(requestError.message)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadInitialMediaCoverage()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   function handleChange(event) {
@@ -287,35 +316,35 @@ function AdminMediaCoverage() {
   }
 
   return (
-    <section className="mt-16 border-t border-white/10 pt-12">
-      <div className="mb-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">
+    <section className="mt-10 min-w-0 border-t border-white/10 pt-8 min-[390px]:mt-12 min-[390px]:pt-10 sm:mt-16 sm:pt-12">
+      <div className="mb-6 min-[390px]:mb-8">
+        <p className="text-[8px] uppercase tracking-[0.25em] text-neutral-400 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
           Press & Publications
         </p>
 
-        <h2 className="mt-3 text-2xl font-bold uppercase sm:text-3xl text-[#E5E7EB]">
+        <h2 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:mt-3 min-[390px]:text-[34px] sm:text-3xl">
           Media Coverage.
         </h2>
 
-        <p className="mt-2 text-sm text-neutral-400">
+        <p className="mt-2 text-xs leading-relaxed text-neutral-400 min-[360px]:text-[13px] min-[390px]:text-sm">
           Manage articles and media coverage featuring HOLYMOLY.
         </p>
       </div>
 
-      <div className="admin-card mb-10 p-5 sm:p-7">
-        <div className="mb-7">
-          <h3 className="text-lg font-bold uppercase text-[#E5E7EB]">
+      <div className="admin-card mb-8 min-w-0 p-4 min-[390px]:mb-10 min-[390px]:p-5 sm:p-7">
+        <div className="mb-5 min-[390px]:mb-7">
+          <h3 className="text-base font-bold uppercase text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
             {editingId ? 'Edit Media Coverage' : 'Add Media Coverage'}
           </h3>
 
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-[11px] leading-relaxed text-neutral-500 min-[390px]:text-xs">
             {editingId
               ? 'Perbarui informasi artikel atau liputan.'
               : 'Tambahkan artikel atau liputan yang mengangkat HOLYMOLY.'}
           </p>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
+        <form onSubmit={handleSave} className="min-w-0 space-y-5 min-[390px]:space-y-6">
           <label className={`${labelClass} block`}>
             Article Title
             <input
@@ -349,8 +378,8 @@ function AdminMediaCoverage() {
               )}
             </div>
 
-            <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <label className="flex cursor-pointer items-center justify-center rounded border border-white/15 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200">
+            <div className="mt-3 grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
+              <label className="flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:px-4 min-[390px]:text-xs">
                 Choose Image
 
                 <input
@@ -369,7 +398,7 @@ function AdminMediaCoverage() {
                 type="button"
                 onClick={handleOpenCropEditor}
                 disabled={!cropSource || isUploading || isSaving}
-                className="rounded border border-white/15 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 disabled:cursor-not-allowed disabled:opacity-40"
+                className="min-h-11 rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 disabled:cursor-not-allowed disabled:opacity-40 min-[390px]:px-4 min-[390px]:text-xs"
               >
                 Adjust Crop
               </button>
@@ -403,22 +432,22 @@ function AdminMediaCoverage() {
           </label>
 
           {error && (
-            <p className="rounded border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+            <p className="break-words rounded border border-red-500/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-400 min-[390px]:text-sm">
               {error}
             </p>
           )}
 
           {message && (
-            <p className="rounded border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+            <p className="break-words rounded border border-green-500/30 bg-green-500/10 p-3 text-xs leading-relaxed text-green-400 min-[390px]:text-sm">
               {message}
             </p>
           )}
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3 min-[390px]:flex-row min-[390px]:flex-wrap">
             <button
               type="submit"
               disabled={isSaving || isUploading}
-              className="rounded bg-neutral-200 text-black px-6 py-3 text-xs font-bold uppercase tracking-wider transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-11 w-full rounded bg-neutral-200 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-6 min-[390px]:text-xs"
             >
               {isSaving
                 ? 'Saving...'
@@ -431,7 +460,7 @@ function AdminMediaCoverage() {
               <button
                 type="button"
                 onClick={handleCancelEdit}
-                className="rounded border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-wider text-neutral-300 transition hover:bg-white/10"
+                className="min-h-11 w-full rounded border border-white/20 px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-neutral-300 transition hover:bg-white/10 min-[390px]:w-auto min-[390px]:px-6 min-[390px]:text-xs"
               >
                 Cancel Edit
               </button>
@@ -440,30 +469,30 @@ function AdminMediaCoverage() {
         </form>
       </div>
 
-      <div className="mb-6">
-        <h3 className="text-xl font-bold uppercase text-[#E5E7EB]">
+      <div className="mb-5 min-[390px]:mb-6">
+        <h3 className="text-base font-bold uppercase text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
           Media Coverage Records
         </h3>
 
-        <p className="mt-1 text-xs text-neutral-500">
+        <p className="mt-1 text-[11px] text-neutral-500 min-[390px]:text-xs">
           Manage existing articles and media coverage.
         </p>
       </div>
 
       {isLoading ? (
-        <p className="text-sm text-neutral-500">
+        <p className="text-xs text-neutral-500 min-[390px]:text-sm">
           Loading Media Coverage...
         </p>
       ) : mediaItems.length === 0 ? (
-        <p className="admin-card p-6 text-sm text-neutral-500">
+        <p className="admin-card p-4 text-xs text-neutral-500 min-[390px]:p-6 min-[390px]:text-sm">
           Belum ada data Media Coverage.
         </p>
       ) : (
-        <div className="grid gap-5 lg:grid-cols-2">
+        <div className="grid min-w-0 grid-cols-1 gap-3 min-[390px]:gap-4 lg:grid-cols-2 lg:gap-5">
           {mediaItems.map((item) => (
             <article
               key={item.id}
-              className="admin-card overflow-hidden"
+              className="admin-card min-w-0 overflow-hidden"
             >
               <img
                 src={item.image_path}
@@ -471,12 +500,12 @@ function AdminMediaCoverage() {
                 className="aspect-[16/9] w-full object-cover"
               />
 
-              <div className="p-5">
-                <h4 className="text-lg font-bold uppercase text-[#E5E7EB]">
+              <div className="min-w-0 p-3 min-[390px]:p-4 sm:p-5">
+                <h4 className="break-words text-base font-bold uppercase text-[#E5E7EB] min-[390px]:text-lg">
                   {item.title}
                 </h4>
 
-                <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 min-[360px]:text-[11px] min-[390px]:text-xs">
                   {String(item.publication_date || '').slice(0, 10)}
                 </p>
 
@@ -484,16 +513,16 @@ function AdminMediaCoverage() {
                   href={item.article_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-block break-all text-xs text-neutral-400 underline transition hover:text-neutral-200"
+                  className="mt-4 inline-block min-h-11 max-w-full break-all py-2 text-[11px] text-neutral-400 underline transition hover:text-neutral-200 min-[390px]:text-xs"
                 >
                   Open Article
                 </a>
 
-                <div className="mt-6 flex gap-3 border-t border-white/10 pt-4">
+                <div className="mt-5 flex flex-col gap-2 border-t border-white/10 pt-4 min-[390px]:mt-6 min-[390px]:flex-row min-[390px]:gap-3">
                   <button
                     type="button"
                     onClick={() => handleEdit(item)}
-                    className="rounded border border-white/20 px-4 py-2 text-xs font-semibold uppercase text-neutral-300 transition hover:bg-neutral-300/10"
+                    className="min-h-11 w-full rounded border border-white/20 px-4 py-2 text-[11px] font-semibold uppercase text-neutral-300 transition hover:bg-neutral-300/10 min-[390px]:w-auto min-[390px]:text-xs"
                   >
                     Edit
                   </button>
@@ -502,7 +531,7 @@ function AdminMediaCoverage() {
                     type="button"
                     onClick={() => handleDelete(item)}
                     disabled={deletingId === item.id}
-                    className="rounded border border-red-500/40 px-4 py-2 text-xs font-semibold uppercase text-red-400 transition hover:bg-red-500/10 disabled:opacity-50"
+                    className="min-h-11 w-full rounded border border-red-500/40 px-4 py-2 text-[11px] font-semibold uppercase text-red-400 transition hover:bg-red-500/10 disabled:opacity-50 min-[390px]:w-auto min-[390px]:text-xs"
                   >
                     {deletingId === item.id ? 'Deleting...' : 'Delete'}
                   </button>

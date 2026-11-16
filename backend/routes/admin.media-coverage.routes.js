@@ -34,7 +34,7 @@ function validateText(value, maxLength, fieldName) {
 function validateImagePath(value) {
   const imagePath = validateText(value, 500, 'Foto')
 
-  if (!/^\/uploads\/[0-9a-f-]{36}\.webp$/i.test(imagePath)) {
+  if (!/^\/uploads\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(imagePath)) {
     throw new ValidationError('Path foto tidak valid.')
   }
 

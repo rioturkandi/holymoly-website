@@ -44,7 +44,7 @@ function AdminLayout() {
               to={item.path}
               end={item.end}
               className={({ isActive }) =>
-                `w-fit shrink-0 rounded px-0.5 py-2 text-center text-[clamp(6px,1.8vw,8px)] leading-none whitespace-nowrap md:px-4 transition-colors duration-200 ease-in-out md:w-full md:px-4 md:py-3 md:text-left md:text-sm ${
+                `w-fit shrink-0 rounded px-0.5 py-2 text-center text-[10px] min-[360px]:text-[11px] min-[390px]:text-xs leading-none whitespace-nowrap md:px-4 transition-colors duration-200 ease-in-out md:w-full md:px-4 md:py-3 md:text-left md:text-sm ${
                   isActive
                     ? 'bg-white text-black'
                     : 'text-neutral-400 hover:bg-white/10 hover:text-white'

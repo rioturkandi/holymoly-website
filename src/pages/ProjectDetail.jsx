@@ -6,7 +6,8 @@ function ProjectDetail() {
   const { id } = useParams()
 
   const [project, setProject] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [loadedProjectId, setLoadedProjectId] = useState(null)
+  const isLoading = loadedProjectId !== id
   const [error, setError] = useState('')
   const [selectedImage, setSelectedImage] = useState(null)
 
@@ -32,23 +33,21 @@ function ProjectDetail() {
             : null
 
         if (isMounted) {
+          setError('')
+          setSelectedImage(null)
           setProject(selectedProject)
         }
       } catch (error) {
         if (isMounted) {
+          setSelectedImage(null)
           setError(error.message || 'Failed to load project.')
         }
       } finally {
         if (isMounted) {
-          setIsLoading(false)
+          setLoadedProjectId(id)
         }
       }
     }
-
-    setIsLoading(true)
-    setProject(null)
-    setError('')
-    setSelectedImage(null)
 
     loadProject()
 

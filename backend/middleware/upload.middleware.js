@@ -142,8 +142,6 @@ async function processImage(req, res, next) {
       path: `/uploads/${filename}`,
     }
 
-    // Melanjutkan proses ke middleware atau handler berikutnya
-    next()
   } catch (error) {
     // Membersihkan file jika proses penyimpanan gagal
     if (outputPath) {
@@ -181,6 +179,9 @@ async function processImage(req, res, next) {
         : 'Gambar tidak valid atau gagal diproses.',
     })
   }
+
+  // Melanjutkan proses setelah pemrosesan gambar berhasil
+  next()
 }
 
 module.exports = {

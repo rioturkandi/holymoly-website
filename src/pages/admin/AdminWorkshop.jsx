@@ -15,7 +15,6 @@ function AdminWorkshop() {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
 
   useEffect(() => {
     if (!cropSource.startsWith('blob:')) return
@@ -33,37 +32,49 @@ function AdminWorkshop() {
     }
   }, [previews])
 
-  async function loadImages() {
-    setIsLoading(true)
-    setError('')
+  async function fetchImages() {
+    const response = await apiRequest('/api/admin/workshop/images', {
+      auth: true,
+    })
 
-    try {
-      const response = await apiRequest('/api/admin/workshop/images', {
-        auth: true,
-      })
-
-      setImages(
-        Array.from(
-          { length: 3 },
-          (_, index) => response.data?.[index] || ''
-        )
-      )
-    } catch (requestError) {
-      setError(requestError.message)
-    } finally {
-      setIsLoading(false)
-    }
+    return Array.from(
+      { length: 3 },
+      (_, index) => response.data?.[index] || ''
+    )
   }
 
   useEffect(() => {
-    loadImages()
+    let isMounted = true
+
+    async function loadInitialImages() {
+      try {
+        const data = await fetchImages()
+
+        if (isMounted) {
+          setImages(data)
+        }
+      } catch (requestError) {
+        if (isMounted) {
+          setError(requestError.message)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadInitialImages()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   function handleImageSelect(file, index) {
     if (!file) return
 
     setError('')
-    setMessage('')
 
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
 
@@ -99,8 +110,7 @@ function AdminWorkshop() {
 
     setIsCropOpen(false)
     setSelectedIndex(null)
-    setMessage('Crop berhasil diterapkan. Klik Save untuk menyimpan.')
-  }
+    }
 
   function handleCancelCrop() {
     setIsCropOpen(false)
@@ -128,7 +138,6 @@ function AdminWorkshop() {
 
   async function handleSave() {
     setError('')
-    setMessage('')
 
     if (images.some((image, index) => !image && !cropBlobs[index])) {
       setError('Workshop wajib memiliki tepat 3 foto.')
@@ -169,45 +178,45 @@ function AdminWorkshop() {
   }
 
   return (
-    <section>
-      <div className="mb-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">
+    <section className="min-w-0">
+      <div className="mb-6 min-[390px]:mb-8">
+        <p className="text-[8px] uppercase tracking-[0.25em] text-neutral-400 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
           Workshop Gallery
         </p>
 
-        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+        <h1 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:mt-3 min-[390px]:text-[34px] sm:text-5xl md:text-6xl">
           Workshop.
         </h1>
 
-        <p className="mt-3 text-sm text-neutral-400">
+        <p className="mt-2 text-xs leading-relaxed text-neutral-400 min-[360px]:text-[13px] min-[390px]:mt-3 min-[390px]:text-sm">
           Manage the three workshop photos displayed on the website.
         </p>
       </div>
 
       {error && (
-        <p className="mb-5 rounded border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
+        <p className="mb-4 break-words rounded border border-red-500/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-300 min-[390px]:mb-5 min-[390px]:text-sm">
           {error}
         </p>
       )}
 
       {isLoading ? (
-        <p className="text-sm text-neutral-400">Loading workshop photos...</p>
+        <p className="text-xs text-neutral-400 min-[390px]:text-sm">Loading workshop photos...</p>
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid min-w-0 grid-cols-1 gap-3 min-[390px]:gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
           {images.map((image, index) => (
             <div
               key={index}
-              className="admin-card p-4"
+              className="admin-card min-w-0 p-3 min-[390px]:p-4"
             >
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-bold uppercase text-[#E5E7EB]">
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 min-[390px]:mb-4">
+                <h2 className="text-xs font-bold uppercase text-[#E5E7EB] min-[390px]:text-sm">
                   Photo {String(index + 1).padStart(2, '0')}
                 </h2>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-neutral-500">16:9</span>
+                <div className="flex min-w-0 flex-wrap items-center gap-2 min-[390px]:gap-3">
+                  <span className="text-[10px] text-neutral-500 min-[390px]:text-xs">16:9</span>
                   <span
-                    className={`text-xs font-semibold ${
+                    className={`text-[10px] font-semibold min-[390px]:text-xs ${
                       images[index] && !cropBlobs[index]
                         ? 'text-green-400'
                         : 'text-amber-400'
@@ -220,7 +229,7 @@ function AdminWorkshop() {
                 </div>
               </div>
 
-              <div className="aspect-[16/9] overflow-hidden rounded border border-white/10 bg-[#100C08]">
+              <div className="aspect-[16/9] w-full overflow-hidden rounded border border-white/10 bg-[#100C08]">
                 {previews[index] || image ? (
                   <img
                     src={previews[index] || image}
@@ -228,13 +237,13 @@ function AdminWorkshop() {
                     className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-xs text-neutral-600">
+                  <div className="flex h-full items-center justify-center px-2 text-center text-[11px] text-neutral-600 min-[390px]:text-xs">
                     No photo selected
                   </div>
                 )}
               </div>
 
-              <label className="mt-4 flex cursor-pointer items-center justify-center rounded border border-white/15 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200">
+              <label className="mt-3 flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:mt-4 min-[390px]:px-4 min-[390px]:text-xs">
                 Choose Image
 
                 <input
@@ -253,12 +262,12 @@ function AdminWorkshop() {
         </div>
       )}
 
-      <div className="mt-5 flex justify-end">
+      <div className="mt-4 flex justify-stretch min-[390px]:mt-5 min-[390px]:justify-end">
         <button
           type="button"
           onClick={handleSave}
           disabled={isLoading || isSaving || isCropOpen}
-          className="rounded bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-11 w-full rounded bg-white px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-5 min-[390px]:py-2 min-[390px]:text-xs"
         >
           {isSaving ? 'Saving...' : 'Save Workshop Photos'}
         </button>

@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../services/api'
+import { getSafeHttpUrl } from '../utils/url'
 
 function formatPublicationDate(value) {
   const dateValue = String(value || '').slice(0, 10)
@@ -39,7 +40,7 @@ function Achievements() {
         if (isMounted) {
           setAchievements(response.data)
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
           setError('Gagal memuat data penghargaan. Silakan coba kembali.')
         }
@@ -61,7 +62,7 @@ function Achievements() {
         if (isMounted) {
           setMediaCoverage(response.data)
         }
-      } catch (error) {
+      } catch {
         if (isMounted) {
           setMediaError('Gagal memuat Media Coverage. Silakan coba kembali.')
         }
@@ -275,7 +276,7 @@ function Achievements() {
                     </h3>
 
                     <a
-                      href={item.article_url}
+                      href={getSafeHttpUrl(item.article_url) || undefined}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-5 sm:mt-6 inline-flex min-h-10 w-fit items-center justify-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-2.5 min-[390px]:px-5 text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"

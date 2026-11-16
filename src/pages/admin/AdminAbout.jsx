@@ -169,16 +169,16 @@ function AdminAbout() {
   }
 
   return (
-    <div>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
+    <div className="min-w-0">
+      <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 min-[390px]:gap-4">
+        <div className="min-w-0">
+          <p className="text-[8px] uppercase tracking-[0.25em] text-neutral-500 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
             Content Management
           </p>
-          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+          <h1 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:mt-3 min-[390px]:text-[34px] sm:text-5xl md:text-6xl">
             About.
           </h1>
-          <p className="mt-3 text-sm text-neutral-400">
+          <p className="mt-2 max-w-2xl text-xs leading-relaxed text-neutral-400 min-[360px]:text-[13px] min-[390px]:mt-3 min-[390px]:text-sm">
             Manage your company introduction, journey, vision, mission, and philosophy.
           </p>
         </div>
@@ -186,23 +186,23 @@ function AdminAbout() {
       </div>
 
       {isLoading && (
-        <p className="mt-10 text-sm text-neutral-400">
+        <p className="mt-8 text-xs text-neutral-400 min-[390px]:mt-10 min-[390px]:text-sm">
           Loading About content...
         </p>
       )}
 
       {!isLoading && errorMessage && (
-        <div className="mt-10 border border-red-500/30 bg-red-500/5 p-5">
-          <p className="text-sm text-red-400">
+        <div className="mt-8 min-w-0 border border-red-500/30 bg-red-500/5 p-3 min-[390px]:mt-10 min-[390px]:p-5">
+          <p className="text-xs text-red-400 min-[390px]:text-sm">
             Failed to load About content.
           </p>
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="mt-2 break-words text-xs text-neutral-400 min-[390px]:text-sm">
             {errorMessage}
           </p>
           <button
             type="button"
             onClick={handleRefresh}
-            className="mt-4 text-sm underline underline-offset-4"
+            className="mt-4 min-h-11 text-xs underline underline-offset-4 min-[390px]:text-sm"
           >
             Try again
           </button>
@@ -210,7 +210,7 @@ function AdminAbout() {
       )}
 
       {!isLoading && !errorMessage && (
-        <div className="mt-10 space-y-8">
+        <div className="mt-8 min-w-0 space-y-6 min-[390px]:mt-10 min-[390px]:space-y-8">
           {sections.map((section) => {
             const isBusy =
               savingKey === section.section_key ||
@@ -220,23 +220,23 @@ function AdminAbout() {
               <form
                 key={section.section_key}
                 onSubmit={(event) => handleSave(event, section)}
-                className="admin-card p-5 sm:p-7"
+                className="admin-card min-w-0 p-4 min-[390px]:p-5 sm:p-7"
               >
-                <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
+                <div className="mb-5 flex min-w-0 flex-wrap items-center justify-between gap-2 min-[390px]:mb-6 min-[390px]:gap-3">
+                  <h2 className="text-base font-bold uppercase text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
                     {section.label}
                   </h2>
 
-                  <span className="text-xs uppercase tracking-wider text-neutral-500">
+                  <span className="break-all text-[10px] uppercase tracking-wider text-neutral-500 min-[390px]:text-xs">
                     {section.section_key}
                   </span>
                 </div>
 
-                <div className="space-y-5">
+                <div className="min-w-0 space-y-4 min-[390px]:space-y-5">
                   <div>
                     <label
                       htmlFor={`${section.section_key}-eyebrow`}
-                      className="mb-2 block text-sm text-neutral-300"
+                      className="mb-2 block text-xs text-neutral-300 min-[360px]:text-[13px] min-[390px]:text-sm"
                     >
                       Eyebrow
                     </label>
@@ -248,14 +248,14 @@ function AdminAbout() {
                       onChange={(event) =>
                         updateSection(section.section_key, 'eyebrow', event.target.value)
                       }
-                      className="w-full border border-white/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-white"
+                      className="min-h-11 w-full min-w-0 rounded-sm border border-white/20 bg-black px-3 py-2.5 text-xs text-white outline-none focus:border-white min-[360px]:px-4 min-[390px]:text-[13px] sm:text-sm"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor={`${section.section_key}-title`}
-                      className="mb-2 block text-sm text-neutral-300"
+                      className="mb-2 block text-xs text-neutral-300 min-[360px]:text-[13px] min-[390px]:text-sm"
                     >
                       Title
                     </label>
@@ -267,14 +267,14 @@ function AdminAbout() {
                       onChange={(event) =>
                         updateSection(section.section_key, 'title', event.target.value)
                       }
-                      className="w-full border border-white/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-white"
+                      className="min-h-11 w-full min-w-0 rounded-sm border border-white/20 bg-black px-3 py-2.5 text-xs text-white outline-none focus:border-white min-[360px]:px-4 min-[390px]:text-[13px] sm:text-sm"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor={`${section.section_key}-description`}
-                      className="mb-2 block text-sm text-neutral-300"
+                      className="mb-2 block text-xs text-neutral-300 min-[360px]:text-[13px] min-[390px]:text-sm"
                     >
                       Description
                     </label>
@@ -286,9 +286,9 @@ function AdminAbout() {
                       onChange={(event) =>
                         updateSection(section.section_key, 'description', event.target.value)
                       }
-                      className="w-full resize-y border border-white/20 bg-black px-4 py-3 text-sm text-white outline-none focus:border-white"
+                      className="min-h-32 w-full min-w-0 resize-y rounded-sm border border-white/20 bg-black px-3 py-2.5 text-xs leading-relaxed text-white outline-none focus:border-white min-[360px]:px-4 min-[390px]:text-[13px] sm:text-sm"
                     />
-                    <p className="mt-1 text-right text-xs text-neutral-500">
+                    <p className="mt-1 text-right text-[11px] text-neutral-500 min-[390px]:text-xs">
                       {section.description.length}/5000
                     </p>
                   </div>
@@ -296,21 +296,22 @@ function AdminAbout() {
                 </div>
 
                 {messages[section.section_key] && (
-                  <p className="mt-5 text-sm text-green-400">
+                  <p className="mt-4 break-words text-xs leading-relaxed text-green-400 min-[390px]:mt-5 min-[390px]:text-sm">
                     {messages[section.section_key]}
                   </p>
                 )}
 
                 {errors[section.section_key] && (
-                  <p className="mt-5 text-sm text-red-400">
+                  <p className="mt-4 break-words text-xs leading-relaxed text-red-400 min-[390px]:mt-5 min-[390px]:text-sm">
                     {errors[section.section_key]}
                   </p>
                 )}
 
+                <div className="mt-5 flex flex-col gap-3 min-[390px]:mt-6 min-[390px]:flex-row min-[390px]:flex-wrap">
                 <button
                   type="submit"
                   disabled={isBusy}
-                  className="mt-6 border border-white bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-11 w-full border border-white bg-white px-4 py-3 text-xs font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-6 min-[390px]:text-sm"
                 >
                   {savingKey === section.section_key
                     ? 'Saving...'
@@ -321,12 +322,13 @@ function AdminAbout() {
                   type="button"
                   onClick={() => handleDelete(section)}
                   disabled={isBusy}
-                  className="mt-6 ml-3 border border-red-500/60 px-6 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-11 w-full border border-red-500/60 px-4 py-3 text-xs font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-6 min-[390px]:text-sm"
                 >
                   {deletingKey === section.section_key
                     ? 'Deleting...'
                     : 'Delete Section'}
                 </button>
+                </div>
               </form>
             )
           })}

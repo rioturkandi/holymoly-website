@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { setUnauthorizedHandler } from './services/api'
 
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
@@ -19,24 +20,22 @@ import AdminProjects from './pages/admin/AdminProjects'
 import AdminAchievements from './pages/admin/AdminAchievements'
 import AdminWorkshop from './pages/admin/AdminWorkshop'
 
-function AdminPlaceholder({ title }) {
-  return (
-    <div>
-      <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
-        Content Management
-      </p>
-      <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl">
-        {title}.
-      </h1>
-      <p className="mt-3 text-sm text-neutral-400">
-        Halaman pengelolaan {title} sedang disiapkan.
-      </p>
-    </div>
-  )
-}
 
 function AppContent() {
   const location = useLocation()
+  const navigate = useNavigate()
+
+  // Mengarahkan admin ke login ketika sesi berakhir
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      if (window.location.pathname !== '/admin/login') {
+        navigate('/admin/login', { replace: true })
+      }
+    })
+
+    return () => setUnauthorizedHandler(null)
+  }, [navigate])
+
   const isAdminRoute = location.pathname.startsWith('/admin')
 
   // Satu koneksi SSE untuk halaman website publik.

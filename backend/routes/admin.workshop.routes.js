@@ -16,16 +16,22 @@ function validateImages(images) {
     throw new ValidationError('Workshop wajib memiliki tepat 3 foto.')
   }
 
-  return images.map((image) => {
+  const validatedImages = images.map((image) => {
     if (
       typeof image !== 'string' ||
-      !/^\/uploads\/[0-9a-f-]{36}\.webp$/i.test(image)
+      !/^\/uploads\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.webp$/i.test(image)
     ) {
       throw new ValidationError('Path foto Workshop tidak valid.')
     }
 
     return image
   })
+
+  if (new Set(validatedImages).size !== 3) {
+    throw new ValidationError('Ketiga foto Workshop harus berbeda.')
+  }
+
+  return validatedImages
 }
 
 async function deleteUnusedImage(imagePath) {
@@ -45,8 +51,13 @@ async function deleteUnusedImage(imagePath) {
   )
 
   if (Number(rows[0].usage_count) === 0) {
+    const uploadDir = path.resolve(__dirname, '..', 'uploads')
     const filename = path.basename(imagePath)
-    const filePath = path.join(__dirname, '..', 'uploads', filename)
+    const filePath = path.resolve(uploadDir, filename)
+
+    if (!filePath.startsWith(`${uploadDir}${path.sep}`)) {
+      throw new Error('Path gambar berada di luar direktori uploads.')
+    }
 
     try {
       await fs.unlink(filePath)
@@ -85,12 +96,14 @@ router.get('/images', async (req, res) => {
 // Menyimpan tepat tiga foto Workshop
 router.put('/images', async (req, res) => {
   let connection
+  let transactionStarted = false
 
   try {
     const images = validateImages(req.body.images)
 
     connection = await db.getConnection()
     await connection.beginTransaction()
+    transactionStarted = true
 
     await connection.query(
       `INSERT INTO workshop_content
@@ -130,12 +143,21 @@ router.put('/images', async (req, res) => {
     }
 
     await connection.commit()
+    transactionStarted = false
 
     const newImages = new Set(images)
 
     for (const row of oldRows) {
       if (!newImages.has(row.image_path)) {
-        await deleteUnusedImage(row.image_path)
+        try {
+          await deleteUnusedImage(row.image_path)
+        } catch (cleanupError) {
+          console.error(
+            'Gagal membersihkan foto Workshop lama:',
+            row.image_path,
+            cleanupError.message
+          )
+        }
       }
     }
 
@@ -145,7 +167,16 @@ router.put('/images', async (req, res) => {
       data: images,
     })
   } catch (error) {
-    if (connection) await connection.rollback()
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback foto Workshop:',
+          rollbackError.message
+        )
+      }
+    }
 
     const isValidationError = error instanceof ValidationError
 

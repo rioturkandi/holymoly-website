@@ -1,13 +1,69 @@
 
 import heroImage from '../assets/images/hero-logo2.jpeg'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+
+function HeroBackground({ src, onReady }) {
+  const [imageSrc, setImageSrc] = useState(null)
+  const [isImageReady, setIsImageReady] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    let frameId
+
+    const loadImage = (imageUrl) => {
+      const image = new Image()
+
+      image.onload = () => {
+        if (!cancelled) {
+          setImageSrc(imageUrl)
+
+          frameId = requestAnimationFrame(() => {
+            if (!cancelled) {
+              setIsImageReady(true)
+              onReady()
+            }
+          })
+        }
+      }
+
+      image.onerror = () => {
+        if (imageUrl !== heroImage) {
+          loadImage(heroImage)
+        } else if (!cancelled) {
+          setIsImageReady(true)
+          onReady()
+        }
+      }
+
+      image.src = imageUrl
+    }
+
+    loadImage(src)
+
+    return () => {
+      cancelled = true
+      if (frameId) cancelAnimationFrame(frameId)
+    }
+  }, [src, onReady])
+
+  if (!imageSrc) return null
+
+  return (
+    <img
+      src={imageSrc}
+      alt="HOLYMOLY automotive"
+      className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
+        isImageReady ? 'opacity-100' : 'opacity-0'
+      }`}
+    />
+  )
+}
 
 function Hero({ content, isLoading = false, hasError = false }) {
   const [isContactHovered, setIsContactHovered] = useState(false)
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0 })
-  const [imageSrc, setImageSrc] = useState(null)
-  const [isImageReady, setIsImageReady] = useState(false)
+  const [readyBackground, setReadyBackground] = useState(null)
 
   const ctaRef = useRef(null)
   const exploreRef = useRef(null)
@@ -55,59 +111,26 @@ function Hero({ content, isLoading = false, hasError = false }) {
   const backgroundImage =
     content?.image_path || heroImage
 
+  const backgroundKey = `${backgroundImage}:${isLoading}:${hasError}`
+  const isImageReady = readyBackground === backgroundKey
 
-  // Memuat gambar hanya setelah data Hero selesai diterima.
-  useEffect(() => {
-    if (isLoading || hasError) return
+  const handleBackgroundReady = useCallback(() => {
+    setReadyBackground(backgroundKey)
+  }, [backgroundKey])
 
-    let cancelled = false
-    let frameId
 
-    setIsImageReady(false)
-    setImageSrc(null)
-
-    const loadImage = (src) => {
-      const image = new Image()
-
-      image.onload = () => {
-        if (!cancelled) {
-          setImageSrc(src)
-          frameId = requestAnimationFrame(() => {
-            if (!cancelled) setIsImageReady(true)
-          })
-        }
-      }
-
-      image.onerror = () => {
-        if (src !== heroImage) {
-          loadImage(heroImage)
-        } else if (!cancelled) {
-          setIsImageReady(true)
-        }
-      }
-
-      image.src = src
-    }
-
-    loadImage(backgroundImage)
-
-    return () => {
-      cancelled = true
-      if (frameId) cancelAnimationFrame(frameId)
-    }
-  }, [backgroundImage, isLoading, hasError])
 
   return (
     <section
       id="home"
       className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#100C08] pb-20 pt-8 md:pt-[120px]"
     >
-      {/* Hero image: memenuhi area Hero tanpa mengubah proporsi gambar */}
-      {!hasError && imageSrc && (
-        <img
-          src={imageSrc}
-          alt="HOLYMOLY automotive"
-          className={`absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${isImageReady ? 'opacity-100' : 'opacity-0'}`}
+      {/* Hero image */}
+      {!isLoading && !hasError && (
+        <HeroBackground
+          key={backgroundKey}
+          src={backgroundImage}
+          onReady={handleBackgroundReady}
         />
       )}
 

@@ -22,16 +22,21 @@ function AdminAchievements() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
+  async function fetchAchievements() {
+    const response = await apiRequest('/api/admin/achievements', {
+      auth: true,
+    })
+
+    return response.data
+  }
+
   async function loadAchievements() {
     setIsLoading(true)
     setError('')
 
     try {
-      const response = await apiRequest('/api/admin/achievements', {
-        auth: true,
-      })
-
-      setAchievements(response.data)
+      const data = await fetchAchievements()
+      setAchievements(data)
     } catch (requestError) {
       setError(requestError.message)
     } finally {
@@ -40,7 +45,31 @@ function AdminAchievements() {
   }
 
   useEffect(() => {
-    loadAchievements()
+    let isMounted = true
+
+    async function loadInitialAchievements() {
+      try {
+        const data = await fetchAchievements()
+
+        if (isMounted) {
+          setAchievements(data)
+        }
+      } catch (requestError) {
+        if (isMounted) {
+          setError(requestError.message)
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadInitialAchievements()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   function handleChange(event) {
@@ -215,41 +244,41 @@ function AdminAchievements() {
   }
 
   const inputClass =
-    'mt-2 w-full rounded border border-white/10 bg-[#100C08] px-4 py-3 text-sm text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400'
+    'mt-2 min-h-11 w-full min-w-0 rounded border border-white/10 bg-[#100C08] px-3 py-2.5 text-xs text-white outline-none transition placeholder:text-neutral-600 focus:border-neutral-400 min-[360px]:text-[13px] min-[390px]:px-4 min-[390px]:py-3 min-[390px]:text-sm'
 
-  const labelClass = 'text-xs font-medium uppercase tracking-wider text-neutral-400'
+  const labelClass = 'text-[10px] font-medium uppercase tracking-wider text-neutral-400 min-[360px]:text-[11px] min-[390px]:text-xs'
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-10">
-        <p className="text-xs uppercase tracking-[0.3em] text-neutral-400">
+    <div className="mx-auto w-full min-w-0 max-w-6xl">
+      <div className="mb-8 min-[390px]:mb-10">
+        <p className="text-[8px] uppercase tracking-[0.25em] text-neutral-400 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
           Content Management
         </p>
 
-        <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
+        <h1 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:mt-3 min-[390px]:text-[34px] sm:text-5xl md:text-6xl">
           Achievements.
         </h1>
 
-        <p className="mt-3 text-sm text-neutral-400">
+        <p className="mt-2 max-w-xl text-xs leading-relaxed text-neutral-400 min-[360px]:text-[13px] min-[390px]:mt-3 min-[390px]:text-sm">
           Manage awards and achievements displayed on the website.
         </p>
       </div>
 
-      <section className="admin-card mb-12 p-5 sm:p-7">
-        <div className="mb-7">
-          <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
+      <section className="admin-card mb-8 min-w-0 p-4 min-[390px]:mb-12 min-[390px]:p-5 sm:p-7">
+        <div className="mb-5 min-[390px]:mb-7">
+          <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
             {editingId ? 'Edit Achievement' : 'Add Achievement'}
           </h2>
 
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-[11px] leading-relaxed text-neutral-500 min-[390px]:text-xs">
             {editingId
               ? 'Perbarui informasi penghargaan.'
               : 'Tambahkan penghargaan baru ke website.'}
           </p>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-6">
-          <div className="grid gap-5 md:grid-cols-2">
+        <form onSubmit={handleSave} className="min-w-0 space-y-5 min-[390px]:space-y-6">
+          <div className="grid min-w-0 gap-4 min-[390px]:gap-5 md:grid-cols-2">
             <label className={labelClass}>
               Achievement Name
               <input
@@ -305,12 +334,12 @@ function AdminAchievements() {
               placeholder="Deskripsi penghargaan..."
               className={`${inputClass} resize-y`}
             />
-            <span className="mt-2 block text-right text-xs text-neutral-500">
+            <span className="mt-2 block text-right text-[11px] text-neutral-500 min-[390px]:text-xs">
               {form.description.length}/500 karakter
             </span>
           </label>
 
-          <div className="grid gap-6 md:grid-cols-2">
+          <div className="grid min-w-0 gap-5 min-[390px]:gap-6 md:grid-cols-2">
             {[
               {
                 label: 'Trophy Photo',
@@ -324,21 +353,21 @@ function AdminAchievements() {
               <div key={imageField.field}>
                 <p className={labelClass}>{imageField.label}</p>
 
-                <div className="mt-2 flex min-h-48 items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08]">
+                <div className="mt-2 flex min-h-40 items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08] min-[390px]:min-h-44 sm:min-h-48">
                   {form[imageField.field] ? (
                     <img
                       src={form[imageField.field]}
                       alt={imageField.label}
-                      className="h-48 w-full object-cover"
+                      className="h-40 w-full object-cover min-[390px]:h-44 sm:h-48"
                     />
                   ) : (
-                    <p className="px-4 text-center text-xs text-neutral-600">
+                    <p className="px-3 text-center text-[11px] leading-relaxed text-neutral-600 min-[390px]:px-4 min-[390px]:text-xs">
                       Belum ada gambar
                     </p>
                   )}
                 </div>
 
-                <label className="mt-3 flex cursor-pointer items-center justify-center rounded border border-white/15 px-4 py-3 text-xs font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200">
+                <label className="mt-3 flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:px-4 min-[390px]:text-xs">
                   {uploadingField === imageField.field
                     ? 'Uploading...'
                     : 'Choose Image'}
@@ -362,22 +391,22 @@ function AdminAchievements() {
           </div>
 
           {error && (
-            <p className="rounded border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+            <p className="rounded border border-red-500/30 bg-red-500/10 p-3 text-xs leading-relaxed text-red-400 min-[390px]:text-sm">
               {error}
             </p>
           )}
 
           {message && (
-            <p className="rounded border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+            <p className="rounded border border-green-500/30 bg-green-500/10 p-3 text-xs leading-relaxed text-green-400 min-[390px]:text-sm">
               {message}
             </p>
           )}
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-2 min-[390px]:flex-row min-[390px]:gap-3">
             <button
               type="submit"
               disabled={isSaving || Boolean(uploadingField)}
-              className="rounded bg-neutral-200 text-black px-6 py-3 text-xs font-bold uppercase tracking-wider transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-11 w-full rounded bg-neutral-200 px-5 py-3 text-xs font-bold uppercase tracking-wider text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-6"
             >
               {isSaving
                 ? 'Saving...'
@@ -390,7 +419,7 @@ function AdminAchievements() {
               <button
                 type="button"
                 onClick={handleCancelEdit}
-                className="rounded border border-white/20 px-6 py-3 text-xs font-bold uppercase tracking-wider text-neutral-300 transition hover:bg-white/10"
+                className="min-h-11 w-full rounded border border-white/20 px-5 py-3 text-xs font-bold uppercase tracking-wider text-neutral-300 transition hover:bg-white/10 min-[390px]:w-auto min-[390px]:px-6"
               >
                 Cancel Edit
               </button>
@@ -399,31 +428,31 @@ function AdminAchievements() {
         </form>
       </section>
 
-      <section>
-        <div className="mb-6">
-          <h2 className="text-xl font-bold uppercase text-[#E5E7EB]">
+      <section className="min-w-0">
+        <div className="mb-5 min-[390px]:mb-6">
+          <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
             Achievement Records
           </h2>
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-[11px] leading-relaxed text-neutral-500 min-[390px]:text-xs">
             Manage existing awards and achievements.
           </p>
         </div>
 
         {isLoading ? (
-          <p className="text-sm text-neutral-500">Loading achievements...</p>
+          <p className="text-xs text-neutral-500 min-[390px]:text-sm">Loading achievements...</p>
         ) : achievements.length === 0 ? (
-          <p className="admin-card p-6 text-sm text-neutral-500">
+          <p className="admin-card p-4 text-xs leading-relaxed text-neutral-500 min-[390px]:p-6 min-[390px]:text-sm">
             Belum ada data penghargaan.
           </p>
         ) : (
-          <div className="grid gap-5 lg:grid-cols-2">
+          <div className="grid min-w-0 gap-3 min-[390px]:gap-5 lg:grid-cols-2">
             {achievements.map((achievement) => (
               <article
                 key={achievement.id}
-                className="admin-card overflow-hidden"
+                className="admin-card min-w-0 overflow-hidden"
               >
                 <div className="grid grid-cols-2 gap-px bg-white/10">
-                  <div className="flex h-40 items-center justify-center bg-[#100C08]">
+                  <div className="flex h-32 min-w-0 items-center justify-center bg-[#100C08] min-[390px]:h-36 sm:h-40">
                     {achievement.trophy_image_path ? (
                       <img
                         src={achievement.trophy_image_path}
@@ -431,13 +460,13 @@ function AdminAchievements() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-neutral-600">
+                      <span className="px-1 text-center text-[10px] text-neutral-600 min-[390px]:text-xs">
                         No trophy photo
                       </span>
                     )}
                   </div>
 
-                  <div className="flex h-40 items-center justify-center bg-[#100C08]">
+                  <div className="flex h-32 min-w-0 items-center justify-center bg-[#100C08] min-[390px]:h-36 sm:h-40">
                     {achievement.vehicle_image_path ? (
                       <img
                         src={achievement.vehicle_image_path}
@@ -445,31 +474,31 @@ function AdminAchievements() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-neutral-600">
+                      <span className="px-1 text-center text-[10px] text-neutral-600 min-[390px]:text-xs">
                         No car photo
                       </span>
                     )}
                   </div>
                 </div>
 
-                <div className="p-5">
-                  <h3 className="text-lg font-bold uppercase text-[#E5E7EB]">
+                <div className="min-w-0 p-3 min-[390px]:p-4 sm:p-5">
+                  <h3 className="break-words text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg">
                     {achievement.title}
                   </h3>
 
-                  <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                  <p className="mt-1 break-words text-[10px] font-semibold uppercase tracking-wider text-neutral-400 min-[360px]:text-[11px] min-[390px]:text-xs">
                     {achievement.event_name} / {achievement.achievement_year}
                   </p>
 
-                  <p className="mt-4 line-clamp-5 break-words whitespace-pre-line text-sm leading-relaxed text-neutral-400">
+                  <p className="mt-3 line-clamp-5 break-words whitespace-pre-line text-xs leading-relaxed text-neutral-400 min-[390px]:mt-4 min-[390px]:text-[13px] sm:text-sm">
                     {achievement.description || 'No description.'}
                   </p>
 
-                  <div className="mt-6 flex gap-3 border-t border-white/10 pt-4">
+                  <div className="mt-5 flex gap-2 border-t border-white/10 pt-3 min-[390px]:mt-6 min-[390px]:gap-3 min-[390px]:pt-4">
                     <button
                       type="button"
                       onClick={() => handleEdit(achievement)}
-                      className="rounded border border-white/20 px-4 py-2 text-xs font-semibold uppercase text-neutral-300 transition hover:bg-neutral-300/10"
+                      className="min-h-11 flex-1 rounded border border-white/20 px-3 py-2 text-[11px] font-semibold uppercase text-neutral-300 transition hover:bg-neutral-300/10 min-[390px]:flex-none min-[390px]:px-4 min-[390px]:text-xs"
                     >
                       Edit
                     </button>
@@ -478,7 +507,7 @@ function AdminAchievements() {
                       type="button"
                       onClick={() => handleDelete(achievement)}
                       disabled={deletingId === achievement.id}
-                      className="rounded border border-red-500/40 px-4 py-2 text-xs font-semibold uppercase text-red-400 transition hover:bg-red-500/10 disabled:opacity-50"
+                      className="min-h-11 flex-1 rounded border border-red-500/40 px-3 py-2 text-[11px] font-semibold uppercase text-red-400 transition hover:bg-red-500/10 disabled:opacity-50 min-[390px]:flex-none min-[390px]:px-4 min-[390px]:text-xs"
                     >
                       {deletingId === achievement.id ? 'Deleting...' : 'Delete'}
                     </button>

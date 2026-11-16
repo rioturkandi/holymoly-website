@@ -180,6 +180,9 @@ router.get('/hero', async (req, res) => {
 
 // Membuat atau memperbarui konten Hero
 router.put('/hero', async (req, res) => {
+  let connection
+  let transactionStarted = false
+
   try {
     if (!isValidBody(req.body)) {
       return res.status(400).json({
@@ -241,7 +244,29 @@ router.put('/hero', async (req, res) => {
       ? validateImagePath(req.body.original_image_path)
       : imagePath
 
-    await db.query(
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [oldHeroRows] = await connection.query(
+      `SELECT image_path, original_image_path
+       FROM home_content
+       WHERE section_key = ?
+       LIMIT 1
+       FOR UPDATE`,
+      ['hero']
+    )
+
+    const oldImagePaths = [
+      ...new Set(
+        [
+          oldHeroRows[0]?.image_path,
+          oldHeroRows[0]?.original_image_path,
+        ].filter(Boolean)
+      ),
+    ]
+
+    await connection.query(
       `INSERT INTO home_content (
         section_key,
         eyebrow,
@@ -282,7 +307,7 @@ router.put('/hero', async (req, res) => {
       ]
     )
 
-    const [rows] = await db.query(
+    const [rows] = await connection.query(
       `SELECT *
        FROM home_content
        WHERE section_key = ?
@@ -290,12 +315,38 @@ router.put('/hero', async (req, res) => {
       ['hero']
     )
 
+    await connection.commit()
+    transactionStarted = false
+
+    for (const oldImagePath of oldImagePaths) {
+      try {
+        await deleteUnusedImage(oldImagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan gambar Hero lama:',
+          oldImagePath,
+          cleanupError.message
+        )
+      }
+    }
+
     res.status(200).json({
       success: true,
       message: 'Konten Hero berhasil disimpan.',
       data: rows[0],
     })
   } catch (error) {
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback konten Hero:',
+          rollbackError.message
+        )
+      }
+    }
+
     if (error instanceof ValidationError) {
       return res.status(400).json({
         success: false,
@@ -309,20 +360,36 @@ router.put('/hero', async (req, res) => {
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) {
+      connection.release()
+    }
   }
 })
 
 
 // Menghapus gambar Hero tanpa menghapus konten teks
 router.delete('/hero/image', async (req, res) => {
+  let connection
+  let transactionStarted = false
+
   try {
-    const [rows] = await db.query(
-      `SELECT image_path, original_image_path FROM home_content
-       WHERE section_key = ? LIMIT 1`,
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [rows] = await connection.query(
+      `SELECT image_path, original_image_path
+       FROM home_content
+       WHERE section_key = ? LIMIT 1
+       FOR UPDATE`,
       ['hero']
     )
 
     if (!rows.length) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Konten Hero tidak ditemukan.',
@@ -334,7 +401,7 @@ router.delete('/hero/image', async (req, res) => {
       rows[0].original_image_path,
     ]
 
-    await db.query(
+    await connection.query(
       `UPDATE home_content
        SET image_path = NULL,
            original_image_path = NULL
@@ -342,8 +409,21 @@ router.delete('/hero/image', async (req, res) => {
       ['hero']
     )
 
+    await connection.commit()
+    transactionStarted = false
+
     for (const imagePath of new Set(imagePaths)) {
-      await deleteUnusedImage(imagePath)
+      if (!imagePath) continue
+
+      try {
+        await deleteUnusedImage(imagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan gambar Hero:',
+          imagePath,
+          cleanupError.message
+        )
+      }
     }
 
     res.status(200).json({
@@ -351,43 +431,83 @@ router.delete('/hero/image', async (req, res) => {
       message: 'Gambar Hero berhasil dihapus.',
     })
   } catch (error) {
+    if (connection && transactionStarted) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghapusan gambar Hero:',
+          rollbackError.message
+        )
+      }
+    }
+
     console.error('Gagal menghapus gambar Hero:', error.message)
 
     res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) {
+      connection.release()
+    }
   }
 })
 
-
 // Menghapus seluruh konten Hero admin
 router.delete('/hero', async (req, res) => {
+  let connection
+  let transactionStarted = false
+
   try {
-    const [rows] = await db.query(
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [rows] = await connection.query(
       `SELECT image_path, original_image_path
        FROM home_content
-       WHERE section_key = ? LIMIT 1`,
+       WHERE section_key = ? LIMIT 1
+       FOR UPDATE`,
       ['hero']
     )
 
     if (!rows.length) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Konten Hero tidak ditemukan.',
       })
     }
 
-    await db.query(
+    const imagePaths = [
+      rows[0].image_path,
+      rows[0].original_image_path,
+    ]
+
+    await connection.query(
       'DELETE FROM home_content WHERE section_key = ?',
       ['hero']
     )
 
-    for (const imagePath of new Set([
-      rows[0].image_path,
-      rows[0].original_image_path,
-    ])) {
-      await deleteUnusedImage(imagePath)
+    await connection.commit()
+    transactionStarted = false
+
+    for (const imagePath of new Set(imagePaths)) {
+      if (!imagePath) continue
+
+      try {
+        await deleteUnusedImage(imagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan gambar Hero:',
+          imagePath,
+          cleanupError.message
+        )
+      }
     }
 
     res.status(200).json({
@@ -395,11 +515,27 @@ router.delete('/hero', async (req, res) => {
       message: 'Seluruh konten Hero berhasil dihapus.',
     })
   } catch (error) {
+    if (connection && transactionStarted) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error(
+          'Gagal melakukan rollback penghapusan konten Hero:',
+          rollbackError.message
+        )
+      }
+    }
+
     console.error('Gagal menghapus konten Hero:', error.message)
+
     res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) {
+      connection.release()
+    }
   }
 })
 
@@ -428,6 +564,9 @@ router.get('/services', async (req, res) => {
 
 // Menambahkan layanan baru
 router.post('/services', async (req, res) => {
+  let connection
+  let transactionStarted = false
+
   try {
     if (!isValidBody(req.body)) {
       return res.status(400).json({
@@ -446,52 +585,38 @@ router.post('/services', async (req, res) => {
       })
     }
 
-    const title = validateNullableString(
-      req.body.title,
-      255,
-      'title'
-    )
-
+    const title = validateNullableString(req.body.title, 255, 'title')
     const description = validateNullableString(
       req.body.description ?? null,
       65535,
       'description'
     )
+    const imagePath = validateImagePath(req.body.image_path ?? null)
+    const isActive = validateActive(req.body.is_active ?? true)
+    const displayOrder = validateDisplayOrder(req.body.display_order ?? 0)
 
-    const imagePath = validateImagePath(
-      req.body.image_path ?? null
-    )
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
 
-    const isActive = validateActive(
-      req.body.is_active ?? true
-    )
-
-    const displayOrder = validateDisplayOrder(
-      req.body.display_order ?? 0
-    )
-
-    const [result] = await db.query(
+    const [result] = await connection.query(
       `INSERT INTO home_services (
-        title,
-        description,
-        image_path,
-        is_active,
-        display_order
-      )
-      VALUES (?, ?, ?, ?, ?)`,
-      [
-        title,
-        description,
-        imagePath,
-        isActive,
-        displayOrder,
-      ]
+        title, description, image_path, is_active, display_order
+      ) VALUES (?, ?, ?, ?, ?)`,
+      [title, description, imagePath, isActive, displayOrder]
     )
 
-    const [rows] = await db.query(
+    const [rows] = await connection.query(
       'SELECT * FROM home_services WHERE id = ?',
       [result.insertId]
     )
+
+    if (rows.length === 0) {
+      throw new Error('Data layanan tidak ditemukan setelah INSERT.')
+    }
+
+    await connection.commit()
+    transactionStarted = false
 
     res.status(201).json({
       success: true,
@@ -499,6 +624,14 @@ router.post('/services', async (req, res) => {
       data: rows[0],
     })
   } catch (error) {
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error('Gagal melakukan rollback transaksi:', rollbackError.message)
+      }
+    }
+
     if (error instanceof ValidationError) {
       return res.status(400).json({
         success: false,
@@ -512,11 +645,18 @@ router.post('/services', async (req, res) => {
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) connection.release()
   }
 })
 
 // Memperbarui layanan berdasarkan ID
 router.put('/services/:id', async (req, res) => {
+  let connection
+  let transactionStarted = false
+  let oldImagePath
+  let imagePath
+
   try {
     const id = validateId(req.params.id)
 
@@ -534,7 +674,6 @@ router.put('/services/:id', async (req, res) => {
       })
     }
 
-    // Memastikan semua field dikirim oleh administrator
     const requiredFields = [
       'title',
       'description',
@@ -554,11 +693,7 @@ router.put('/services/:id', async (req, res) => {
       })
     }
 
-    const title = validateNullableString(
-      req.body.title,
-      255,
-      'title'
-    )
+    const title = validateNullableString(req.body.title, 255, 'title')
 
     if (!title) {
       return res.status(400).json({
@@ -567,41 +702,41 @@ router.put('/services/:id', async (req, res) => {
       })
     }
 
-    // Memvalidasi deskripsi layanan
     const description = validateNullableString(
       req.body.description,
       65535,
       'description'
     )
+    imagePath = validateImagePath(req.body.image_path)
+    const isActive = validateActive(req.body.is_active)
+    const displayOrder = validateDisplayOrder(req.body.display_order)
 
-    // Memvalidasi lokasi gambar
-    const imagePath = validateImagePath(
-      req.body.image_path
-    )
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
 
-    // Memvalidasi status aktif
-    const isActive = validateActive(
-      req.body.is_active
-    )
-
-    // Memvalidasi urutan tampilan
-    const displayOrder = validateDisplayOrder(
-      req.body.display_order
-    )
-
-    const [existing] = await db.query(
-      'SELECT id FROM home_services WHERE id = ? LIMIT 1',
+    const [existing] = await connection.query(
+      `SELECT id, image_path
+       FROM home_services
+       WHERE id = ?
+       LIMIT 1
+       FOR UPDATE`,
       [id]
     )
 
     if (existing.length === 0) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Layanan tidak ditemukan.',
       })
     }
 
-    await db.query(
+    oldImagePath = existing[0].image_path
+
+    await connection.query(
       `UPDATE home_services
        SET title = ?,
            description = ?,
@@ -609,20 +744,32 @@ router.put('/services/:id', async (req, res) => {
            is_active = ?,
            display_order = ?
        WHERE id = ?`,
-      [
-        title,
-        description,
-        imagePath,
-        isActive,
-        displayOrder,
-        id,
-      ]
+      [title, description, imagePath, isActive, displayOrder, id]
     )
 
-    const [rows] = await db.query(
+    const [rows] = await connection.query(
       'SELECT * FROM home_services WHERE id = ?',
       [id]
     )
+
+    if (rows.length === 0) {
+      throw new Error('Data layanan tidak ditemukan setelah UPDATE.')
+    }
+
+    await connection.commit()
+    transactionStarted = false
+
+    if (oldImagePath && oldImagePath !== imagePath) {
+      try {
+        await deleteUnusedImage(oldImagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan gambar layanan lama:',
+          oldImagePath,
+          cleanupError.message
+        )
+      }
+    }
 
     res.status(200).json({
       success: true,
@@ -630,6 +777,14 @@ router.put('/services/:id', async (req, res) => {
       data: rows[0],
     })
   } catch (error) {
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error('Gagal melakukan rollback transaksi:', rollbackError.message)
+      }
+    }
+
     if (error instanceof ValidationError) {
       return res.status(400).json({
         success: false,
@@ -643,11 +798,17 @@ router.put('/services/:id', async (req, res) => {
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) connection.release()
   }
 })
 
 // Menghapus layanan secara permanen
 router.delete('/services/:id', async (req, res) => {
+  let connection
+  let transactionStarted = false
+  let oldImagePath
+
   try {
     const id = validateId(req.params.id)
 
@@ -658,34 +819,72 @@ router.delete('/services/:id', async (req, res) => {
       })
     }
 
-    const [existing] = await db.query(
-      'SELECT id FROM home_services WHERE id = ? LIMIT 1',
+    connection = await db.getConnection()
+    await connection.beginTransaction()
+    transactionStarted = true
+
+    const [existing] = await connection.query(
+      `SELECT id, image_path
+       FROM home_services
+       WHERE id = ?
+       LIMIT 1
+       FOR UPDATE`,
       [id]
     )
 
     if (existing.length === 0) {
+      await connection.rollback()
+      transactionStarted = false
+
       return res.status(404).json({
         success: false,
         message: 'Layanan tidak ditemukan.',
       })
     }
 
-    await db.query(
+    oldImagePath = existing[0].image_path
+
+    await connection.query(
       'DELETE FROM home_services WHERE id = ?',
       [id]
     )
+
+    await connection.commit()
+    transactionStarted = false
+
+    if (oldImagePath) {
+      try {
+        await deleteUnusedImage(oldImagePath)
+      } catch (cleanupError) {
+        console.error(
+          'Gagal membersihkan gambar layanan:',
+          oldImagePath,
+          cleanupError.message
+        )
+      }
+    }
 
     res.status(200).json({
       success: true,
       message: 'Layanan berhasil dihapus.',
     })
   } catch (error) {
+    if (transactionStarted && connection) {
+      try {
+        await connection.rollback()
+      } catch (rollbackError) {
+        console.error('Gagal melakukan rollback transaksi:', rollbackError.message)
+      }
+    }
+
     console.error('Gagal menghapus layanan:', error.message)
 
     res.status(500).json({
       success: false,
       message: 'Terjadi kesalahan pada server.',
     })
+  } finally {
+    if (connection) connection.release()
   }
 })
 

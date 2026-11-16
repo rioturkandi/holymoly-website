@@ -449,3 +449,33 @@ select {
 /* =========================================
    END - HERO RESPONSIVE SETTINGS
 ========================================= */
+
+
+/* HOLYMOLY ADMIN LOGIN BUTTON INTERACTION */
+.admin-login-submit {
+  position: relative;
+  cursor: pointer;
+  transform: translateY(0) scale(1);
+  transition:
+    transform 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    outline-color 180ms ease;
+}
+
+@media (any-hover: hover) {
+  .admin-login-submit:not(:disabled):hover {
+    transform: translateY(-1px);
+    background-color: #f3f4f6;
+    color: #11212D;
+    box-shadow:
+      0 6px 0 #45494B,
+      0 10px 16px rgba(0, 0, 0, 0.25);
+  }
+}
+
+.admin-login-submit:not(:disabled):active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #45494B, 0 4px 8px rgba(0, 0, 0, 0.2);
+}

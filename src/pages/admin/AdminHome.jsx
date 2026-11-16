@@ -3,7 +3,6 @@ import { apiRequest } from '../../services/api'
 import ImageCropEditor from '../../components/ImageCropEditor'
 
 function AdminHome() {
-  const [hero, setHero] = useState(null)
 
   const [heroForm, setHeroForm] = useState({
     eyebrow: '',
@@ -63,7 +62,6 @@ function AdminHome() {
         ])
 
         if (isMounted) {
-          setHero(heroResponse.data)
 
           setHeroForm({
             eyebrow: heroResponse.data?.eyebrow || '',
@@ -344,7 +342,6 @@ function AdminHome() {
         auth: true,
       })
 
-      setHero(response.data)
       setHeroForm({
         eyebrow: response.data.eyebrow || '',
         title: response.data.title || '',
@@ -392,10 +389,6 @@ function AdminHome() {
         auth: true,
       })
 
-      setHero((current) => current
-        ? { ...current, image_path: null }
-        : current
-      )
       setHeroForm((current) => ({
         ...current,
         image_path: '',
@@ -434,7 +427,6 @@ function AdminHome() {
         auth: true,
       })
 
-      setHero(null)
       setHeroForm({
         eyebrow: '',
         title: '',
@@ -548,15 +540,15 @@ function AdminHome() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex min-w-0 flex-wrap items-start justify-between gap-3 sm:gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-neutral-500">
+          <p className="text-[8px] uppercase tracking-[0.25em] text-neutral-500 min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">
             Content Management
           </p>
-          <h1 className="mt-3 text-4xl font-bold uppercase leading-tight sm:text-5xl text-[#E5E7EB]">
+          <h1 className="mt-2 text-[28px] font-bold uppercase leading-tight text-[#E5E7EB] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:mt-3 sm:text-5xl md:text-6xl">
             Home.
           </h1>
-          <p className="mt-3 text-sm text-neutral-400">
+          <p className="mt-2 max-w-xl text-[12px] leading-relaxed text-neutral-400 min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base sm:mt-3">
             Manage your homepage hero and services content.
           </p>
         </div>
@@ -564,23 +556,23 @@ function AdminHome() {
       </div>
 
       {isLoading && (
-        <p className="mt-10 text-sm text-neutral-400">
+        <p className="mt-8 text-xs text-neutral-400 min-[390px]:mt-10 min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base">
           Loading Home content...
         </p>
       )}
 
       {!isLoading && errorMessage && (
-        <div className="mt-10 border border-red-500/30 bg-red-500/5 p-5">
-          <p className="text-sm text-red-400">
+        <div className="mt-8 border border-red-500/30 bg-red-500/5 p-4 min-[390px]:mt-10 min-[390px]:p-5">
+          <p className="text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-red-400">
             Failed to load Home content.
           </p>
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="mt-2 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400">
             {errorMessage}
           </p>
           <button
             type="button"
             onClick={handleRefresh}
-            className="mt-4 text-sm underline underline-offset-4"
+            className="mt-4 underline underline-offset-4 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
           >
             Try again
           </button>
@@ -588,19 +580,19 @@ function AdminHome() {
       )}
 
       {!isLoading && !errorMessage && (
-        <div className="mt-10 space-y-10">
+        <div className="mt-8 space-y-8 min-[390px]:mt-10 min-[390px]:space-y-10">
           <section>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-[#E5E7EB]">Hero Section</h2>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 min-[390px]:mb-4">
+              <h2 className="text-lg font-semibold text-[#E5E7EB] min-[390px]:text-xl">Hero Section</h2>
               <span className="text-xs text-neutral-500">Homepage</span>
             </div>
 
             <form
               onSubmit={handleSaveHero}
-              className="admin-card space-y-6 p-6"
+              className="admin-card min-w-0 space-y-5 p-4 min-[390px]:space-y-6 min-[390px]:p-5 sm:p-6"
             >
               <div>
-                <label className="mb-2 block text-sm text-neutral-300">
+                <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                   Eyebrow
                 </label>
                 <input
@@ -611,12 +603,12 @@ function AdminHome() {
                     eyebrow: event.target.value,
                   })}
                   maxLength={150}
-                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm text-neutral-300">
+                <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                   Hero Title
                 </label>
                 <input
@@ -627,12 +619,12 @@ function AdminHome() {
                     title: event.target.value,
                   })}
                   maxLength={255}
-                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm text-neutral-300">
+                <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                   Description
                 </label>
                 <textarea
@@ -642,13 +634,13 @@ function AdminHome() {
                     description: event.target.value,
                   })}
                   rows={4}
-                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
+                  className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                 />
               </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
                 <div>
-                  <label className="mb-2 block text-sm text-neutral-300">
+                  <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                     Button Text
                   </label>
                   <input
@@ -659,12 +651,12 @@ function AdminHome() {
                       button_text: event.target.value,
                     })}
                     maxLength={100}
-                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm text-neutral-300">
+                  <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                     Button URL
                   </label>
                   <input
@@ -676,13 +668,13 @@ function AdminHome() {
                     })}
                     maxLength={500}
                     placeholder="/projects"
-                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-[#100C08] px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm text-neutral-300">
+                <label className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-300">
                   Hero Image
                 </label>
                 <input
@@ -690,7 +682,7 @@ function AdminHome() {
                   accept="image/jpeg,image/png,image/webp"
                   onChange={handleImageUpload}
                   disabled={isSaving || isDeletingHero}
-                  className="block w-full text-sm text-neutral-400 file:mr-4 file:border-0 file:bg-white file:px-4 file:py-2 file:font-semibold file:text-black disabled:opacity-50"
+                  className="block w-full text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400 file:mr-4 file:border-0 file:bg-white file:px-4 file:py-2 file:font-semibold file:text-black disabled:opacity-50"
                 />
                 <p className="mt-2 text-xs text-neutral-500">
                   Format JPEG, PNG, atau WebP. Maksimal 5 MB.
@@ -698,7 +690,7 @@ function AdminHome() {
                 </p>
 
                 {isUploading && (
-                  <p className="mt-3 text-sm text-neutral-400">
+                  <p className="mt-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400">
                     Mengunggah gambar Hero...
                   </p>
                 )}
@@ -717,12 +709,12 @@ function AdminHome() {
                       />
                     </div>
 
-                    <div className="mt-3 flex flex-wrap gap-3">
+                    <div className="mt-3 flex flex-wrap gap-2 sm:gap-3">
                       <button
                         type="button"
                         onClick={handleOpenCropEditor}
                         disabled={isSaving || isUploading || isDeletingHero}
-                        className="border border-white/30 px-4 py-2 text-sm transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border border-white/30 px-4 py-2 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                       >
                         Adjust Crop
                       </button>
@@ -731,7 +723,7 @@ function AdminHome() {
                         type="button"
                         onClick={handleDeleteHeroImage}
                         disabled={isDeletingHero || isSaving || isUploading}
-                        className="border border-red-500 px-4 py-2 text-sm text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border border-red-500 px-4 py-2 text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                       >
                         Delete Hero Image
                       </button>
@@ -741,18 +733,18 @@ function AdminHome() {
               </div>
 
               {formMessage && (
-                <p className="text-sm text-green-400">{formMessage}</p>
+                <p className="text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-green-400">{formMessage}</p>
               )}
 
               {formError && (
-                <p className="text-sm text-red-400">{formError}</p>
+                <p className="text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-red-400">{formError}</p>
               )}
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2 sm:gap-3">
                 <button
                   type="submit"
                   disabled={isSaving || isUploading || isDeletingHero}
-                  className="border border-white bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border border-white bg-white px-6 py-3 font-semibold text-black transition hover:bg-transparent hover:text-white disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                 >
                   {isSaving ? 'Saving...' : 'Save Hero'}
                 </button>
@@ -761,7 +753,7 @@ function AdminHome() {
                   type="button"
                   onClick={handleDeleteHero}
                   disabled={isSaving || isUploading || isDeletingHero}
-                  className="border border-red-500 px-6 py-3 text-sm font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="border border-red-500 px-6 py-3 font-semibold text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                 >
                   {isDeletingHero ? 'Deleting...' : 'Delete Hero Content'}
                 </button>
@@ -772,7 +764,7 @@ function AdminHome() {
           <section>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h2 className="text-xl font-semibold text-[#E5E7EB]">Services</h2>
+                <h2 className="text-lg font-semibold text-[#E5E7EB] min-[390px]:text-xl">Services</h2>
                 <p className="mt-1 text-xs text-neutral-500">
                   {services.length} items
                 </p>
@@ -782,20 +774,20 @@ function AdminHome() {
                 type="button"
                 onClick={handleAddService}
                 disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                className="border border-white px-5 py-3 text-sm transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                className="border border-white px-5 py-3 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
               >
                 Add Service
               </button>
             </div>
 
             {serviceMessage && (
-              <p className="mb-4 border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+              <p className="mb-4 border border-green-500/30 bg-green-500/10 p-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-green-400">
                 {serviceMessage}
               </p>
             )}
 
             {serviceError && (
-              <p className="mb-4 border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+              <p className="mb-4 border border-red-500/30 bg-red-500/10 p-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-red-400">
                 {serviceError}
               </p>
             )}
@@ -803,10 +795,10 @@ function AdminHome() {
             {isServiceFormOpen && (
               <form
                 onSubmit={handleSaveService}
-                className="admin-card mb-8 space-y-5 p-6"
+                className="admin-card mb-6 min-w-0 space-y-5 p-4 min-[390px]:mb-8 min-[390px]:p-5 sm:p-6"
               >
                 <div>
-                  <h3 className="text-lg font-semibold text-[#E5E7EB]">
+                  <h3 className="text-base font-semibold text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
                     {editingServiceId !== null ? 'Edit Service' : 'Add New Service'}
                   </h3>
                   <p className="mt-1 text-xs text-neutral-500">
@@ -815,7 +807,7 @@ function AdminHome() {
                 </div>
 
                 <div>
-                  <label htmlFor="service-title" className="mb-2 block text-sm">
+                  <label htmlFor="service-title" className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base">
                     Service Title
                   </label>
                   <input
@@ -830,13 +822,13 @@ function AdminHome() {
                         title: event.target.value,
                       }))
                     }
-                    className="w-full border border-white/20 bg-black px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-black px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                     placeholder="Contoh: Custom Modification"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="service-description" className="mb-2 block text-sm">
+                  <label htmlFor="service-description" className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base">
                     Description
                   </label>
                   <textarea
@@ -849,13 +841,13 @@ function AdminHome() {
                         description: event.target.value,
                       }))
                     }
-                    className="w-full border border-white/20 bg-black px-4 py-3 text-sm outline-none focus:border-white"
+                    className="w-full border border-white/20 bg-black px-4 py-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base outline-none focus:border-white"
                     placeholder="Jelaskan layanan yang ditawarkan..."
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="service-image" className="mb-2 block text-sm">
+                  <label htmlFor="service-image" className="mb-2 block text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base">
                     Service Image
                   </label>
                   <input
@@ -864,7 +856,7 @@ function AdminHome() {
                     accept="image/jpeg,image/png,image/webp"
                     onChange={handleServiceImageUpload}
                     disabled={isServiceUploading}
-                    className="block w-full text-sm text-neutral-400 file:mr-4 file:border file:border-white/30 file:bg-transparent file:px-4 file:py-2 file:text-white"
+                    className="block w-full text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400 file:mr-4 file:border file:border-white/30 file:bg-transparent file:px-4 file:py-2 file:text-white"
                   />
                   <p className="mt-2 text-xs text-neutral-500">
                     Format JPEG, PNG, WebP. Maksimal 5 MB.
@@ -881,17 +873,17 @@ function AdminHome() {
                       <img
                         src={serviceForm.image_path}
                         alt="Service preview"
-                        className="h-48 w-full max-w-sm object-cover"
+                        className="aspect-[16/9] w-full max-w-sm object-cover"
                       />
                     </div>
                   )}
                 </div>
 
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
                   <button
                     type="submit"
                     disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                    className="bg-white px-6 py-3 text-sm font-semibold text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="bg-white px-6 py-3 font-semibold text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                   >
                     {isServiceSaving ? 'Saving...' : 'Save Service'}
                   </button>
@@ -900,7 +892,7 @@ function AdminHome() {
                     type="button"
                     onClick={handleCancelServiceForm}
                     disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                    className="border border-white/20 px-6 py-3 text-sm transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                    className="border border-white/20 px-6 py-3 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                   >
                     Cancel
                   </button>
@@ -909,32 +901,32 @@ function AdminHome() {
             )}
 
             {services.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid grid-cols-1 gap-3 min-[390px]:gap-4 md:grid-cols-2">
                 {services.map((service) => (
                   <div
                     key={service.id}
-                    className="admin-card min-w-0 p-6"
+                    className="admin-card min-w-0 p-4 min-[390px]:p-5 sm:p-6"
                   >
                     {service.image_path && (
                       <img
                         src={service.image_path}
                         alt={service.title}
-                        className="mb-4 h-48 w-full object-cover"
+                        className="mb-4 aspect-[16/9] w-full object-cover"
                       />
                     )}
 
-                    <h3 className="font-semibold text-[#E5E7EB]">{service.title}</h3>
+                    <h3 className="text-base font-semibold text-[#E5E7EB] min-[390px]:text-lg">{service.title}</h3>
 
-                    <p className="mt-2 max-w-full break-words [overflow-wrap:anywhere] text-sm text-neutral-400">
+                    <p className="mt-2 max-w-full break-words [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400">
                       {service.description || 'No description'}
                     </p>
 
-                    <div className="mt-5 flex flex-wrap gap-3">
+                    <div className="mt-4 flex flex-wrap gap-2 min-[390px]:mt-5 sm:gap-3">
                       <button
                         type="button"
                         onClick={() => handleEditService(service)}
                         disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                        className="border border-white/30 px-4 py-2 text-xs transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border border-white/30 px-4 py-2 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                       >
                         Edit
                       </button>
@@ -943,7 +935,7 @@ function AdminHome() {
                         type="button"
                         onClick={() => handleDeleteService(service)}
                         disabled={isServiceSaving || isServiceUploading || updatingServiceId !== null}
-                        className="border border-red-500/50 px-4 py-2 text-xs text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        className="border border-red-500/50 px-4 py-2 text-red-400 transition hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm min-h-11"
                       >
                         {updatingServiceId === service.id ? 'Deleting...' : 'Delete'}
                       </button>
@@ -953,7 +945,7 @@ function AdminHome() {
               </div>
             ) : (
               <div className="border border-dashed border-white/20 p-6">
-                <p className="text-sm text-neutral-400">
+                <p className="text-xs min-[360px]:text-[13px] min-[390px]:text-sm sm:text-base text-neutral-400">
                   No services have been created yet.
                 </p>
               </div>
