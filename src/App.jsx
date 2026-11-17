@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { setUnauthorizedHandler } from './services/api'
 
@@ -24,6 +24,8 @@ import AdminWorkshop from './pages/admin/AdminWorkshop'
 function AppContent() {
   const location = useLocation()
   const navigate = useNavigate()
+  const currentPathRef = useRef(location.pathname)
+  currentPathRef.current = location.pathname
 
   // Mengarahkan admin ke login ketika sesi berakhir
   useEffect(() => {
@@ -64,7 +66,7 @@ function AppContent() {
         const { section } = JSON.parse(event.data)
         const matchesPath = affectedPaths[section]
 
-        if (matchesPath && matchesPath(location.pathname)) {
+        if (matchesPath && matchesPath(currentPathRef.current)) {
           window.location.reload()
         }
       } catch (error) {
@@ -84,7 +86,7 @@ function AppContent() {
       )
       eventSource.close()
     }
-  }, [isAdminRoute, location.pathname])
+  }, [isAdminRoute])
 
 
   return (

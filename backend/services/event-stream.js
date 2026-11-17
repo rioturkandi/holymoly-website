@@ -1,5 +1,7 @@
 const clients = new Set()
 
+const MAX_SSE_CLIENTS = 20
+
 const allowedSections = new Set([
   'home',
   'about',
@@ -10,6 +12,30 @@ const allowedSections = new Set([
 ])
 
 function handleEventStream(req, res) {
+  // Membersihkan koneksi yang sudah tidak aktif sebelum menghitung kapasitas.
+  for (const client of clients) {
+    if (client.destroyed || client.writableEnded) {
+      clients.delete(client)
+    }
+  }
+
+  // Menolak koneksi baru secara sementara jika kapasitas sudah penuh.
+  if (clients.size >= MAX_SSE_CLIENTS) {
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    })
+
+    res.flushHeaders()
+
+    // Browser akan mencoba kembali setelah 15 detik.
+    res.write('retry: 15000\n\n')
+    res.end()
+    return
+  }
+
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache, no-transform',
@@ -22,21 +48,22 @@ function handleEventStream(req, res) {
   // Memberi tahu browser agar mencoba koneksi ulang setelah 5 detik.
   res.write('retry: 5000\n\n')
 
-  // Mendaftarkan koneksi browser yang sedang aktif.
   clients.add(res)
 
-  // Menjaga koneksi tetap aktif ketika tidak ada perubahan konten.
   const heartbeat = setInterval(() => {
     if (!res.destroyed && !res.writableEnded) {
       res.write(': keep-alive\n\n')
     }
   }, 25000)
 
-  // Menghapus koneksi dan timer ketika browser terputus.
-  res.on('close', () => {
+  // Menghapus koneksi dan timer ketika browser terputus atau mengalami error.
+  function cleanup() {
     clearInterval(heartbeat)
     clients.delete(res)
-  })
+  }
+
+  res.once('close', cleanup)
+  res.once('error', cleanup)
 }
 
 function publishContentUpdate(section) {
@@ -72,4 +99,5 @@ module.exports = {
   handleEventStream,
   publishContentUpdate,
   closeAllEventStreams,
+  MAX_SSE_CLIENTS,
 }
