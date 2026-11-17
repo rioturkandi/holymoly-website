@@ -1,8 +1,10 @@
 const express = require('express')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
-const fs = require('node:fs/promises')
-const path = require('node:path')
+const {
+  markImageAttached,
+  deleteUnusedImage,
+} = require('../services/image-lifecycle.service')
 
 const router = express.Router()
 
@@ -64,39 +66,6 @@ function validateImagePath(value) {
   }
 
   return imagePath
-}
-
-// Menghapus file upload hanya jika tidak digunakan tabel lain
-async function deleteUnusedImage(imagePath) {
-  if (!imagePath) return
-
-  const [rows] = await db.query(
-    `SELECT
-      (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
-      (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE trophy_image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE vehicle_image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE original_image_path = ?)
-      AS usage_count`,
-    Array(9).fill(imagePath)
-  )
-
-  if (Number(rows[0].usage_count) > 0) return
-
-  const uploadDirectory = path.resolve(__dirname, '../uploads')
-  const filePath = path.resolve(uploadDirectory, path.basename(imagePath))
-
-  if (path.dirname(filePath) !== uploadDirectory) return
-
-  try {
-    await fs.unlink(filePath)
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error
-  }
 }
 
 // Memvalidasi URL tombol agar hanya mengarah ke halaman internal
@@ -314,6 +283,8 @@ router.put('/hero', async (req, res) => {
        LIMIT 1`,
       ['hero']
     )
+
+    await markImageAttached(connection, [imagePath, originalImagePath])
 
     await connection.commit()
     transactionStarted = false
@@ -615,6 +586,8 @@ router.post('/services', async (req, res) => {
       throw new Error('Data layanan tidak ditemukan setelah INSERT.')
     }
 
+    await markImageAttached(connection, [imagePath])
+
     await connection.commit()
     transactionStarted = false
 
@@ -755,6 +728,8 @@ router.put('/services/:id', async (req, res) => {
     if (rows.length === 0) {
       throw new Error('Data layanan tidak ditemukan setelah UPDATE.')
     }
+
+    await markImageAttached(connection, [imagePath])
 
     await connection.commit()
     transactionStarted = false

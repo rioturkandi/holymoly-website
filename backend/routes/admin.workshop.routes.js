@@ -1,8 +1,10 @@
 const express = require('express')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
-const fs = require('node:fs/promises')
-const path = require('node:path')
+const {
+  markImageAttached,
+  deleteUnusedImage,
+} = require('../services/image-lifecycle.service')
 
 const router = express.Router()
 const SECTION_KEY = 'main'
@@ -32,39 +34,6 @@ function validateImages(images) {
   }
 
   return validatedImages
-}
-
-async function deleteUnusedImage(imagePath) {
-  const [rows] = await db.query(
-    `SELECT
-      (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
-      (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE trophy_image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE vehicle_image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE original_image_path = ?)
-      AS usage_count`,
-    Array(9).fill(imagePath)
-  )
-
-  if (Number(rows[0].usage_count) === 0) {
-    const uploadDir = path.resolve(__dirname, '..', 'uploads')
-    const filename = path.basename(imagePath)
-    const filePath = path.resolve(uploadDir, filename)
-
-    if (!filePath.startsWith(`${uploadDir}${path.sep}`)) {
-      throw new Error('Path gambar berada di luar direktori uploads.')
-    }
-
-    try {
-      await fs.unlink(filePath)
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error
-    }
-  }
 }
 
 // Mengambil tiga foto untuk halaman Admin Workshop
@@ -141,6 +110,8 @@ router.put('/images', async (req, res) => {
         [contentId, images[index], index + 1]
       )
     }
+
+    await markImageAttached(connection, images)
 
     await connection.commit()
     transactionStarted = false

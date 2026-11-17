@@ -58,7 +58,18 @@ function publishContentUpdate(section) {
   }
 }
 
+function closeAllEventStreams() {
+  for (const client of clients) {
+    if (!client.destroyed && !client.writableEnded) {
+      client.end()
+    }
+  }
+
+  clients.clear()
+}
+
 module.exports = {
   handleEventStream,
   publishContentUpdate,
+  closeAllEventStreams,
 }

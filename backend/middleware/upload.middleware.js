@@ -30,9 +30,11 @@ const upload = multer({
   fileFilter: (req, file, callback) => {
     // Pemeriksaan MIME awal, bukan pemeriksaan keaslian file
     if (!allowedMimeTypes.includes(file.mimetype)) {
-      return callback(
-        new Error('Format gambar harus JPEG, PNG, atau WebP.')
+      const error = new Error(
+        'Format gambar harus JPEG, PNG, atau WebP.'
       )
+      error.code = 'INVALID_IMAGE_FORMAT'
+      return callback(error)
     }
 
     callback(null, true)
@@ -57,9 +59,18 @@ function uploadImage(req, res, next) {
         })
       }
 
-      return res.status(400).json({
+      if (error.code === 'INVALID_IMAGE_FORMAT') {
+        return res.status(400).json({
+          success: false,
+          message: error.message,
+        })
+      }
+
+      console.error('Upload image middleware error:', error.message)
+
+      return res.status(500).json({
         success: false,
-        message: error.message || 'Gagal menerima gambar.',
+        message: 'Gagal menerima gambar.',
       })
     }
 

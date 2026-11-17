@@ -6,10 +6,17 @@ dotenv.config({
   path: path.resolve(__dirname, '.env'),
 })
 
+// Memvalidasi environment sebelum modul database dan aplikasi dimuat.
+require('./config/validate-env')
+
 const express = require('express')
 const helmet = require('helmet')
 const db = require('./config/database')
-const { handleEventStream, publishContentUpdate } = require('./services/event-stream')
+const {
+  handleEventStream,
+  publishContentUpdate,
+  closeAllEventStreams,
+} = require('./services/event-stream')
 
 const homeRoutes = require('./routes/home.routes')
 const adminHomeRoutes = require('./routes/admin.home.routes')
@@ -193,7 +200,67 @@ app.use((error, req, res, next) => {
   })
 })
 
-// Menjalankan server
-app.listen(PORT, () => {
+// Menjalankan server dan menyimpan instance HTTP untuk graceful shutdown.
+const server = app.listen(PORT, () => {
   console.log(`HOLYMOLY API berjalan di http://localhost:${PORT}`)
 })
+
+// Mencegah proses shutdown dijalankan lebih dari satu kali.
+let shutdownStarted = false
+
+async function shutdown(signal) {
+  if (shutdownStarted) {
+    return
+  }
+
+  shutdownStarted = true
+  console.log(`Menerima ${signal}. Memulai graceful shutdown...`)
+
+  // Memberi waktu maksimal 10 detik untuk menyelesaikan koneksi HTTP aktif.
+  const forceCloseTimer = setTimeout(() => {
+    console.error('Batas waktu shutdown tercapai. Menutup koneksi HTTP yang tersisa.')
+    server.closeAllConnections()
+  }, 10000)
+
+  forceCloseTimer.unref()
+
+  // Menghentikan penerimaan koneksi HTTP baru.
+  const httpServerClosed = new Promise((resolve, reject) => {
+    server.close((error) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve()
+      }
+    })
+  })
+
+  // Menutup koneksi SSE agar tidak menghambat proses penghentian server.
+  closeAllEventStreams()
+
+  try {
+    await httpServerClosed
+    console.log('HTTP server berhasil dihentikan.')
+  } catch (error) {
+    console.error('Gagal menghentikan HTTP server:', error.message)
+    process.exitCode = 1
+  } finally {
+    clearTimeout(forceCloseTimer)
+  }
+
+  // Menutup pool database setelah koneksi HTTP selesai.
+  try {
+    await db.end()
+    console.log('Koneksi database berhasil ditutup.')
+  } catch (error) {
+    console.error('Gagal menutup koneksi database:', error.message)
+    process.exitCode = 1
+  }
+
+  console.log('Graceful shutdown selesai.')
+}
+
+// SIGINT biasanya dikirim ketika pengguna menekan Ctrl+C.
+// SIGTERM biasanya dikirim oleh sistem atau platform deployment.
+process.on('SIGINT', () => shutdown('SIGINT'))
+process.on('SIGTERM', () => shutdown('SIGTERM'))

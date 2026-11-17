@@ -1,8 +1,10 @@
 const express = require('express')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
-const fs = require('node:fs/promises')
-const path = require('node:path')
+const {
+  markImageAttached,
+  deleteUnusedImage,
+} = require('../services/image-lifecycle.service')
 
 const router = express.Router()
 
@@ -98,42 +100,6 @@ function validateImagePosition(value, fieldName) {
   return position
 }
 
-// Menghapus foto hanya jika tidak digunakan oleh data lain
-async function deleteUnusedImage(imagePath) {
-  if (!imagePath) return
-
-  const [rows] = await db.query(
-    `SELECT
-      (SELECT COUNT(*) FROM home_content WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM home_content WHERE original_image_path = ?) +
-      (SELECT COUNT(*) FROM home_services WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM project_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM workshop_images WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE trophy_image_path = ?) +
-      (SELECT COUNT(*) FROM achievements WHERE vehicle_image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE image_path = ?) +
-      (SELECT COUNT(*) FROM media_coverage WHERE original_image_path = ?)
-      AS usage_count`,
-    Array(9).fill(imagePath)
-  )
-
-  if (Number(rows[0].usage_count) > 0) return
-
-  const uploadDirectory = path.resolve(__dirname, '../uploads')
-  const filePath = path.resolve(
-    uploadDirectory,
-    path.basename(imagePath)
-  )
-
-  if (path.dirname(filePath) !== uploadDirectory) return
-
-  try {
-    await fs.unlink(filePath)
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error
-  }
-}
-
 // Mengambil seluruh data Media Coverage untuk administrator
 router.get('/', async (req, res) => {
   try {
@@ -203,6 +169,8 @@ router.post('/', async (req, res) => {
         articleUrl,
       ]
     )
+
+    await markImageAttached(connection, [imagePath, originalImagePath])
 
     await connection.commit()
     transactionStarted = false
@@ -310,6 +278,8 @@ router.put('/:id', async (req, res) => {
         mediaId,
       ]
     )
+
+    await markImageAttached(connection, [imagePath, originalImagePath])
 
     await connection.commit()
     transactionStarted = false
