@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { clearAdminToken } from '../../services/api'
+import { apiRequest } from '../../services/api'
 
 const navigation = [
   { label: 'Overview', path: '/admin', end: true },
@@ -13,9 +13,13 @@ const navigation = [
 function AdminLayout() {
   const navigate = useNavigate()
 
-  function handleLogout() {
-    clearAdminToken()
-    navigate('/admin/login', { replace: true })
+  async function handleLogout() {
+    try {
+      await apiRequest('/api/auth/logout', { method: 'POST' })
+      navigate('/admin/login', { replace: true })
+    } catch (error) {
+      console.error('Logout gagal:', error.message)
+    }
   }
 
   return (

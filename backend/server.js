@@ -10,6 +10,7 @@ dotenv.config({
 require('./config/validate-env')
 
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const helmet = require('helmet')
 const db = require('./config/database')
 const {
@@ -46,6 +47,7 @@ app.use(
 
 // Membaca request dengan format JSON
 app.use(express.json({ limit: '100kb' }))
+app.use(cookieParser())
 
 // Menyajikan gambar hasil upload yang sudah diproses
 app.use(

@@ -1,29 +1,8 @@
-const TOKEN_KEY = 'holymoly_admin_token'
-
 // Handler untuk mengarahkan admin ketika sesi berakhir
 let unauthorizedHandler = null
 
 export function setUnauthorizedHandler(handler) {
   unauthorizedHandler = handler
-}
-
-// Mengambil token admin dari sessionStorage
-export function getAdminToken() {
-  return sessionStorage.getItem(TOKEN_KEY)
-}
-
-// Menyimpan token setelah admin berhasil login
-export function setAdminToken(token) {
-  if (typeof token !== 'string' || !token.trim()) {
-    throw new Error('Token admin tidak valid.')
-  }
-
-  sessionStorage.setItem(TOKEN_KEY, token)
-}
-
-// Menghapus token ketika admin logout
-export function clearAdminToken() {
-  sessionStorage.removeItem(TOKEN_KEY)
 }
 
 // Fungsi utama untuk mengirim request ke backend
@@ -47,25 +26,6 @@ export async function apiRequest(path, options = {}) {
     requestHeaders.set('Content-Type', 'application/json')
   }
 
-  // Menambahkan Bearer Token jika endpoint membutuhkan autentikasi
-  if (auth) {
-    const token = getAdminToken()
-
-    if (!token) {
-      clearAdminToken()
-      unauthorizedHandler?.()
-
-      const error = new Error(
-        'Sesi admin tidak ditemukan. Silakan login kembali.'
-      )
-      error.status = 401
-
-      throw error
-    }
-
-    requestHeaders.set('Authorization', `Bearer ${token}`)
-  }
-
   // Mengubah object JavaScript menjadi JSON
   // FormData tidak perlu diubah karena browser mengaturnya otomatis
   const requestBody =
@@ -80,6 +40,7 @@ export async function apiRequest(path, options = {}) {
     method,
     headers: requestHeaders,
     body: requestBody,
+    credentials: 'same-origin',
   })
 
   // Membaca respons sebagai teks terlebih dahulu
@@ -105,9 +66,8 @@ export async function apiRequest(path, options = {}) {
 
   // Menangani respons HTTP yang gagal
   if (!response.ok) {
-    // Menghapus sesi admin jika token sudah tidak valid
+    // Memberi tahu aplikasi jika sesi admin sudah tidak valid
     if (auth && response.status === 401) {
-      clearAdminToken()
       unauthorizedHandler?.()
     }
 

@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  apiRequest,
-  getAdminToken,
-  clearAdminToken,
-} from '../../services/api'
+import { apiRequest } from '../../services/api'
 
 function ProtectedRoute({ children }) {
   const navigate = useNavigate()
@@ -16,13 +12,6 @@ function ProtectedRoute({ children }) {
     let isMounted = true
 
     async function verifySession() {
-      const token = getAdminToken()
-
-      if (!token) {
-        navigate('/admin/login', { replace: true })
-        return
-      }
-
       try {
         await apiRequest('/api/auth/me', { auth: true })
 
@@ -30,8 +19,11 @@ function ProtectedRoute({ children }) {
           setIsAuthorized(true)
         }
       } catch (error) {
-        if (error.status === 401 || error.status === 403) {
-          clearAdminToken()
+        if (error.status === 401) {
+          return
+        }
+
+        if (error.status === 403) {
           navigate('/admin/login', { replace: true })
           return
         }

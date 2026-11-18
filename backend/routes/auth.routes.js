@@ -4,8 +4,17 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../config/database')
 const authenticateAdmin = require('../middleware/auth.middleware')
+const csrfProtection = require('../middleware/csrf.middleware')
 
 const router = express.Router()
+const COOKIE_NAME = 'holymoly_admin_token'
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'strict',
+  path: '/',
+  maxAge: 60 * 60 * 1000,
+}
 // Membatasi percobaan login administrator
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -19,7 +28,7 @@ const loginLimiter = rateLimit({
 })
 
 // Endpoint untuk login administrator
-router.post('/login', loginLimiter, async (req, res) => {
+router.post('/login', csrfProtection, loginLimiter, async (req, res) => {
   try {
     // Memastikan JWT_SECRET tersedia
     if (!process.env.JWT_SECRET) {
@@ -100,14 +109,14 @@ router.post('/login', loginLimiter, async (req, res) => {
       }
     )
 
-    // Mengirim token dan informasi administrator ke frontend
+    // Menyimpan JWT dalam cookie yang tidak dapat dibaca JavaScript.
+    res.cookie(COOKIE_NAME, token, cookieOptions)
     res.set('Cache-Control', 'no-store')
 
     return res.status(200).json({
       success: true,
       message: 'Login administrator berhasil.',
       data: {
-        token,
         admin: {
           id: admin.id,
           email: admin.email,
@@ -122,6 +131,21 @@ router.post('/login', loginLimiter, async (req, res) => {
       message: 'Terjadi kesalahan pada server.',
     })
   }
+})
+
+// Mengakhiri sesi administrator dan menghapus cookie autentikasi.
+router.post('/logout', csrfProtection, (req, res) => {
+  res.clearCookie(COOKIE_NAME, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+  })
+  res.set('Cache-Control', 'no-store')
+  return res.status(200).json({
+    success: true,
+    message: 'Logout berhasil.',
+  })
 })
 
 // Endpoint untuk memeriksa identitas administrator yang sedang login

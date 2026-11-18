@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { apiRequest, setAdminToken } from '../services/api'
+import { apiRequest } from '../services/api'
 
 function AdminLogin() {
   const navigate = useNavigate()
@@ -26,21 +26,13 @@ function AdminLogin() {
     setIsLoading(true)
 
     try {
-      const response = await apiRequest('/api/auth/login', {
+      await apiRequest('/api/auth/login', {
         method: 'POST',
         body: {
           email: normalizedEmail,
           password,
         },
       })
-
-      const token = response?.data?.token
-
-      if (!token) {
-        throw new Error('Token login tidak ditemukan.')
-      }
-
-      setAdminToken(token)
       setPassword('')
       navigate('/admin', { replace: true })
     } catch (error) {

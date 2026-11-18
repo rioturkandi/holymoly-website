@@ -1,8 +1,16 @@
 const jwt = require('jsonwebtoken')
 const db = require('../config/database')
+const csrfProtection = require('./csrf.middleware')
 
 // Middleware untuk memeriksa autentikasi administrator
 async function authenticateAdmin(req, res, next) {
+  // Memblokir request mutasi yang berasal dari origin berbeda.
+  const csrfRejected = await new Promise((resolve) => {
+    csrfProtection(req, res, () => resolve(false))
+    if (res.headersSent) resolve(true)
+  })
+  if (csrfRejected) return
+
   // Memastikan JWT_SECRET tersedia
   if (!process.env.JWT_SECRET) {
     console.error('JWT_SECRET belum dikonfigurasi.')
@@ -14,19 +22,8 @@ async function authenticateAdmin(req, res, next) {
   }
 
   try {
-    // Mengambil token dari Authorization Header
-    const authorization = req.headers.authorization
-
-    // Memastikan header menggunakan format Bearer
-    if (!authorization || !authorization.startsWith('Bearer ')) {
-      return res.status(401).json({
-        success: false,
-        message: 'Token autentikasi tidak ditemukan.',
-      })
-    }
-
-    // Mengambil bagian token setelah kata Bearer
-    const token = authorization.split(' ')[1]
+    // Mengambil JWT dari cookie HttpOnly.
+    const token = req.cookies?.holymoly_admin_token
 
     // Memastikan token tersedia
     if (!token) {
