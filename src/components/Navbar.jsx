@@ -18,7 +18,7 @@ function Navbar() {
   return (
     <>
       <header className="fixed left-1/2 top-5 z-50 hidden w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 md:block">
-      <nav className="flex items-center justify-between rounded-full border border-white/10 bg-[#E5E7EB]/45 px-5 py-2.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-6">
+      <nav className="flex items-center justify-between rounded-full border border-white/10 bg-[#E5E7EB]/45 px-5 py-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-6">
         <Link
           to="/"
           onClick={closeMenu}
@@ -52,7 +52,7 @@ function Navbar() {
           aria-label={isMenuOpen ? 'Tutup menu' : 'Buka menu'}
           aria-expanded={isMenuOpen}
           aria-controls="tablet-navigation"
-          className="hidden h-9 w-9 flex-col items-center justify-center gap-1.5 md:flex lg:hidden"
+          className="hidden h-8 w-8 flex-col items-center justify-center gap-1.5 md:flex lg:hidden"
         >
           <span
             className={`h-0.5 w-5 bg-[#100C08] transition-transform ${
