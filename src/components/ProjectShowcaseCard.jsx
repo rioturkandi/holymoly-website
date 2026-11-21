@@ -5,6 +5,7 @@ function ProjectShowcaseCard({
   project,
   linkTo,
   onDelete,
+  onEdit,
   isDeleting = false,
   clampDescription = false,
   variant = 'default',
@@ -197,20 +198,34 @@ function ProjectShowcaseCard({
           {project.description}
         </p>
 
-        {onDelete && (
+        {(onEdit || onDelete) && (
           <div className="flex flex-col gap-3 border-t border-zinc-800 pt-3 @sm:flex-row @sm:items-center @sm:justify-between">
             <p className="text-[11px] min-[360px]:text-xs text-zinc-500">
               {total} detail photos
             </p>
 
-            <button
-              type="button"
-              onClick={onDelete}
-              disabled={isDeleting}
-              className="w-full min-h-11 rounded-lg border border-red-900 px-4 py-2 text-xs min-[390px]:text-sm text-red-400 hover:bg-red-950 disabled:opacity-50 @sm:w-auto"
-            >
-              {isDeleting ? 'Deleting...' : 'Delete Project'}
-            </button>
+            <div className="flex w-full flex-col gap-2 @sm:w-auto @sm:flex-row">
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={onEdit}
+                  className="w-full min-h-11 rounded-lg border border-zinc-600 px-4 py-2 text-xs min-[390px]:text-sm text-zinc-300 transition-colors hover:bg-zinc-800 @sm:w-auto"
+                >
+                  Edit Project
+                </button>
+              )}
+
+              {onDelete && (
+                <button
+                  type="button"
+                  onClick={onDelete}
+                  disabled={isDeleting}
+                  className="w-full min-h-11 rounded-lg border border-red-900 px-4 py-2 text-xs min-[390px]:text-sm text-red-400 hover:bg-red-950 disabled:opacity-50 @sm:w-auto"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Project'}
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>

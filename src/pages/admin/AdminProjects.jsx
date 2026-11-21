@@ -20,6 +20,9 @@ function AdminProjects() {
     detail_image_paths: [],
   })
 
+  // ID proyek yang sedang diedit; null berarti mode Create
+  const [editingProjectId, setEditingProjectId] = useState(null)
+
   // Status upload, penyimpanan, dan penghapusan
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -251,7 +254,41 @@ function AdminProjects() {
     }
   }
 
-  // Menyimpan proyek baru
+  // Mengisi form dengan data proyek yang dipilih untuk diedit
+  function handleEdit(project) {
+    setEditingProjectId(project.id)
+
+    setForm({
+      vehicle_name: project.vehicle_name || '',
+      description: project.description || '',
+      cover_image_path: project.cover?.image_path || '',
+      cover_position_x: project.cover?.position_x ?? 50,
+      cover_position_y: project.cover?.position_y ?? 50,
+      detail_image_paths: (project.gallery || []).map(
+        (photo) => photo.image_path
+      ),
+    })
+
+    setError('')
+    setMessage('')
+  }
+
+  // Membatalkan mode edit dan mengembalikan form ke kondisi awal
+  function handleCancelEdit() {
+    setEditingProjectId(null)
+    setForm({
+      vehicle_name: '',
+      description: '',
+      cover_image_path: '',
+      cover_position_x: 50,
+      cover_position_y: 50,
+      detail_image_paths: [],
+    })
+    setError('')
+    setMessage('')
+  }
+
+  // Menyimpan proyek baru atau memperbarui proyek yang sedang diedit
   async function handleSave(event) {
     event.preventDefault()
     setError('')
@@ -268,15 +305,21 @@ function AdminProjects() {
       return
     }
 
+    const isEditing = editingProjectId !== null
+    const endpoint = isEditing
+      ? `/api/admin/projects/${editingProjectId}`
+      : '/api/admin/projects'
+
     setIsSaving(true)
 
     try {
-      await apiRequest('/api/admin/projects', {
-        method: 'POST',
+      await apiRequest(endpoint, {
+        method: isEditing ? 'PUT' : 'POST',
         auth: true,
         body: form,
       })
 
+      setEditingProjectId(null)
       setForm({
         vehicle_name: '',
         description: '',
@@ -286,7 +329,11 @@ function AdminProjects() {
         detail_image_paths: [],
       })
 
-      setMessage('Proyek berhasil ditambahkan.')
+      setMessage(
+        isEditing
+          ? 'Proyek berhasil diperbarui.'
+          : 'Proyek berhasil ditambahkan.'
+      )
       await loadProjects()
     } catch (error) {
       setError(error.message)
@@ -354,7 +401,9 @@ function AdminProjects() {
       </div>
 
       <form onSubmit={handleSave} className="admin-card min-w-0 space-y-5 p-3 min-[390px]:space-y-6 min-[390px]:p-4 sm:p-6">
-        <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">Add New Project</h2>
+        <h2 className="text-base font-bold uppercase leading-snug text-[#E5E7EB] min-[390px]:text-lg sm:text-xl">
+          {editingProjectId !== null ? 'Edit Project' : 'Add New Project'}
+        </h2>
 
         <div>
           <label className="mb-2 block text-xs text-zinc-300 min-[360px]:text-[13px] min-[390px]:text-sm">Title</label>
@@ -483,13 +532,30 @@ function AdminProjects() {
         {error && <p className="text-xs leading-relaxed text-red-400 min-[390px]:text-sm">{error}</p>}
         {message && <p className="text-xs text-green-400 min-[390px]:text-sm">{message}</p>}
 
-        <button
-          type="submit"
-          disabled={isSaving || isUploading}
-          className="min-h-11 w-full rounded-lg bg-white px-5 py-3 text-xs font-semibold text-black transition hover:bg-zinc-300 disabled:opacity-50 min-[390px]:text-sm sm:w-auto sm:px-6"
-        >
-          {isSaving ? 'Saving...' : 'Save Project'}
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <button
+            type="submit"
+            disabled={isSaving || isUploading}
+            className="min-h-11 w-full rounded-lg bg-white px-5 py-3 text-xs font-semibold text-black transition hover:bg-zinc-300 disabled:opacity-50 min-[390px]:text-sm sm:w-auto sm:px-6"
+          >
+            {isSaving
+              ? 'Saving...'
+              : editingProjectId !== null
+                ? 'Update Project'
+                : 'Save Project'}
+          </button>
+
+          {editingProjectId !== null && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              disabled={isSaving || isUploading}
+              className="min-h-11 w-full rounded-lg border border-zinc-600 px-5 py-3 text-xs font-semibold text-zinc-300 transition hover:bg-zinc-800 disabled:opacity-50 min-[390px]:text-sm sm:w-auto"
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
       </form>
 
       <section className="min-w-0 space-y-4">
@@ -512,6 +578,7 @@ function AdminProjects() {
             <ProjectShowcaseCard
               key={project.id}
               project={project}
+              onEdit={() => handleEdit(project)}
               onDelete={() => handleDelete(project.id)}
               isDeleting={deletingId === project.id}
             />
