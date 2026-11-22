@@ -91,14 +91,14 @@ function Hero({ content, isLoading = false, hasError = false }) {
   // Menggunakan data database jika tersedia.
   // Jika belum tersedia, gunakan konten fallback.
   const eyebrow =
-    content?.eyebrow || 'Automotive Culture & Customization'
+    content?.eyebrow || 'AUTOMOTIVE CULTURE & CUSTOMIZATION'
 
   const title =
-    content?.title || 'Built Different.'
+    content?.title || 'Built to Be Different.'
 
   const description =
     content?.description ||
-    'More than a vehicle. A statement of character. Discover a different perspective on automotive customization.'
+    'We believe every car has a story to tell. Through creativity, careful planning, and the art of customization, we turn ideas into something special. Every build is an opportunity to create something that stands out and reflects its own character.'
 
   const buttonText =
     content?.button_text || 'Explore Projects'

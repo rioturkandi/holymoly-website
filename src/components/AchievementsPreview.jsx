@@ -77,19 +77,18 @@ function AchievementsPreview() {
         <div className="mb-8 flex flex-col justify-between gap-3 sm:mb-10 md:mb-12 md:flex-row md:items-end md:gap-12">
           <div>
             <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-              Recognition
+              OUR HIGHLIGHTS
             </p>
 
             <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
-              Beyond The
+              Every Achievement
               <br />
-              Build.
+              Has a Story.
             </h2>
           </div>
 
           <p className="max-w-sm text-[12px] min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
-            A dedicated space for achievements, recognition, and stories
-            featuring HOLYMOLY.
+            Every event, achievement, and new experience becomes part of our journey. Behind each moment are the effort, preparation, and passion that keep us moving forward. Explore the highlights and milestones worth remembering.
           </p>
         </div>
 
@@ -159,14 +158,14 @@ function AchievementsPreview() {
                     to="/achievements"
                     className="inline-flex w-fit items-center justify-center self-start rounded-full border border-white/30 bg-white/[0.02] px-3.5 py-1.5 min-[360px]:px-4 min-[390px]:px-5 text-center text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-[11px] font-bold uppercase leading-none tracking-[0.16em] text-white transition-colors duration-500 hover:border-white hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                   >
-                    Explore Achievement
+                    Explore Achievements
                   </Link>
                   </div>
                 </div>
               </>
             ) : (
               <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
-                No achievements available yet.
+                No achievements to show at the moment. Check back soon for updates.
               </p>
             )}
           </article>
@@ -223,7 +222,7 @@ function AchievementsPreview() {
               </>
             ) : (
               <p className="p-4 sm:p-5 md:p-6 text-xs sm:text-sm text-neutral-500">
-                No media coverage available yet.
+                No media coverage to show at the moment. Check back soon for updates.
               </p>
             )}
           </article>

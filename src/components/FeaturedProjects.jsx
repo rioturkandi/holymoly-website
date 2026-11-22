@@ -44,19 +44,18 @@ function FeaturedProjects() {
         <div className="mb-8 flex flex-col justify-between gap-3 sm:mb-10 md:mb-12 md:flex-row md:items-end md:gap-12">
           <div>
             <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-              Our Selected Works
+              OUR PROJECTS
             </p>
 
             <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
-              Featured
+              Every Build
               <br />
-              Projects.
+              Has Its Own Identity.
             </h2>
           </div>
 
           <p className="max-w-sm text-[12px] min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
-            A closer look at selected automotive projects.
-            Every build has its own character and story.
+            Every project starts with an idea and takes shape through creativity and attention to detail. From the overall concept to the smallest details, each build follows its own direction. Take a closer look at the cars and the work behind every project.
           </p>
         </div>
 
@@ -71,7 +70,7 @@ function FeaturedProjects() {
           </p>
         ) : projects.length === 0 ? (
           <p className="text-sm text-neutral-500">
-            No projects available yet.
+            No projects to show at the moment. We're looking forward to sharing more of our work with you. Check back soon for new builds.
           </p>
         ) : (
           <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,32rem),1fr))] gap-3 sm:gap-4">

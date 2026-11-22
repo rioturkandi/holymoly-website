@@ -173,12 +173,16 @@ function ProjectDetail() {
         <section className="mb-0">
           <div className="mb-8 sm:mb-10 md:mb-12 border-b border-neutral-800 pb-5">
             <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-              Visual Documentation
+              PROJECT DETAILS
             </p>
 
             <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
-              Project Detail.
+              The Details Behind the Build.
             </h2>
+
+            <p className="mt-3 max-w-2xl text-xs min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
+              Explore the details of this project through the photo gallery. Each image offers another view of the work, design, and finishing touches.
+            </p>
           </div>
 
           {gallery.length > 0 ? (
@@ -206,7 +210,7 @@ function ProjectDetail() {
             </div>
           ) : (
             <p className="border border-neutral-800 p-4 min-[390px]:p-6 sm:p-8 text-xs min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-neutral-500">
-              Additional project photos will be displayed here.
+              Project photos are not available at the moment. Check back soon for updates.
             </p>
           )}
         </section>

@@ -55,33 +55,33 @@ function About() {
   }
 
   const introduction = getContent('introduction', {
-    eyebrow: 'Get To Know Us',
-    title: 'More Than\\nJust Cars.',
-    description: 'An introduction to HOLYMOLY, its identity, and the automotive culture behind the brand. This space will tell the story of who we are and what drives us.',
+    eyebrow: 'ABOUT US',
+    title: 'This Is HOLYMOLY.',
+    description: "We are driven by a passion for cars, creativity, and the art of customization. At HOLYMOLY, every project is a chance to bring fresh ideas to life and create something worth remembering. It's about exploring possibilities, enjoying the process, and putting our passion into every detail.",
   })
 
   const journey = getContent('journey', {
-    eyebrow: 'The Story',
-    title: 'Our Journey.',
-    description: 'Every brand has a story. This section will introduce the beginning of HOLYMOLY, its development, and the milestones that have shaped its journey.',
+    eyebrow: 'OUR JOURNEY',
+    title: 'The Story Behind HOLYMOLY.',
+    description: 'Every journey has a beginning, and every experience helps shape what comes next. This section shares the story behind HOLYMOLY, from its beginnings to the experiences along the way. Get to know the moments and ideas that have helped shape the brand.',
   })
 
   const vision = getContent('vision', {
-    eyebrow: '01 / Vision',
-    title: 'Our Vision',
-    description: 'The long-term direction and aspirations of HOLYMOLY will be presented here.',
+    eyebrow: 'OUR VISION',
+    title: 'Our Vision.',
+    description: 'We want to be part of an automotive community that brings people together through a shared passion for cars. We believe creativity and the exchange of ideas can inspire new possibilities. Our goal is to keep growing while contributing something meaningful to the automotive scene.',
   })
 
   const mission = getContent('mission', {
-    eyebrow: '02 / Mission',
-    title: 'Our Mission',
-    description: 'The mission that guides HOLYMOLY in delivering its work and building its automotive culture will be presented here.',
+    eyebrow: 'OUR MISSION',
+    title: 'Our Mission.',
+    description: 'We aim to bring creative ideas to life through thoughtful customization and careful work. Every project deserves attention, from the first concept to the finishing details. We want every result to reflect the ideas and vision behind it.',
   })
 
   const philosophy = getContent('philosophy', {
-    eyebrow: '03 / Philosophy',
-    title: 'Our Philosophy',
-    description: 'The values, principles, and approach that define the character of HOLYMOLY will be presented here.',
+    eyebrow: 'OUR PHILOSOPHY',
+    title: 'Our Philosophy.',
+    description: "We believe every car has its own character and every owner has a different vision. That's why we value good ideas, thoughtful details, and a creative approach to every project. For us, the process matters just as much as the final result.",
   })
 
   return (
@@ -130,7 +130,7 @@ function About() {
         <section className="page-top-spacing lg:pt-28 pb-12 md:pb-12">
           <div className="page-container">
             <p className="text-sm text-[#E5E7EB]/70">
-              Konten About sementara tidak dapat dimuat.
+              About content is temporarily unavailable.
             </p>
           </div>
         </section>
@@ -148,7 +148,7 @@ function About() {
           </h1>
 
           <div className="mt-3 sm:mt-4 lg:mt-5">
-            <p className="min-w-0 max-w-sm [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 sm:text-base sm:leading-8 text-[#E5E7EB]/80">
+            <p className="min-w-0 w-full max-w-3xl [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 sm:text-base sm:leading-8 text-[#E5E7EB]/80">
               {introduction.description}
             </p>
           </div>
@@ -169,7 +169,7 @@ function About() {
           </div>
 
           <div className="flex flex-col justify-end">
-            <p className="min-w-0 max-w-sm [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
+            <p className="min-w-0 w-full max-w-none [overflow-wrap:anywhere] text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
               {journey.description}
             </p>
           </div>

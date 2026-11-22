@@ -88,15 +88,15 @@ function Achievements() {
         {/* PAGE INTRODUCTION */}
         <div>
           <p className="mb-3 sm:mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-            Recognition
+            OUR HIGHLIGHTS
           </p>
 
           <h1 className="mt-0 break-words text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
-            Achievements.
+            Every Achievement<br />Has a Story.
           </h1>
 
           <p className="mt-3 sm:mt-4 lg:mt-5 max-w-xl text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 md:text-base md:leading-8">
-            Penghargaan, pencapaian, dan publikasi HOLYMOLY.
+            Every event, achievement, and new experience becomes part of our journey. Each moment represents the effort, preparation, and passion behind what we do. Take a look at the highlights that have made our journey worth sharing.
           </p>
         </div>
 
@@ -129,15 +129,15 @@ function Achievements() {
           {!isLoading && !error && achievements.length === 0 && (
             <div className="content-fade-in rounded-xl border border-white/10 bg-[#1b1b1b] px-4 py-10 min-[390px]:px-5 min-[390px]:py-12 sm:px-6 sm:py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-                Recognition
+                OUR HIGHLIGHTS
               </p>
 
               <h2 className="mt-3 sm:mt-4 text-base min-[390px]:text-lg md:text-xl font-bold uppercase text-[#E5E7EB]">
-                No Achievements Yet.
+                No Achievements to Show Yet.
               </h2>
 
               <p className="mt-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-neutral-500 md:text-base md:leading-8">
-                Informasi penghargaan HOLYMOLY akan ditampilkan di sini.
+                No achievements to show at the moment. There will be more moments to share along the way. Check back soon for updates.
               </p>
             </div>
           )}
@@ -203,15 +203,15 @@ function Achievements() {
         <section className="mt-10 sm:mt-12 md:mt-14 border-t border-white/10 pt-8 sm:pt-10 md:pt-12">
           <div className="mb-8 sm:mb-10 md:mb-12">
             <p className="text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-              Press & Publications
+              FROM THE MEDIA
             </p>
 
             <h2 className="mt-3 sm:mt-4 break-words text-2xl min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-3xl md:text-4xl font-bold uppercase leading-tight text-[#E5E7EB]">
-              Media Coverage.
+              Our Name Out There.
             </h2>
 
             <p className="mt-3 sm:mt-4 lg:mt-5 max-w-xl text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-neutral-400 md:text-base md:leading-8">
-              Artikel dan publikasi media yang mengangkat HOLYMOLY.
+              See where HOLYMOLY and our automotive projects have been featured across the media.
             </p>
           </div>
 
@@ -237,15 +237,15 @@ function Achievements() {
           {!isMediaLoading && !mediaError && mediaCoverage.length === 0 && (
             <div className="content-fade-in rounded-xl border border-white/10 bg-[#1b1b1b] px-4 py-10 min-[390px]:px-5 min-[390px]:py-12 sm:px-6 sm:py-16 text-center shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
               <p className="text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">
-                Press & Publications
+                FROM THE MEDIA
               </p>
 
               <h3 className="mt-3 sm:mt-4 text-base min-[390px]:text-lg md:text-xl font-bold uppercase text-[#E5E7EB]">
-                No Media Coverage Yet.
+                No Media Coverage to Show Yet.
               </h3>
 
               <p className="mt-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-neutral-500 md:text-base md:leading-8">
-                Artikel dan liputan media HOLYMOLY akan ditampilkan di sini.
+                No media coverage to show at the moment. Check back soon for updates.
               </p>
             </div>
           )}

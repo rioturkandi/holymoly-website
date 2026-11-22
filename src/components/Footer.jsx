@@ -29,7 +29,7 @@ function Footer() {
               rel="noopener noreferrer"
               className="mt-3 min-[390px]:mt-4 inline-flex min-h-10 items-center text-xs min-[360px]:text-[13px] min-[390px]:text-sm text-neutral-400 transition-colors hover:text-white"
             >
-              Open in Google Maps ↗
+              View on Google Maps ↗
             </a>
           </div>
 
@@ -73,7 +73,7 @@ function Footer() {
 
         {/* COPYRIGHT */}
         <div className="mt-8 border-t border-neutral-800 pt-4 text-[10px] min-[390px]:text-[11px] sm:text-xs leading-6 text-neutral-500 sm:mt-10 sm:pt-5 md:mt-12 md:pt-6">
-          <p>© {currentYear} HOLYMOLY. All rights reserved.</p>
+          <p>© {currentYear} HOLYMOLY. All Rights Reserved.</p>
         </div>
       </div>
     </footer>

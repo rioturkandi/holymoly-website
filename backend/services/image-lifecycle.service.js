@@ -88,7 +88,7 @@ async function deleteUnusedImage(imagePath) {
   const connection = await db.getConnection()
 
   let transactionStarted = false
-  let imageId = null
+  let imageId
 
   try {
     await connection.beginTransaction()
@@ -197,7 +197,7 @@ async function cleanupPendingImages() {
       if (result === 'deleted') results.deleted += 1
       else if (result === 'in-use') results.inUse += 1
       else if (result === 'untracked') results.untracked += 1
-    } catch (error) {
+    } catch {
       results.failed += 1
     }
   }
@@ -259,7 +259,7 @@ async function reconcileAttachedImages() {
       if (result === 'deleted') results.deleted += 1
       else if (result === 'in-use') results.inUse += 1
       else if (result === 'untracked') results.untracked += 1
-    } catch (error) {
+    } catch {
       results.failed += 1
     }
   }

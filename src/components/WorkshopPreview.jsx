@@ -35,19 +35,18 @@ function WorkshopPreview() {
         <div className="mb-8 flex flex-col justify-between gap-3 sm:mb-10 md:mb-12 md:gap-12 md:flex-row md:items-end">
           <div>
             <p className="mb-3 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:mb-4 sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-              Behind The Build
+              OUR WORKSPACE
             </p>
 
             <h2 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-tight sm:text-5xl md:text-6xl text-[#E5E7EB]">
-              Inside Our
+              Where Ideas
               <br />
-              Workshop.
+              Become Reality.
             </h2>
           </div>
 
           <p className="max-w-sm text-[12px] min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:leading-8 md:text-base">
-            Take a closer look at the space where automotive ideas
-            and customization projects come to life.
+            This is where ideas take shape and projects come to life. Our workshop is the space where creativity meets hands-on work, with every detail getting the attention it deserves. Take a closer look at the place behind our automotive projects.
           </p>
         </div>
 

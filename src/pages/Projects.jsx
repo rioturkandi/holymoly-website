@@ -46,17 +46,15 @@ function Projects() {
         {/* PAGE INTRODUCTION */}
         <div className="mb-8 sm:mb-10 md:mb-12">
           <p className="mb-4 text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.3em] text-[#E5E7EB]/70">
-            Selected Works
+            OUR AUTOMOTIVE PROJECTS
           </p>
 
           <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] sm:text-5xl md:text-6xl font-bold uppercase leading-tight text-[#E5E7EB]">
-            Our<br />Projects.
+            Every Build<br />Has Its Own Identity.
           </h1>
 
           <p className="mt-3 sm:mt-4 lg:mt-5 max-w-xl text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
-            Every project has its own character and story.
-            Explore the work and discover the details behind
-            each automotive build.
+            Every car has a different story, and every build starts with a different idea. From the concept and design direction to the finishing details, each project takes its own path. Explore our projects and discover the thought and work behind every build.
           </p>
         </div>
 
@@ -87,7 +85,7 @@ function Projects() {
           </p>
         ) : projects.length === 0 ? (
           <p className="text-sm text-neutral-500">
-            No projects available yet.
+            No projects to show at the moment. We're looking forward to sharing more of our work with you. Check back soon for new builds.
           </p>
         ) : (
           <div className="content-fade-in grid grid-cols-1 gap-4 sm:gap-5 lg:gap-6 md:grid-cols-2 lg:grid-cols-3">

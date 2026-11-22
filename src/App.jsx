@@ -25,7 +25,10 @@ function AppContent() {
   const location = useLocation()
   const navigate = useNavigate()
   const currentPathRef = useRef(location.pathname)
-  currentPathRef.current = location.pathname
+
+  useEffect(() => {
+    currentPathRef.current = location.pathname
+  }, [location.pathname])
 
   // Mengarahkan admin ke login ketika sesi berakhir
   useEffect(() => {

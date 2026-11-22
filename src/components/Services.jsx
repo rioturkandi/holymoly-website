@@ -1,9 +1,9 @@
 function Services({ content, services = [], isLoading = false, hasError = false }) {
-  const eyebrow = content?.eyebrow || 'What We Do'
+  const eyebrow = content?.eyebrow || 'WHAT WE DO'
   const title = content?.title || 'Our Services.'
   const description =
     content?.description ||
-    'Explore automotive customization and services offered by HOLYMOLY.'
+    'Every car has its own potential, and sometimes it takes the right changes to bring it out. From simple upgrades to more detailed custom work, we explore different ways to improve the look and feel of a vehicle. Discover the services and possibilities behind HOLYMOLY.'
 
   return (
     <section
@@ -28,7 +28,7 @@ function Services({ content, services = [], isLoading = false, hasError = false 
           </div>
         ) : hasError ? (
           <p className="text-sm text-[#E5E7EB]/70">
-            Konten layanan sementara tidak dapat dimuat. Silakan coba lagi.
+            Service content is temporarily unavailable. Please try again.
           </p>
         ) : (
           <>
