@@ -40,6 +40,7 @@ const {
 } = require('./services/image-lifecycle.service')
 
 const app = express()
+app.set('trust proxy', 1)
 const PORT = process.env.PORT || 5000
 
 // Menjalankan pemeliharaan gambar secara berkala.
