@@ -91,7 +91,24 @@ async function runImageMaintenance() {
 // Memasang HTTP security headers
 app.use(
   helmet({
-    contentSecurityPolicy: false,
+    contentSecurityPolicy: {
+      useDefaults: false,
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'"],
+        styleSrcAttr: ["'unsafe-inline'"],
+        imgSrc: ["'self'", "blob:", "data:"],
+        fontSrc: ["'self'"],
+        connectSrc: ["'self'"],
+        frameSrc: ["https://www.google.com"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+      },
+      reportOnly: true,
+    },
     strictTransportSecurity: {
       maxAge: 15552000,
       includeSubDomains: false,
