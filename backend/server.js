@@ -1,3 +1,4 @@
+
 const path = require('path')
 const dotenv = require('dotenv')
 
@@ -63,7 +64,6 @@ app.use(
     },
   })
 )
-
 
 // Endpoint SSE untuk pembaruan konten website publik.
 app.get('/api/events', handleEventStream)
@@ -157,6 +157,40 @@ app.get('/api/health', async (req, res) => {
     })
   }
 })
+
+// Menyajikan frontend React hanya pada environment production.
+if (process.env.NODE_ENV === 'production') {
+  const frontendDistPath = path.resolve(__dirname, 'dist')
+
+  app.use(
+    express.static(frontendDistPath, {
+      dotfiles: 'deny',
+      index: false,
+    })
+  )
+
+  // Mengarahkan navigasi halaman frontend ke React Router.
+  app.use((req, res, next) => {
+    const isApiRequest =
+      req.path === '/api' || req.path.startsWith('/api/')
+
+    const isUploadRequest =
+      req.path === '/uploads' || req.path.startsWith('/uploads/')
+
+    if (
+      req.method !== 'GET' ||
+      isApiRequest ||
+      isUploadRequest ||
+      !req.accepts('html')
+    ) {
+      return next()
+    }
+
+    return res.sendFile(
+      path.join(frontendDistPath, 'index.html')
+    )
+  })
+}
 
 // Menangani endpoint yang tidak ditemukan
 app.use((req, res) => {

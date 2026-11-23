@@ -1,0 +1,37 @@
+# Git
+.git
+**/.git
+
+# Dependencies
+node_modules
+**/node_modules
+
+# Build output
+dist
+**/dist
+dist-ssr
+
+# Local backups
+backups
+.audit-backup-*
+*-backup-*/
+*.backup*
+*.damaged-copy
+
+# Uploaded files (disimpan di persistent volume Railway)
+backend/uploads
+
+# Environment variables and secrets
+**/.env
+**/.env.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Audit backup files
+*.audit-backup-*
+
+*.audit-backup*

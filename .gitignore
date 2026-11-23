@@ -36,3 +36,8 @@ backend/uploads/
 *.backup*
 *.damaged-copy
 *-backup-*/
+
+# Audit backup files
+*.audit-backup-*
+
+*.audit-backup*
