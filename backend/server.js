@@ -107,7 +107,7 @@ app.use(
         formAction: ["'self'"],
         frameAncestors: ["'self'"],
       },
-      reportOnly: true,
+      reportOnly: false,
     },
     strictTransportSecurity: {
       maxAge: 15552000,
