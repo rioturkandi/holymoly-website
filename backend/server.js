@@ -34,9 +34,58 @@ const mediaCoverageRoutes = require('./routes/media-coverage.routes')
 const workshopRoutes = require('./routes/workshop.routes')
 const authRoutes = require('./routes/auth.routes')
 const uploadsRoutes = require('./routes/uploads.routes')
+const {
+  cleanupPendingImages,
+  reconcileAttachedImages,
+} = require('./services/image-lifecycle.service')
 
 const app = express()
 const PORT = process.env.PORT || 5000
+
+// Menjalankan pemeliharaan gambar secara berkala.
+const IMAGE_MAINTENANCE_INTERVAL_MS = 24 * 60 * 60 * 1000
+
+let imageMaintenanceStartupTimer = null
+let imageMaintenanceTimer = null
+let imageMaintenancePromise = null
+
+async function runImageMaintenance() {
+  if (imageMaintenancePromise) {
+    return imageMaintenancePromise
+  }
+
+  imageMaintenancePromise = (async () => {
+    try {
+      console.log('[IMAGE MAINTENANCE] Starting...')
+
+      const pendingResults = await cleanupPendingImages()
+      console.log('[IMAGE MAINTENANCE] Pending cleanup:', pendingResults)
+
+      const reconcileResults = await reconcileAttachedImages()
+      console.log('[IMAGE MAINTENANCE] Attached reconciliation:', reconcileResults)
+
+      const totalFailed =
+        pendingResults.failed + reconcileResults.failed
+
+      console.log('[IMAGE MAINTENANCE] Summary:', {
+        totalDeleted: pendingResults.deleted + reconcileResults.deleted,
+        totalFailed,
+      })
+
+      if (totalFailed > 0) {
+        console.error('[IMAGE MAINTENANCE] Some files could not be cleaned.')
+      }
+    } catch (error) {
+      console.error('[IMAGE MAINTENANCE] Failed:', error.message)
+    }
+  })()
+
+  try {
+    await imageMaintenancePromise
+  } finally {
+    imageMaintenancePromise = null
+  }
+}
 
 // Memasang HTTP security headers
 app.use(
@@ -239,6 +288,19 @@ app.use((error, req, res, next) => {
 // Menjalankan server dan menyimpan instance HTTP untuk graceful shutdown.
 const server = app.listen(PORT, () => {
   console.log(`HOLYMOLY API berjalan di http://localhost:${PORT}`)
+
+  imageMaintenanceStartupTimer = setTimeout(() => {
+    runImageMaintenance()
+
+    imageMaintenanceTimer = setInterval(
+      runImageMaintenance,
+      IMAGE_MAINTENANCE_INTERVAL_MS
+    )
+
+    imageMaintenanceTimer.unref()
+  }, 60 * 1000)
+
+  imageMaintenanceStartupTimer.unref()
 })
 
 // Mencegah proses shutdown dijalankan lebih dari satu kali.
@@ -251,6 +313,14 @@ async function shutdown(signal) {
 
   shutdownStarted = true
   console.log(`Menerima ${signal}. Memulai graceful shutdown...`)
+
+  if (imageMaintenanceStartupTimer) {
+    clearTimeout(imageMaintenanceStartupTimer)
+  }
+
+  if (imageMaintenanceTimer) {
+    clearInterval(imageMaintenanceTimer)
+  }
 
   // Memberi waktu maksimal 10 detik untuk menyelesaikan koneksi HTTP aktif.
   const forceCloseTimer = setTimeout(() => {
@@ -284,7 +354,12 @@ async function shutdown(signal) {
     clearTimeout(forceCloseTimer)
   }
 
-  // Menutup pool database setelah koneksi HTTP selesai.
+  // Menunggu maintenance aktif sebelum menutup koneksi database.
+  if (imageMaintenancePromise) {
+    await imageMaintenancePromise
+  }
+
+  // Menutup pool database setelah koneksi HTTP dan maintenance selesai.
   try {
     await db.end()
     console.log('Koneksi database berhasil ditutup.')
