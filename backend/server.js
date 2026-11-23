@@ -92,7 +92,11 @@ async function runImageMaintenance() {
 app.use(
   helmet({
     contentSecurityPolicy: false,
-    strictTransportSecurity: false,
+    strictTransportSecurity: {
+      maxAge: 15552000,
+      includeSubDomains: false,
+      preload: false,
+    },
   })
 )
 
