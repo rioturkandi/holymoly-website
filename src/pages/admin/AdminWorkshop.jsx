@@ -110,11 +110,41 @@ function AdminWorkshop() {
 
     setIsCropOpen(false)
     setSelectedIndex(null)
-    }
+  }
 
   function handleCancelCrop() {
     setIsCropOpen(false)
     setSelectedIndex(null)
+  }
+
+  function handleDeleteImage(index) {
+    if (isSaving || isCropOpen) return
+
+    const confirmed = window.confirm(
+      `Hapus foto Workshop pada slot ${index + 1}? Perubahan akan diterapkan ke website setelah kamu menekan Save Workshop Photos.`
+    )
+
+    if (!confirmed) return
+
+    setImages((current) =>
+      current.map((image, itemIndex) =>
+        itemIndex === index ? '' : image
+      )
+    )
+
+    setCropBlobs((current) =>
+      current.map((blob, itemIndex) =>
+        itemIndex === index ? null : blob
+      )
+    )
+
+    setPreviews((current) =>
+      current.map((preview, itemIndex) =>
+        itemIndex === index ? '' : preview
+      )
+    )
+
+    setError('')
   }
 
   async function uploadImage(blob, index) {
@@ -139,8 +169,14 @@ function AdminWorkshop() {
   async function handleSave() {
     setError('')
 
-    if (images.some((image, index) => !image && !cropBlobs[index])) {
-      setError('Workshop wajib memiliki tepat 3 foto.')
+    const filledCount = images.filter(
+      (image, index) => Boolean(image || cropBlobs[index])
+    ).length
+
+    if (filledCount !== 0 && filledCount !== 3) {
+      setError(
+        'Workshop hanya boleh disimpan dengan 0 atau tepat 3 foto.'
+      )
       return
     }
 
@@ -162,20 +198,32 @@ function AdminWorkshop() {
 
       await apiRequest('/api/admin/workshop/images', {
         method: 'PUT',
-        body: { images: savedImages },
+        body: { images: filledCount === 0 ? [] : savedImages },
         auth: true,
       })
 
       setImages(savedImages)
       setCropBlobs(emptyCrops)
       setPreviews(emptyImages)
-      window.alert('Foto Workshop berhasil di-upload dan disimpan.')
+      window.alert(
+        filledCount === 0
+          ? 'Semua foto Workshop berhasil dihapus.'
+          : 'Tiga foto Workshop berhasil di-upload dan disimpan.'
+      )
     } catch (saveError) {
       setError(saveError.message)
     } finally {
       setIsSaving(false)
     }
   }
+
+  const filledCount = images.filter(
+    (image, index) => Boolean(image || cropBlobs[index])
+  ).length
+
+  const isEmpty = filledCount === 0
+  const isComplete = filledCount === 3
+  const hasPartialImages = !isEmpty && !isComplete
 
   return (
     <section className="min-w-0">
@@ -200,73 +248,111 @@ function AdminWorkshop() {
       )}
 
       {isLoading ? (
-        <p className="text-xs text-neutral-400 min-[390px]:text-sm">Loading workshop photos...</p>
+        <p className="text-xs text-neutral-400 min-[390px]:text-sm">
+          Loading workshop photos...
+        </p>
       ) : (
         <div className="grid min-w-0 grid-cols-1 gap-3 min-[390px]:gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="admin-card min-w-0 p-3 min-[390px]:p-4"
-            >
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 min-[390px]:mb-4">
-                <h2 className="text-xs font-bold uppercase text-[#E5E7EB] min-[390px]:text-sm">
-                  Photo {String(index + 1).padStart(2, '0')}
-                </h2>
+          {images.map((image, index) => {
+            const currentPreview = previews[index] || image
+            const hasPhoto = Boolean(currentPreview)
 
-                <div className="flex min-w-0 flex-wrap items-center gap-2 min-[390px]:gap-3">
-                  <span className="text-[10px] text-neutral-500 min-[390px]:text-xs">16:9</span>
-                  <span
-                    className={`text-[10px] font-semibold min-[390px]:text-xs ${
-                      images[index] && !cropBlobs[index]
-                        ? 'text-green-400'
-                        : 'text-amber-400'
-                    }`}
-                  >
-                    {images[index] && !cropBlobs[index]
-                      ? '✓ Tersimpan'
-                      : 'Belum disimpan'}
-                  </span>
+            return (
+              <div
+                key={index}
+                className="admin-card min-w-0 p-3 min-[390px]:p-4"
+              >
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2 min-[390px]:mb-4">
+                  <h2 className="text-xs font-bold uppercase text-[#E5E7EB] min-[390px]:text-sm">
+                    Photo {String(index + 1).padStart(2, '0')}
+                  </h2>
+
+                  <div className="flex min-w-0 flex-wrap items-center gap-2 min-[390px]:gap-3">
+                    <span className="text-[10px] text-neutral-500 min-[390px]:text-xs">
+                      16:9
+                    </span>
+
+                    <span
+                      className={`text-[10px] font-semibold min-[390px]:text-xs ${
+                        hasPhoto && !cropBlobs[index]
+                          ? 'text-green-400'
+                          : 'text-amber-400'
+                      }`}
+                    >
+                      {hasPhoto
+                        ? cropBlobs[index]
+                          ? 'Belum disimpan'
+                          : '✓ Tersimpan'
+                        : 'Empty Slot'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="aspect-[16/9] w-full overflow-hidden rounded border border-white/10 bg-[#100C08]">
+                  {currentPreview ? (
+                    <img
+                      src={currentPreview}
+                      alt={`Workshop photo ${index + 1}`}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center px-2 text-center text-[11px] text-amber-400 min-[390px]:text-xs">
+                      No photo selected
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-3 grid grid-cols-1 gap-2 min-[390px]:mt-4">
+                  <label className="flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:px-4 min-[390px]:text-xs">
+                    {hasPhoto ? 'Replace Photo' : 'Choose Replacement'}
+
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      disabled={isSaving || isCropOpen}
+                      onChange={(event) => {
+                        handleImageSelect(event.target.files?.[0], index)
+                        event.target.value = ''
+                      }}
+                    />
+                  </label>
+
+                  {hasPhoto && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteImage(index)}
+                      disabled={isSaving || isCropOpen}
+                      className="min-h-10 rounded border border-red-500/30 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-red-400 transition hover:border-red-400 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:text-xs"
+                    >
+                      Delete Photo
+                    </button>
+                  )}
                 </div>
               </div>
-
-              <div className="aspect-[16/9] w-full overflow-hidden rounded border border-white/10 bg-[#100C08]">
-                {previews[index] || image ? (
-                  <img
-                    src={previews[index] || image}
-                    alt={`Workshop photo ${index + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center px-2 text-center text-[11px] text-neutral-600 min-[390px]:text-xs">
-                    No photo selected
-                  </div>
-                )}
-              </div>
-
-              <label className="mt-3 flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:mt-4 min-[390px]:px-4 min-[390px]:text-xs">
-                Choose Image
-
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  disabled={isSaving}
-                  onChange={(event) => {
-                    handleImageSelect(event.target.files?.[0], index)
-                    event.target.value = ''
-                  }}
-                />
-              </label>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
-      <div className="mt-4 flex justify-stretch min-[390px]:mt-5 min-[390px]:justify-end">
+      <div className="mt-4 flex flex-col gap-3 min-[390px]:mt-5 min-[390px]:flex-row min-[390px]:items-center min-[390px]:justify-between">
+        <p className="text-[11px] leading-relaxed text-neutral-500 min-[390px]:text-xs">
+          {isEmpty
+            ? 'All workshop photos will be removed from the public website.'
+            : hasPartialImages
+              ? `You have ${filledCount} photo(s). Fill all three slots or clear all photos before saving.`
+              : 'All three workshop photo slots are ready.'}
+        </p>
+
         <button
           type="button"
           onClick={handleSave}
-          disabled={isLoading || isSaving || isCropOpen}
+          disabled={
+            isLoading ||
+            isSaving ||
+            isCropOpen ||
+            hasPartialImages
+          }
           className="min-h-11 w-full rounded bg-white px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-black transition hover:bg-neutral-300 disabled:cursor-not-allowed disabled:opacity-50 min-[390px]:w-auto min-[390px]:px-5 min-[390px]:py-2 min-[390px]:text-xs"
         >
           {isSaving ? 'Saving...' : 'Save Workshop Photos'}

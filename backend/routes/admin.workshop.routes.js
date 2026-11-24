@@ -14,8 +14,16 @@ router.use(authenticateAdmin)
 class ValidationError extends Error {}
 
 function validateImages(images) {
-  if (!Array.isArray(images) || images.length !== 3) {
-    throw new ValidationError('Workshop wajib memiliki tepat 3 foto.')
+  if (!Array.isArray(images)) {
+    throw new ValidationError('Data foto Workshop tidak valid.')
+  }
+
+  if (images.length === 0) {
+    return []
+  }
+
+  if (images.length !== 3) {
+    throw new ValidationError('Workshop harus memiliki 0 atau tepat 3 foto.')
   }
 
   const validatedImages = images.map((image) => {
@@ -102,16 +110,28 @@ router.put('/images', async (req, res) => {
       [contentId]
     )
 
-    for (let index = 0; index < images.length; index += 1) {
+    if (images.length === 3) {
+      for (let index = 0; index < images.length; index += 1) {
+        await connection.query(
+          `INSERT INTO workshop_images
+            (workshop_content_id, image_path, alt_text, display_order)
+           VALUES (?, ?, NULL, ?)`,
+          [contentId, images[index], index + 1]
+        )
+      }
+
       await connection.query(
-        `INSERT INTO workshop_images
-          (workshop_content_id, image_path, alt_text, display_order)
-         VALUES (?, ?, NULL, ?)`,
-        [contentId, images[index], index + 1]
+        'UPDATE workshop_content SET is_active = TRUE WHERE id = ?',
+        [contentId]
+      )
+
+      await markImageAttached(connection, images)
+    } else {
+      await connection.query(
+        'UPDATE workshop_content SET is_active = FALSE WHERE id = ?',
+        [contentId]
       )
     }
-
-    await markImageAttached(connection, images)
 
     await connection.commit()
     transactionStarted = false
@@ -134,7 +154,10 @@ router.put('/images', async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Tiga foto Workshop berhasil disimpan.',
+      message:
+        images.length === 0
+          ? 'Semua foto Workshop berhasil dihapus.'
+          : 'Tiga foto Workshop berhasil disimpan.',
       data: images,
     })
   } catch (error) {
