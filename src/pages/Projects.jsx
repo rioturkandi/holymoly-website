@@ -93,7 +93,7 @@ function Projects() {
               <Link
                 key={project.id}
                 to={`/projects/${project.id}`}
-                className="group block min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-3 min-[390px]:p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
+                className="group flex h-full min-w-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] p-3 min-[390px]:p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
               >
                 {/* PROJECT TITLE */}
                 <h2 className="mb-3 min-[390px]:mb-4 break-words text-[14px] min-[360px]:text-[15px] min-[390px]:text-[16px] sm:text-xl md:text-2xl font-bold uppercase text-[#E5E7EB] transition-colors group-hover:text-[#E5E7EB]">
@@ -116,12 +116,12 @@ function Projects() {
                 )}
 
                 {/* PROJECT DESCRIPTION */}
-                <div className="mt-4">
+                <div className="mt-4 flex flex-1 flex-col">
                   <p className="w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] line-clamp-3 text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 sm:text-base sm:leading-8">
                     {project.description}
                   </p>
 
-                  <div className="mt-5 flex items-center justify-between border-b border-neutral-800 pb-4">
+                  <div className="mt-auto flex items-center justify-between border-b border-neutral-800 pt-4 pb-4">
                     <p className="text-[8px] min-[360px]:text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-widest text-neutral-500">
                       Project / {String(index + 1).padStart(2, '0')}
                     </p>

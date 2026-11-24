@@ -10,6 +10,7 @@ function ProjectShowcaseCard({
   clampDescription = false,
   variant = 'default',
   compactFeatured = false,
+  equalHeight = false,
 }) {
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -56,7 +57,7 @@ function ProjectShowcaseCard({
   const cover = project.cover
 
   return (
-    <article className={`@container min-w-0 w-full ${compactFeatured ? "max-w-2xl" : ""} overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]`}>
+    <article className={`@container min-w-0 w-full ${compactFeatured ? "max-w-sm" : ""} ${equalHeight ? "flex h-full flex-col" : ""} overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]`}>
       <div className={variant === 'featured' ? 'p-3 pb-0 min-[390px]:p-4' : 'p-3 pb-0 min-[390px]:p-4'}>
         <h3 className={`break-words font-bold uppercase text-[#E5E7EB] ${
           variant === 'featured'
@@ -83,7 +84,7 @@ function ProjectShowcaseCard({
                 style={{
                   objectPosition: `${cover.position_x ?? 50}% ${cover.position_y ?? 50}%`,
                 }}
-                className={`${compactFeatured ? "aspect-[16/9] max-h-[280px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
+                className={`${compactFeatured ? "aspect-[16/9] max-h-[150px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
               />
             </Link>
           ) : (
@@ -93,13 +94,13 @@ function ProjectShowcaseCard({
               style={{
                 objectPosition: `${cover.position_x ?? 50}% ${cover.position_y ?? 50}%`,
               }}
-              className={`${compactFeatured ? "aspect-[16/9] max-h-[280px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
+              className={`${compactFeatured ? "aspect-[16/9] max-h-[200px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
             />
           )}
         </div>
       )}
 
-      <div className={variant === 'featured' ? 'space-y-2 p-3' : 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4'}>
+      <div className={`${variant === 'featured' ? 'space-y-2 p-3' : 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4'} ${equalHeight ? 'flex flex-1 flex-col' : ''}`}>
         {total > 0 && (
           <section>
             <p className={`font-semibold uppercase tracking-wider text-zinc-500 ${
@@ -208,7 +209,9 @@ function ProjectShowcaseCard({
               ? 'pt-2 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm'
               : 'pt-3 text-xs min-[360px]:text-[13px] min-[390px]:pt-4 min-[390px]:text-sm sm:text-base'
           } ${
-            clampDescription ? 'line-clamp-3' : ''
+            equalHeight ? 'flex-1' : ''
+          } ${
+            clampDescription ? (compactFeatured ? 'line-clamp-2' : 'line-clamp-3') : ''
           }`}
         >
           {project.description}

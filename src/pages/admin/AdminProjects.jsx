@@ -573,15 +573,28 @@ function AdminProjects() {
           </p>
         )}
 
-        <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(min(100%,28rem),1fr))] gap-3 min-[390px]:gap-4">
+        <div
+          className={
+            projects.length === 1
+              ? 'flex min-w-0 justify-center'
+              : 'grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 min-[390px]:gap-4'
+          }
+        >
           {projects.map((project) => (
-            <ProjectShowcaseCard
+            <div
               key={project.id}
-              project={project}
-              onEdit={() => handleEdit(project)}
-              onDelete={() => handleDelete(project.id)}
-              isDeleting={deletingId === project.id}
-            />
+              className={projects.length === 1 ? 'w-full max-w-sm' : 'min-w-0'}
+            >
+              <ProjectShowcaseCard
+                project={project}
+                onEdit={() => handleEdit(project)}
+                onDelete={() => handleDelete(project.id)}
+                isDeleting={deletingId === project.id}
+                variant="featured"
+                compactFeatured
+                clampDescription
+              />
+            </div>
           ))}
         </div>
       </section>

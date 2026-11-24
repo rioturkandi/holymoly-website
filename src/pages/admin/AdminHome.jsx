@@ -701,7 +701,7 @@ function AdminHome() {
                       Image Preview (16:9)
                     </p>
 
-                    <div className="aspect-[16/9] w-full overflow-hidden border border-white/10 bg-[#100C08]">
+                    <div className="aspect-[16/9] w-full max-w-[450px] overflow-hidden border border-white/10 bg-[#100C08]">
                       <img
                         src={imagePreview || heroForm.image_path}
                         alt="Hero preview"

@@ -62,12 +62,14 @@ function HeroBackground({ src, onReady }) {
 
 function Hero({ content, isLoading = false, hasError = false }) {
   const [isContactHovered, setIsContactHovered] = useState(false)
+  const [isContactOpen, setIsContactOpen] = useState(false)
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0 })
   const [readyBackground, setReadyBackground] = useState(null)
 
   const ctaRef = useRef(null)
   const exploreRef = useRef(null)
   const contactRef = useRef(null)
+  const contactPopupRef = useRef(null)
 
   // Mengatur posisi pill berdasarkan tombol yang sedang dituju.
   const movePill = (button) => {
@@ -88,6 +90,34 @@ function Hero({ content, isLoading = false, hasError = false }) {
 
     return () => window.removeEventListener('resize', updatePill)
   }, [])
+
+  // Menutup popup saat pengguna mengklik area luar atau menekan Escape.
+  useEffect(() => {
+    if (!isContactOpen) return
+
+    const handleOutsideClick = (event) => {
+      const clickedInsidePopup = contactPopupRef.current?.contains(event.target)
+      const clickedContactButton = contactRef.current?.contains(event.target)
+
+      if (!clickedInsidePopup && !clickedContactButton) {
+        setIsContactOpen(false)
+      }
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsContactOpen(false)
+      }
+    }
+
+    document.addEventListener('pointerdown', handleOutsideClick)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsideClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isContactOpen])
   // Menggunakan data database jika tersedia.
   // Jika belum tersedia, gunakan konten fallback.
   const eyebrow =
@@ -123,7 +153,7 @@ function Hero({ content, isLoading = false, hasError = false }) {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#100C08] pb-20 pt-8 md:pt-[120px]"
+      className="relative flex min-h-screen items-center justify-center overflow-visible bg-[#100C08] pb-20 pt-8 md:pt-[120px]"
     >
       {/* Hero image */}
       {!isLoading && !hasError && (
@@ -206,11 +236,12 @@ function Hero({ content, isLoading = false, hasError = false }) {
               <span className="text-[7px] leading-none sm:text-[11px]">{buttonText}</span>
             </Link>
 
-            <a
+            <button
               ref={contactRef}
-              href="https://wa.me/6282129841597?text=Halo%2C%20saya%20tertarik%20untuk%20mengetahui%20lebih%20lanjut%20tentang%20layanan%20HOLYMOLY."
-              target="_blank"
-              rel="noopener noreferrer"
+              type="button"
+              aria-expanded={isContactOpen}
+              aria-haspopup="true"
+              onClick={() => setIsContactOpen((open) => !open)}
               onMouseEnter={() => {
                 setIsContactHovered(true)
                 movePill(contactRef.current)
@@ -223,7 +254,49 @@ function Hero({ content, isLoading = false, hasError = false }) {
               }`}
             >
               <span className="text-[7px] leading-none sm:text-[11px]">Contact Us</span>
-            </a>
+            </button>
+
+            {isContactOpen && (
+              <div
+                ref={contactPopupRef}
+                role="menu"
+                aria-label="Choose HOLYMOLY contact person"
+                className="absolute bottom-full left-1/2 z-30 mb-3 w-56 -translate-x-1/2 rounded-xl border border-white/15 bg-[#17130F] p-3 text-left shadow-2xl"
+              >
+                <div className="mb-3 flex items-center justify-between px-2">
+                  <p className="whitespace-nowrap text-[9px] font-bold uppercase tracking-[0.15em] text-white/50">
+                    Choose your contact
+                  </p>
+                  <button
+                    type="button"
+                    aria-label="Close contact menu"
+                    onClick={() => setIsContactOpen(false)}
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-lg text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {[
+                  { name: 'Herdi', phone: '6282177777598' },
+                  { name: 'Hafiz', phone: '6281218216992' },
+                  { name: 'Mivtah', phone: '6281257778771' },
+                ].map((contact) => (
+                  <a
+                    key={contact.name}
+                    role="menuitem"
+                    href={`https://wa.me/${contact.phone}?text=${encodeURIComponent('Halo, saya tertarik untuk mengetahui lebih lanjut tentang layanan HOLYMOLY.')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsContactOpen(false)}
+                    className="flex items-center justify-between rounded-lg px-3 py-3 text-xs font-semibold uppercase tracking-wider text-white transition-colors hover:bg-white/10"
+                  >
+                    <span>{contact.name}</span>
+                    <span className="text-[10px] font-normal text-white/40">WhatsApp ↗</span>
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         </div>

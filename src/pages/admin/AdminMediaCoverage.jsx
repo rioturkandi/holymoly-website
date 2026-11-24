@@ -362,12 +362,12 @@ function AdminMediaCoverage() {
           <div>
             <p className={labelClass}>Article Photo (16:9)</p>
 
-            <div className="mt-2 aspect-[16/9] w-full overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08]">
+            <div className="mt-2 flex min-h-40 w-full items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08] min-[390px]:min-h-44 sm:min-h-48 md:w-[calc(50%-0.75rem)]">
               {imagePreview || form.image_path ? (
                 <img
                   src={imagePreview || form.image_path}
                   alt="Media Coverage Preview"
-                  className="h-full w-full object-cover"
+                  className="h-40 w-full object-cover min-[390px]:h-44 sm:h-48"
                 />
               ) : (
                 <div className="flex h-full items-center justify-center">
