@@ -43,7 +43,29 @@ function AdminLogin() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#100C08] bg-[radial-gradient(ellipse_at_top,rgba(69,73,75,0.2),transparent_58%)] px-4 py-10 min-[390px]:px-5 min-[390px]:py-12 sm:px-6 sm:py-16">
+    <main className="relative flex min-h-screen items-center justify-center bg-[#100C08] bg-[radial-gradient(ellipse_at_top,rgba(69,73,75,0.2),transparent_58%)] px-4 py-10 min-[390px]:px-5 min-[390px]:py-12 sm:px-6 sm:py-16">
+      <button
+        type="button"
+        onClick={() => navigate('/')}
+        aria-label="Back to Home"
+        title="Back to Home"
+        className="fixed left-3 top-5 z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full border border-[#AEB5BA] bg-[#C8CDD1] text-[#17212A] shadow-[0_2px_5px_rgba(0,0,0,0.18)] transition-[background-color,color,border-color,transform,box-shadow] duration-300 ease-in-out min-[375px]:left-4 min-[375px]:top-6 min-[375px]:h-7 min-[375px]:w-7 min-[425px]:h-[30px] min-[425px]:w-[30px] hover:bg-[#11212D] hover:text-white hover:border-[#11212D] hover:scale-110 hover:-translate-y-0.5 hover:shadow-[0_5px_12px_rgba(0,0,0,0.30)] active:bg-[#263746] active:scale-95 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8CDD1]"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          className="h-3.5 w-3.5 min-[375px]:h-4 min-[375px]:w-4 min-[425px]:h-[18px] min-[425px]:w-[18px]"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M19 12H5" />
+          <path d="m12 19-7-7 7-7" />
+        </svg>
+      </button>
+
       <div className="w-full min-w-0 max-w-md">
         <div className="mb-7 text-center min-[390px]:mb-8 sm:mb-10">
           <p className="mb-3 text-[8px] font-bold uppercase tracking-[0.2em] text-neutral-500 min-[360px]:text-[9px] min-[390px]:mb-4 min-[390px]:text-[10px] sm:text-xs sm:tracking-[0.3em]">

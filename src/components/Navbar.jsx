@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logo from '../assets/images/holymoly-logo.png'
 import { Link, NavLink } from 'react-router-dom'
 
 function Navbar() {
@@ -18,16 +19,21 @@ function Navbar() {
   return (
     <>
       <header className="fixed left-1/2 top-5 z-50 hidden w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 md:block">
-      <nav className="flex items-center justify-between rounded-full border border-white/10 bg-[#E5E7EB]/45 px-5 py-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-6">
+      <nav className="relative flex items-center justify-between rounded-full border border-white/10 bg-[#E5E7EB]/45 px-5 py-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition-all duration-500 ease-out lg:px-6">
         <Link
           to="/"
           onClick={closeMenu}
-          className="text-lg font-black tracking-[0.08em] text-[#100C08] transition-opacity duration-300 hover:opacity-75 sm:text-xl"
+          aria-label="HOLYMOLY Home"
+          className="flex shrink-0 items-center transition-opacity duration-300 hover:opacity-75"
         >
-          HOLYMOLY<span className="text-[#45494B]">.</span>
+          <img
+            src={logo}
+            alt="HOLYMOLY"
+            className="h-8 w-auto max-w-[120px] object-contain"
+          />
         </Link>
 
-        <div className="hidden items-center gap-1 lg:flex">
+        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
           {navLinks.map((link) => (
             <NavLink
               key={link.label}
@@ -72,6 +78,28 @@ function Navbar() {
             }`}
           />
         </button>
+
+        <Link
+          to="/admin/login"
+          aria-label="Admin Login"
+          title="Admin Login"
+          className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#100C08] transition-all duration-300 hover:scale-110 hover:bg-[#11212D] hover:text-[#E5E7EB] hover:shadow-[0_4px_12px_rgba(17,33,45,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#11212D] focus-visible:ring-offset-2 lg:flex"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <path d="M10 17l5-5-5-5" />
+            <path d="M15 12H3" />
+          </svg>
+        </Link>
       </nav>
 
       {isMenuOpen && (
@@ -97,10 +125,56 @@ function Navbar() {
                 {link.label}
               </NavLink>
             ))}
+
+            <Link
+              to="/admin/login"
+              onClick={closeMenu}
+              className="flex items-center gap-3 rounded-full px-4 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-[#100C08] transition-all duration-300 hover:bg-[#11212D] hover:text-[#E5E7EB]"
+              style={{ fontFamily: 'Inter Navbar', fontWeight: 600 }}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+                aria-hidden="true"
+              >
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <path d="M10 17l5-5-5-5" />
+                <path d="M15 12H3" />
+              </svg>
+              Admin Login
+            </Link>
           </div>
         </div>
       )}
     </header>
+
+      {/* Mobile Admin Login */}
+      <Link
+        to="/admin/login"
+        aria-label="Admin Login"
+        title="Admin Login"
+        className="fixed right-3 top-5 z-50 flex h-[26px] w-[26px] items-center justify-center rounded-full border border-[#AEB5BA] bg-[#C8CDD1] text-[#17212A] shadow-[0_2px_5px_rgba(0,0,0,0.18)] transition-[background-color,color,border-color,transform,box-shadow] duration-300 ease-in-out min-[375px]:right-4 min-[375px]:top-6 min-[375px]:h-7 min-[375px]:w-7 min-[425px]:h-[30px] min-[425px]:w-[30px] hover:!bg-[#11212D] hover:!text-white hover:!border-[#11212D] hover:scale-110 hover:-translate-y-0.5 hover:shadow-[0_5px_12px_rgba(0,0,0,0.30)] active:!bg-[#263746] active:scale-95 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C8CDD1] md:hidden"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-3.5 w-3.5 min-[375px]:h-4 min-[375px]:w-4 min-[425px]:h-[18px] min-[425px]:w-[18px]"
+          aria-hidden="true"
+        >
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+          <path d="M10 17l5-5-5-5" />
+          <path d="M15 12H3" />
+        </svg>
+      </Link>
 
       <nav
         aria-label="Mobile navigation"
