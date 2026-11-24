@@ -9,10 +9,9 @@ function ProjectShowcaseCard({
   isDeleting = false,
   clampDescription = false,
   variant = 'default',
+  compactFeatured = false,
 }) {
-  const [activeIndex, setActiveIndex] = useState(
-    Math.min(1, (project.gallery || []).length - 1)
-  )
+  const [activeIndex, setActiveIndex] = useState(0)
 
   const dragStartX = useRef(null)
   const isDragging = useRef(false)
@@ -57,7 +56,7 @@ function ProjectShowcaseCard({
   const cover = project.cover
 
   return (
-    <article className="@container min-w-0 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
+    <article className={`@container min-w-0 w-full ${compactFeatured ? "max-w-2xl" : ""} overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]`}>
       <div className={variant === 'featured' ? 'p-3 pb-0 min-[390px]:p-4' : 'p-3 pb-0 min-[390px]:p-4'}>
         <h3 className={`break-words font-bold uppercase text-[#E5E7EB] ${
           variant === 'featured'
@@ -84,7 +83,7 @@ function ProjectShowcaseCard({
                 style={{
                   objectPosition: `${cover.position_x ?? 50}% ${cover.position_y ?? 50}%`,
                 }}
-                className="aspect-square w-full rounded-lg bg-zinc-900 object-cover"
+                className={`${compactFeatured ? "aspect-[16/9] max-h-[280px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
               />
             </Link>
           ) : (
@@ -94,39 +93,37 @@ function ProjectShowcaseCard({
               style={{
                 objectPosition: `${cover.position_x ?? 50}% ${cover.position_y ?? 50}%`,
               }}
-              className="aspect-square w-full rounded-lg bg-zinc-900 object-cover"
+              className={`${compactFeatured ? "aspect-[16/9] max-h-[280px]" : "aspect-square"} w-full rounded-lg bg-zinc-900 object-cover`}
             />
           )}
         </div>
       )}
 
-      <div className={variant === 'featured' ? 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4' : 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4'}>
+      <div className={variant === 'featured' ? 'space-y-2 p-3' : 'space-y-4 p-3 min-[390px]:space-y-5 min-[390px]:p-4'}>
         {total > 0 && (
           <section>
-            <p className={`mb-3 font-semibold uppercase tracking-wider text-zinc-500 ${
+            <p className={`font-semibold uppercase tracking-wider text-zinc-500 ${
               variant === 'featured'
-                ? 'text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs'
+                ? 'mb-2 text-[9px] min-[360px]:text-[10px] min-[390px]:text-[11px] sm:text-xs'
                 : 'mb-3 text-[10px] min-[360px]:text-[11px] min-[390px]:mb-4 min-[390px]:text-xs'
             }`}>
               Detail Photos
             </p>
 
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                aria-label="Foto sebelumnya"
-                onClick={() => moveGallery(-1)}
-                className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
-                  variant === 'featured'
-                    ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
-                    : 'h-11 w-11 min-h-11 min-w-11'
-                }`}
-              >
-                ←
-              </button>
+            <div className={variant === 'featured' ? 'relative w-full' : 'flex items-center gap-1'}>
+              {variant !== 'featured' && (
+                <button
+                  type="button"
+                  aria-label="Foto sebelumnya"
+                  onClick={() => moveGallery(-1)}
+                  className="flex h-11 w-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800"
+                >
+                  ←
+                </button>
+              )}
 
               <div
-                className="relative aspect-[3.4/1] min-w-0 flex-1 cursor-grab select-none touch-pan-y overflow-hidden active:cursor-grabbing"
+                className={`relative ${variant === "featured" ? "aspect-[3.2/1] w-full" : "aspect-[3.4/1] min-w-0 flex-1"} cursor-grab select-none touch-pan-y overflow-hidden active:cursor-grabbing`}
                 onPointerDown={(event) => {
                   if (event.pointerType === 'mouse' && event.button !== 0) return
                   dragStartX.current = event.clientX
@@ -144,10 +141,12 @@ function ProjectShowcaseCard({
                   return (
                     <div
                       key={`${absoluteIndex}-${photo.id || photo.image_path}`}
-                      className="absolute left-1/2 top-1/2 w-[calc(33.333%-8px)] cursor-pointer"
+                      className={`absolute left-1/2 top-1/2 ${variant === "featured" ? "w-[42%]" : "w-[calc(33.333%-8px)]"} cursor-pointer`}
                       onClick={() => handleGalleryClick(photoIndex)}
                       style={{
-                        transform: `translate(calc(-50% + ${offset * 100}%), -50%) scale(${offset === 0 ? 1.08 : offset === -1 || offset === 1 ? 0.98 : 0.75})`,
+                        transform: `translate(calc(-50% + ${offset * 100}%), -50%) scale(${variant === "featured"
+                          ? offset === 0 ? 1.04 : 0.94
+                          : offset === 0 ? 1.08 : Math.abs(offset) === 1 ? 0.98 : 0.75})`,
                         transition: 'transform 450ms cubic-bezier(0.22, 1, 0.36, 1)',
                         zIndex: 3 - Math.abs(offset),
                         willChange: 'transform',
@@ -157,28 +156,45 @@ function ProjectShowcaseCard({
                         src={photo.image_path}
                         alt={`${vehicleName} Detail ${photoIndex + 1}`}
                         draggable="false"
-                        className="aspect-[4/3] h-auto w-full rounded-lg object-cover shadow-lg"
+                        className="aspect-[4/3] h-auto w-full rounded-xl object-cover shadow-lg"
                       />
                     </div>
                   )
                 })}
               </div>
 
-              <button
-                type="button"
-                aria-label="Foto berikutnya"
-                onClick={() => moveGallery(1)}
-                className={`flex shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800 ${
-                  variant === 'featured'
-                    ? 'h-8 w-8 min-[390px]:h-9 min-[390px]:w-9'
-                    : 'h-11 w-11 min-h-11 min-w-11'
-                }`}
-              >
-                →
-              </button>
+              {variant === 'featured' ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label="Foto sebelumnya"
+                    onClick={() => moveGallery(-1)}
+                    className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-lg text-white/75 shadow-lg backdrop-blur-[2px] transition hover:bg-black/55 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Foto berikutnya"
+                    onClick={() => moveGallery(1)}
+                    className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/25 text-lg text-white/75 shadow-lg backdrop-blur-[2px] transition hover:bg-black/55 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+                  >
+                    →
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  aria-label="Foto berikutnya"
+                  onClick={() => moveGallery(1)}
+                  className="flex h-11 w-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-xl text-white transition-all duration-300 hover:scale-110 hover:bg-zinc-800"
+                >
+                  →
+                </button>
+              )}
             </div>
 
-            <p className="mt-1 text-center text-xs text-zinc-500">
+            <p className={variant === "featured" ? "mt-2 text-center text-xs text-zinc-500" : "mt-1 text-center text-xs text-zinc-500"}>
               {((activeIndex % total + total) % total) + 1}
               {' / '}
               {total}
@@ -189,7 +205,7 @@ function ProjectShowcaseCard({
         <p
           className={`w-full min-w-0 whitespace-normal break-words [overflow-wrap:anywhere] border-t border-zinc-800 leading-relaxed text-zinc-400 ${
             variant === 'featured'
-              ? 'pt-3 text-[11px] min-[360px]:text-xs min-[390px]:pt-4 min-[390px]:text-[13px] sm:text-sm'
+              ? 'pt-2 text-[11px] min-[360px]:text-xs min-[390px]:text-[13px] sm:text-sm'
               : 'pt-3 text-xs min-[360px]:text-[13px] min-[390px]:pt-4 min-[390px]:text-sm sm:text-base'
           } ${
             clampDescription ? 'line-clamp-3' : ''

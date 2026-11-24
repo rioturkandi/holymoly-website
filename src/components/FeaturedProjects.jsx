@@ -73,7 +73,13 @@ function FeaturedProjects() {
             No projects to show at the moment. We're looking forward to sharing more of our work with you. Check back soon for new builds.
           </p>
         ) : (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,32rem),1fr))] gap-3 sm:gap-4">
+          <div
+            className={
+              projects.length === 1
+                ? 'flex justify-center'
+                : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4'
+            }
+          >
             {projects.slice(0, 4).map((project) => (
               <ProjectShowcaseCard
                 key={project.id}
@@ -81,6 +87,7 @@ function FeaturedProjects() {
                 linkTo={`/projects/${project.id}`}
                 clampDescription
                 variant="featured"
+                compactFeatured={projects.length === 1}
               />
             ))}
           </div>
