@@ -100,7 +100,7 @@ app.use(
         styleSrcAttr: ["'unsafe-inline'"],
         imgSrc: ["'self'", "blob:", "data:"],
         fontSrc: ["'self'"],
-        connectSrc: ["'self'"],
+        connectSrc: ["'self'", "blob:"],
         frameSrc: ["https://www.google.com"],
         objectSrc: ["'none'"],
         baseUri: ["'self'"],
