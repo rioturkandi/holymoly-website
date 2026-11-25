@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../../services/api'
+import ImageCropEditor from '../../components/ImageCropEditor'
 import AdminMediaCoverage from './AdminMediaCoverage'
 
 const initialForm = {
@@ -9,6 +10,16 @@ const initialForm = {
   description: '',
   trophy_image_path: '',
   vehicle_image_path: '',
+}
+
+function readImageAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = () => reject(new Error('Gagal membaca file gambar.'))
+    reader.readAsDataURL(file)
+  })
 }
 
 function AdminAchievements() {
@@ -21,6 +32,13 @@ function AdminAchievements() {
   const [deletingId, setDeletingId] = useState(null)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const [cropSources, setCropSources] = useState({})
+  const [imagePreviews, setImagePreviews] = useState({})
+  const [pendingCropBlobs, setPendingCropBlobs] = useState({})
+  const [pendingCropFiles, setPendingCropFiles] = useState({})
+  const [activeCropField, setActiveCropField] = useState('')
+  const [isCropOpen, setIsCropOpen] = useState(false)
+  const [cropSessionPrevious, setCropSessionPrevious] = useState(null)
 
   async function fetchAchievements() {
     const response = await apiRequest('/api/admin/achievements', {
@@ -82,7 +100,7 @@ function AdminAchievements() {
     }))
   }
 
-  async function handleImageUpload(fieldName, file) {
+  async function handleImageSelect(fieldName, file) {
     if (!file) return
 
     setError('')
@@ -100,29 +118,98 @@ function AdminAchievements() {
       return
     }
 
-    setUploadingField(fieldName)
-
     try {
-      const body = new FormData()
-      body.append('image', file)
+      const source = await readImageAsDataUrl(file)
 
-      const response = await apiRequest('/api/uploads/image', {
-        method: 'POST',
-        body,
-        auth: true,
+      setCropSessionPrevious({
+        field: fieldName,
+        preview: imagePreviews[fieldName] || form[fieldName] || '',
+        source: cropSources[fieldName] || '',
+        blob: pendingCropBlobs[fieldName] || null,
+        file: pendingCropFiles[fieldName] || null,
       })
 
-      setForm((currentForm) => ({
-        ...currentForm,
-        [fieldName]: response.data.path,
+      setCropSources((current) => ({
+        ...current,
+        [fieldName]: source,
       }))
-
-      setMessage('Gambar berhasil diunggah.')
-    } catch (uploadError) {
-      setError(uploadError.message)
-    } finally {
-      setUploadingField('')
+      setPendingCropFiles((current) => ({
+        ...current,
+        [fieldName]: file,
+      }))
+      setPendingCropBlobs((current) => ({
+        ...current,
+        [fieldName]: null,
+      }))
+      setActiveCropField(fieldName)
+      setIsCropOpen(true)
+    } catch (readError) {
+      setError(readError.message)
     }
+  }
+
+  async function handleApplyCrop(blob) {
+    if (!activeCropField || !blob) return
+
+    try {
+      const preview = await readImageAsDataUrl(blob)
+
+      setPendingCropBlobs((current) => ({
+        ...current,
+        [activeCropField]: blob,
+      }))
+      setImagePreviews((current) => ({
+        ...current,
+        [activeCropField]: preview,
+      }))
+      setIsCropOpen(false)
+      setActiveCropField('')
+      setCropSessionPrevious(null)
+      setMessage('Crop gambar berhasil diterapkan. Simpan form untuk mengunggahnya.')
+    } catch (previewError) {
+      setError(previewError.message)
+    }
+  }
+
+  function handleCancelCrop() {
+    if (cropSessionPrevious) {
+      const { field, preview, source, blob, file } = cropSessionPrevious
+
+      setImagePreviews((current) => ({
+        ...current,
+        [field]: preview,
+      }))
+      setCropSources((current) => ({
+        ...current,
+        [field]: source,
+      }))
+      setPendingCropBlobs((current) => ({
+        ...current,
+        [field]: blob,
+      }))
+      setPendingCropFiles((current) => ({
+        ...current,
+        [field]: file,
+      }))
+    }
+
+    setIsCropOpen(false)
+    setActiveCropField('')
+    setCropSessionPrevious(null)
+  }
+
+  function handleOpenCropEditor(fieldName) {
+    if (!cropSources[fieldName]) return
+
+    setCropSessionPrevious({
+      field: fieldName,
+      preview: imagePreviews[fieldName] || form[fieldName] || '',
+      source: cropSources[fieldName],
+      blob: pendingCropBlobs[fieldName] || null,
+      file: pendingCropFiles[fieldName] || null,
+    })
+    setActiveCropField(fieldName)
+    setIsCropOpen(true)
   }
 
   function handleEdit(achievement) {
@@ -136,6 +223,20 @@ function AdminAchievements() {
       vehicle_image_path: achievement.vehicle_image_path || '',
     })
 
+    setCropSources({
+      trophy_image_path: achievement.trophy_image_path || '',
+      vehicle_image_path: achievement.vehicle_image_path || '',
+    })
+    setImagePreviews({
+      trophy_image_path: achievement.trophy_image_path || '',
+      vehicle_image_path: achievement.vehicle_image_path || '',
+    })
+    setPendingCropBlobs({})
+    setPendingCropFiles({})
+    setActiveCropField('')
+    setIsCropOpen(false)
+    setCropSessionPrevious(null)
+
     setError('')
     setMessage('')
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -144,8 +245,28 @@ function AdminAchievements() {
   function handleCancelEdit() {
     setEditingId(null)
     setForm(initialForm)
+    setCropSources({})
+    setImagePreviews({})
+    setPendingCropBlobs({})
+    setPendingCropFiles({})
+    setActiveCropField('')
+    setIsCropOpen(false)
+    setCropSessionPrevious(null)
     setError('')
     setMessage('')
+  }
+
+  async function uploadCroppedImage(blob, fieldName) {
+    const body = new FormData()
+    body.append('image', blob, `${fieldName}.webp`)
+
+    const response = await apiRequest('/api/uploads/image', {
+      method: 'POST',
+      body,
+      auth: true,
+    })
+
+    return response.data.path
   }
 
   async function handleSave(event) {
@@ -158,14 +279,18 @@ function AdminAchievements() {
       return
     }
 
-    if (!form.trophy_image_path || !form.vehicle_image_path) {
-      setError('Trophy Photo dan Winning Car Photo wajib diunggah.')
-      return
-    }
+    const imageFields = ['trophy_image_path', 'vehicle_image_path']
 
-    if (form.trophy_image_path === form.vehicle_image_path) {
-      setError('Trophy Photo dan Winning Car Photo harus berbeda.')
-      return
+    for (const fieldName of imageFields) {
+      if (pendingCropFiles[fieldName] && !pendingCropBlobs[fieldName]) {
+        setError('Selesaikan crop gambar sebelum menyimpan.')
+        return
+      }
+
+      if (!pendingCropBlobs[fieldName] && !form[fieldName]) {
+        setError('Trophy Photo dan Winning Car Photo wajib diunggah.')
+        return
+      }
     }
 
     if (form.description.length > 500) {
@@ -176,13 +301,43 @@ function AdminAchievements() {
     setIsSaving(true)
 
     try {
+      const imagePaths = {
+        trophy_image_path: form.trophy_image_path,
+        vehicle_image_path: form.vehicle_image_path,
+      }
+
+      for (const fieldName of imageFields) {
+        if (pendingCropBlobs[fieldName]) {
+          setUploadingField(fieldName)
+          imagePaths[fieldName] = await uploadCroppedImage(
+            pendingCropBlobs[fieldName],
+            fieldName
+          )
+        }
+      }
+
+      setUploadingField('')
+
+      if (
+        !imagePaths.trophy_image_path ||
+        !imagePaths.vehicle_image_path
+      ) {
+        throw new Error('Kedua gambar Achievement wajib tersedia.')
+      }
+
+      if (
+        imagePaths.trophy_image_path === imagePaths.vehicle_image_path
+      ) {
+        throw new Error('Trophy Photo dan Winning Car Photo harus berbeda.')
+      }
+
       const payload = {
         title: form.title.trim(),
         event_name: form.event_name.trim(),
         achievement_year: Number(form.achievement_year),
         description: form.description,
-        trophy_image_path: form.trophy_image_path,
-        vehicle_image_path: form.vehicle_image_path,
+        trophy_image_path: imagePaths.trophy_image_path,
+        vehicle_image_path: imagePaths.vehicle_image_path,
       }
 
       if (editingId) {
@@ -205,10 +360,19 @@ function AdminAchievements() {
 
       setEditingId(null)
       setForm(initialForm)
+      setCropSources({})
+      setImagePreviews({})
+      setPendingCropBlobs({})
+      setPendingCropFiles({})
+      setActiveCropField('')
+      setIsCropOpen(false)
+      setCropSessionPrevious(null)
+
       await loadAchievements()
     } catch (saveError) {
       setError(saveError.message)
     } finally {
+      setUploadingField('')
       setIsSaving(false)
     }
   }
@@ -349,45 +513,65 @@ function AdminAchievements() {
                 label: 'Winning Car Photo',
                 field: 'vehicle_image_path',
               },
-            ].map((imageField) => (
-              <div key={imageField.field}>
-                <p className={labelClass}>{imageField.label}</p>
+            ].map((imageField) => {
+              const preview =
+                imagePreviews[imageField.field] ||
+                form[imageField.field]
 
-                <div className="mt-2 flex min-h-40 items-center justify-center overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08] min-[390px]:min-h-44 sm:min-h-48">
-                  {form[imageField.field] ? (
-                    <img
-                      src={form[imageField.field]}
-                      alt={imageField.label}
-                      className="h-40 w-full object-cover min-[390px]:h-44 sm:h-48"
-                    />
-                  ) : (
-                    <p className="px-3 text-center text-[11px] leading-relaxed text-neutral-600 min-[390px]:px-4 min-[390px]:text-xs">
-                      Belum ada gambar
-                    </p>
-                  )}
+              return (
+                <div key={imageField.field}>
+                  <p className={labelClass}>{imageField.label}</p>
+
+                  <div className="mt-2 aspect-[4/3] w-full overflow-hidden rounded border border-dashed border-white/20 bg-[#100C08]">
+                    {preview ? (
+                      <img
+                        src={preview}
+                        alt={imageField.label}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <p className="px-3 text-center text-[11px] leading-relaxed text-neutral-600 min-[390px]:px-4 min-[390px]:text-xs">
+                          Belum ada gambar
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <label className="flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:text-xs">
+                      Choose Image
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="hidden"
+                        disabled={isSaving}
+                        onChange={(event) => {
+                          handleImageSelect(
+                            imageField.field,
+                            event.target.files?.[0]
+                          )
+                          event.target.value = ''
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={() => handleOpenCropEditor(imageField.field)}
+                      disabled={!cropSources[imageField.field] || isSaving}
+                      className="min-h-11 rounded border border-white/15 px-2 py-3 text-[10px] font-semibold uppercase tracking-wider text-neutral-300 transition hover:border-neutral-400 hover:text-white disabled:cursor-not-allowed disabled:opacity-40 min-[390px]:text-xs"
+                    >
+                      Adjust Crop
+                    </button>
+                  </div>
+
+                  <p className="mt-2 text-[10px] leading-relaxed text-neutral-500">
+                    Rasio tampilan website: 4:3
+                  </p>
                 </div>
-
-                <label className="mt-3 flex min-h-11 cursor-pointer items-center justify-center rounded border border-white/15 px-3 py-3 text-[11px] font-semibold uppercase tracking-wider transition hover:border-neutral-400 hover:text-neutral-200 min-[390px]:px-4 min-[390px]:text-xs">
-                  {uploadingField === imageField.field
-                    ? 'Uploading...'
-                    : 'Choose Image'}
-
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    disabled={Boolean(uploadingField)}
-                    onChange={(event) => {
-                      handleImageUpload(
-                        imageField.field,
-                        event.target.files?.[0]
-                      )
-                      event.target.value = ''
-                    }}
-                  />
-                </label>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {error && (
@@ -518,6 +702,15 @@ function AdminAchievements() {
           </div>
         )}
       </section>
+
+      {isCropOpen && activeCropField && cropSources[activeCropField] && (
+        <ImageCropEditor
+          src={cropSources[activeCropField]}
+          aspectRatio={4 / 3}
+          onApply={handleApplyCrop}
+          onCancel={handleCancelCrop}
+        />
+      )}
 
       <AdminMediaCoverage />
     </div>

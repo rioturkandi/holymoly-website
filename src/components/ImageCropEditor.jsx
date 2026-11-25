@@ -2,7 +2,12 @@ import { useCallback, useRef, useState } from 'react'
 import { Cropper, RectangleStencil } from 'react-advanced-cropper'
 import 'react-advanced-cropper/dist/style.css'
 
-function ImageCropEditor({ src, onApply, onCancel }) {
+function ImageCropEditor({
+  src,
+  onApply,
+  onCancel,
+  aspectRatio = 16 / 9,
+}) {
   const cropperRef = useRef(null)
   const [preview, setPreview] = useState('')
 
@@ -57,7 +62,8 @@ function ImageCropEditor({ src, onApply, onCancel }) {
               Adjust Image
             </h2>
             <p className="mt-1 text-sm text-white/50">
-              Atur posisi dan ukuran gambar dengan rasio 16:9.
+              Atur posisi dan ukuran gambar dengan rasio{' '}
+              {aspectRatio === 4 / 3 ? '4:3' : '16:9'}.
             </p>
           </div>
 
@@ -78,7 +84,7 @@ function ImageCropEditor({ src, onApply, onCancel }) {
                 src={src}
                 stencilComponent={RectangleStencil}
                 stencilProps={{
-                  aspectRatio: 16 / 9,
+                  aspectRatio,
                   movable: true,
                   resizable: true,
                 }}
@@ -120,7 +126,10 @@ function ImageCropEditor({ src, onApply, onCancel }) {
               Live Preview
             </h3>
 
-            <div className="aspect-video overflow-hidden rounded border border-white/10 bg-black">
+            <div
+              className="overflow-hidden rounded border border-white/10 bg-black"
+              style={{ aspectRatio }}
+            >
               {preview ? (
                 <img
                   src={preview}
