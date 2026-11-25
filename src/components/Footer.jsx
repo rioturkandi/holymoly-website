@@ -29,7 +29,7 @@ function Footer() {
               rel="noopener noreferrer"
               className="mt-3 min-[390px]:mt-4 inline-flex min-h-10 items-center text-xs min-[360px]:text-[13px] min-[390px]:text-sm text-neutral-400 transition-colors hover:text-white"
             >
-              View on Google Maps ↗
+              Jl. Soekarno Hatta No. 816, Bandung
             </a>
           </div>
 

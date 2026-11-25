@@ -200,7 +200,7 @@ function Navbar() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-3.5 w-3.5 transition-all duration-500 ease-in-out min-[320px]:max-[639px]:h-5.5 min-[320px]:max-[639px]:w-5.5"
+              className="h-3.5 w-3.5 transition-colors duration-300 ease-out min-[320px]:max-[639px]:h-5.5 min-[320px]:max-[639px]:w-5.5"
               aria-hidden="true"
             >
               {link.label === 'Home' && <path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9M9.5 20v-7h5v7" />}

@@ -479,3 +479,21 @@ select {
   transform: translateY(1px);
   box-shadow: 0 2px 0 #45494B, 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+
+/* HOLYMOLY Display Fonts */
+@font-face {
+  font-family: 'Bokor';
+  src: url('./assets/fonts/Bokor-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.font-bokor {
+  font-family: 'Bokor', sans-serif;
+}
+
+.font-rubik {
+  font-family: 'Rubik', sans-serif;
+}

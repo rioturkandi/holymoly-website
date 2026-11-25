@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { setUnauthorizedHandler } from './services/api'
 
@@ -7,18 +7,21 @@ import ScrollToTop from './components/ScrollToTop'
 import ProtectedRoute from './components/admin/ProtectedRoute'
 import AdminLayout from './components/admin/AdminLayout'
 
-import Home from './pages/Home'
-import About from './pages/About'
-import Projects from './pages/Projects'
-import ProjectDetail from './pages/ProjectDetail'
-import Achievements from './pages/Achievements'
-import AdminLogin from './pages/AdminLogin'
-import AdminOverview from './pages/admin/AdminOverview'
-import AdminHome from './pages/admin/AdminHome'
-import AdminAbout from './pages/admin/AdminAbout'
-import AdminProjects from './pages/admin/AdminProjects'
-import AdminAchievements from './pages/admin/AdminAchievements'
-import AdminWorkshop from './pages/admin/AdminWorkshop'
+// Halaman dimuat hanya ketika rutenya dibuka.
+const Home = lazy(() => import('./pages/Home'))
+const About = lazy(() => import('./pages/About'))
+const Projects = lazy(() => import('./pages/Projects'))
+const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
+const Achievements = lazy(() => import('./pages/Achievements'))
+
+// Halaman administrator juga menggunakan lazy loading.
+const AdminLogin = lazy(() => import('./pages/AdminLogin'))
+const AdminOverview = lazy(() => import('./pages/admin/AdminOverview'))
+const AdminHome = lazy(() => import('./pages/admin/AdminHome'))
+const AdminAbout = lazy(() => import('./pages/admin/AdminAbout'))
+const AdminProjects = lazy(() => import('./pages/admin/AdminProjects'))
+const AdminAchievements = lazy(() => import('./pages/admin/AdminAchievements'))
+const AdminWorkshop = lazy(() => import('./pages/admin/AdminWorkshop'))
 
 
 function AppContent() {
@@ -97,7 +100,18 @@ function AppContent() {
       <ScrollToTop />
       {!isAdminRoute && <Navbar />}
 
-      <Routes>
+      <Suspense
+        fallback={
+          <div
+            className="min-h-screen flex items-center justify-center"
+            role="status"
+            aria-live="polite"
+          >
+            Loading...
+          </div>
+        }
+      >
+        <Routes>
         {/* Halaman publik */}
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -139,7 +153,8 @@ function AppContent() {
             element={<AdminWorkshop />}
           />
         </Route>
-      </Routes>
+        </Routes>
+      </Suspense>
     </div>
   )
 }

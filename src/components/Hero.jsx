@@ -1,5 +1,5 @@
 
-import heroImage from '../assets/images/hero-logo2.jpeg'
+import heroImage from '../assets/images/hero-logo1.jpeg'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -121,10 +121,10 @@ function Hero({ content, isLoading = false, hasError = false }) {
   // Menggunakan data database jika tersedia.
   // Jika belum tersedia, gunakan konten fallback.
   const eyebrow =
-    content?.eyebrow || 'AUTOMOTIVE CULTURE & CUSTOMIZATION'
+    content?.eyebrow || 'CAR BUILDS & CUSTOM WORKS'
 
   const title =
-    content?.title || 'Built to Be Different.'
+    content?.title || 'Not Just Low\nBut Holy Low'
 
   const description =
     content?.description ||
@@ -191,8 +191,17 @@ function Hero({ content, isLoading = false, hasError = false }) {
             {eyebrow}
           </p>
 
-          <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-bold uppercase leading-[1.12] tracking-tight text-[#E5E7EB] sm:text-5xl md:text-6xl">
-            {title}
+          <h1 className="text-[28px] min-[360px]:text-[30px] min-[390px]:text-[34px] font-rubik font-bold uppercase leading-[1.12] tracking-[0.02em] text-[#E5E7EB] sm:text-5xl md:text-6xl">
+            {content?.title ? (
+              <span className="block whitespace-pre-line">{title}</span>
+            ) : (
+              <>
+                <span className="block">NOT JUST LOW</span>
+                <span className="block">
+                  BUT <span className="inline-block font-bokor font-normal normal-case text-[1.3em] bg-gradient-to-r from-[#E5E7EB] via-[#83BDE3] to-[#287FB8] bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(77,163,217,0.18)]">Holy Low!</span>
+                </span>
+              </>
+            )}
           </h1>
 
           <p className="mx-auto mt-5 max-w-lg text-[12px] min-[360px]:text-[13px] min-[390px]:text-[14px] leading-6 text-[#E5E7EB]/80 sm:mt-6 sm:text-sm sm:leading-7 md:text-base">
@@ -229,8 +238,8 @@ function Hero({ content, isLoading = false, hasError = false }) {
               style={{
                 transitionDelay: '100ms',
               }}
-              className={`relative z-10 inline-flex items-center rounded-full border border-transparent bg-white px-2 py-1 text-[7px] font-bold uppercase tracking-[0.04em] sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
-                isContactHovered ? 'text-white' : 'text-black'
+              className={`relative z-10 inline-flex items-center rounded-full border border-transparent bg-white px-2 py-1 text-[7px] font-bold uppercase tracking-[0.02em] sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
+                isContactHovered ? 'sm:text-white text-black' : 'text-black'
               }`}
             >
               <span className="text-[7px] leading-none sm:text-[11px]">{buttonText}</span>
@@ -249,11 +258,11 @@ function Hero({ content, isLoading = false, hasError = false }) {
               style={{
                 transitionDelay: '100ms',
               }}
-              className={`relative z-10 inline-flex items-center rounded-full border border-[#E5E7EB]/60 bg-[#100C08]/40 px-2 py-1 text-[7px] font-bold uppercase tracking-[0.04em] sm:border-transparent sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
-                isContactHovered ? 'text-black' : 'text-white'
+              className={`relative z-10 inline-flex h-7 min-w-[76px] min-[375px]:min-w-[82px] items-center justify-center rounded-full border border-[#E5E7EB]/60 bg-[#100C08]/40 px-2 py-1 text-[7px] font-bold uppercase tracking-[0.02em] sm:h-auto sm:min-w-0 sm:border-transparent sm:bg-transparent sm:px-5 sm:text-[11px] sm:tracking-[0.16em] transition-colors duration-1000 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${
+                isContactHovered ? 'text-white sm:text-black' : 'text-white'
               }`}
             >
-              <span className="text-[7px] leading-none sm:text-[11px]">Contact Us</span>
+              <span className="inline-flex items-center justify-center text-center leading-none text-[8px] min-[425px]:text-[9px] sm:text-[11px]">Contact Us</span>
             </button>
 
             {isContactOpen && (
