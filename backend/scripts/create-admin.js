@@ -144,7 +144,7 @@ async function main() {
             'SELECT RELEASE_LOCK(?)',
             [LOCK_NAME]
           )
-        } catch (error) {
+        } catch {
           console.error('Peringatan: gagal melepas bootstrap lock.')
           process.exitCode = 1
         }
@@ -155,7 +155,7 @@ async function main() {
 
     try {
       await db.end()
-    } catch (error) {
+    } catch {
       console.error('Gagal menutup koneksi database.')
       process.exitCode = 1
     }
