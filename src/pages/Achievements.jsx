@@ -20,10 +20,36 @@ function Achievements() {
   const [achievements, setAchievements] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+  const [selectedAchievementIndex, setSelectedAchievementIndex] = useState(null)
 
   const [mediaCoverage, setMediaCoverage] = useState([])
   const [isMediaLoading, setIsMediaLoading] = useState(true)
   const [mediaError, setMediaError] = useState('')
+
+  // Keyboard navigation untuk detail achievement.
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (selectedAchievementIndex === null) return
+
+      if (event.key === 'Escape') {
+        setSelectedAchievementIndex(null)
+      }
+
+      if (
+        event.key === 'ArrowRight' &&
+        selectedAchievementIndex < achievements.length - 1
+      ) {
+        setSelectedAchievementIndex((current) => current + 1)
+      }
+
+      if (event.key === 'ArrowLeft' && selectedAchievementIndex > 0) {
+        setSelectedAchievementIndex((current) => current - 1)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedAchievementIndex, achievements.length])
 
   // Mengambil data penghargaan dari backend
   useEffect(() => {
@@ -80,6 +106,11 @@ function Achievements() {
       isMounted = false
     }
   }, [])
+
+  const selectedAchievement =
+    selectedAchievementIndex !== null
+      ? achievements[selectedAchievementIndex]
+      : null
 
   return (
     <main className="min-h-screen bg-[#100C08] !pt-10 md:!pt-[104px] lg:!pt-28 pb-24 text-[#F2F2F2]">
@@ -143,15 +174,25 @@ function Achievements() {
           )}
 
           {!isLoading && !error && achievements.length > 0 && (
-            <div className="content-fade-in grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-2 md:gap-6">
-              {achievements.map((achievement) => (
+            <div className="content-fade-in grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
+              {achievements.map((achievement, index) => (
                 <article
                   key={achievement.id}
-                  className="overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View achievement: ${achievement.title}`}
+                  onClick={() => setSelectedAchievementIndex(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      setSelectedAchievementIndex(index)
+                    }
+                  }}
+                  className="cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)] transition-colors hover:border-white/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
                 >
                   {/* TROPHY AND WINNING CAR PHOTOS */}
-                  <div className="mt-4 px-4 min-[390px]:mt-5 min-[390px]:px-5 md:mt-6 md:px-6">
-                    <div className="grid grid-cols-2 gap-3 min-[390px]:gap-4 md:gap-5">
+                  <div className="mt-3 px-2 min-[390px]:mt-4 min-[390px]:px-3 md:mt-5 md:px-3">
+                    <div className="grid grid-cols-2 gap-2 min-[390px]:gap-2 md:gap-2">
                       <div className="aspect-[4/3] overflow-hidden rounded-lg border border-neutral-700 bg-[#101010]">
                         {achievement.trophy_image_path && (
                           <img
@@ -187,7 +228,7 @@ function Achievements() {
                     </h2>
 
                     {achievement.description && (
-                      <p className="mt-3 w-full max-w-full break-words whitespace-pre-line text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 md:text-base md:leading-8">
+                      <p className="mt-3 line-clamp-3 w-full max-w-full break-words whitespace-pre-line text-xs min-[360px]:text-[13px] min-[390px]:text-sm leading-6 min-[390px]:leading-7 text-[#E5E7EB]/80 md:text-base md:leading-8">
                         {achievement.description}
                       </p>
                     )}
@@ -290,6 +331,114 @@ function Achievements() {
           )}
         </section>
       </div>
+      {/* ACHIEVEMENT DETAIL LIGHTBOX */}
+      {selectedAchievement && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Achievement details"
+          onClick={() => setSelectedAchievementIndex(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/95 px-10 py-2 min-[390px]:py-3 sm:px-10 sm:py-5"
+        >
+
+          <div
+            onClick={(event) => event.stopPropagation()}
+            className="relative my-auto w-full max-w-lg lg:max-w-3xl rounded-xl border border-white/10 bg-[#1b1b1b] p-2 pt-3 shadow-2xl min-[390px]:p-3 min-[390px]:pt-3 sm:p-3 sm:pt-3 lg:p-4 lg:pt-12"
+          >
+            <button
+              type="button"
+              onClick={() => setSelectedAchievementIndex(null)}
+              aria-label="Close achievement details"
+              className="absolute right-2 top-2 z-20 flex h-5 w-5 items-center justify-center rounded-full border border-white/20 bg-black/50 text-sm text-white/80 shadow-sm backdrop-blur-sm transition-all duration-200 ease-in-out hover:border-white/50 hover:bg-black/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white min-[390px]:h-6 min-[390px]:w-6 min-[390px]:text-base lg:right-3 lg:top-3 lg:h-8 lg:w-8 lg:text-lg"
+            >
+              ×
+            </button>
+
+            <div className="mb-2 text-center lg:mb-5">
+              <p className="text-[8px] font-bold uppercase tracking-[0.16em] text-neutral-400 min-[390px]:text-[9px] lg:text-xs">
+                {selectedAchievement.event_name} / {selectedAchievement.achievement_year}
+              </p>
+
+              <h2 className="mt-1 text-sm font-bold uppercase leading-tight text-[#E5E7EB] min-[390px]:text-base lg:mt-2 lg:text-2xl">
+                {selectedAchievement.title}
+              </h2>
+            </div>
+
+            <div className="relative grid grid-cols-2 gap-3 lg:gap-5">
+
+
+              {selectedAchievement.trophy_image_path && (
+                <div>
+                  <p className="mb-1 text-[8px] font-bold uppercase tracking-[0.12em] text-neutral-400 lg:mb-2 lg:text-[10px]">
+                    Trophy
+                  </p>
+                  <div className="flex aspect-[4/3] w-full overflow-hidden rounded-md border border-neutral-700 bg-[#101010] lg:rounded-lg">
+                    <img
+                      src={selectedAchievement.trophy_image_path}
+                      alt={`Trophy ${selectedAchievement.title}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {selectedAchievement.vehicle_image_path && (
+                <div>
+                  <p className="mb-1 text-[8px] font-bold uppercase tracking-[0.12em] text-neutral-400 lg:mb-2 lg:text-[10px]">
+                    Winning Car
+                  </p>
+                  <div className="flex aspect-[4/3] w-full overflow-hidden rounded-md border border-neutral-700 bg-[#101010] lg:rounded-lg">
+                    <img
+                      src={selectedAchievement.vehicle_image_path}
+                      alt={`Winning car ${selectedAchievement.title}`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+              {selectedAchievementIndex > 0 && (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setSelectedAchievementIndex((current) => current - 1)
+                  }}
+                  aria-label="Previous achievement"
+                  className="absolute -left-10 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/55 text-base text-white/75 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-white/40 hover:bg-black/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white min-[390px]:h-7 min-[390px]:w-7 min-[390px]:text-lg lg:h-8 lg:w-8 lg:text-xl"
+                >
+                  &#8249;
+                </button>
+              )}
+              {selectedAchievementIndex < achievements.length - 1 && (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setSelectedAchievementIndex((current) => current + 1)
+                  }}
+                  aria-label="Next achievement"
+                  className="absolute -right-10 top-1/2 z-20 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-black/55 text-base text-white/75 shadow-sm backdrop-blur-sm transition-all duration-200 hover:border-white/40 hover:bg-black/80 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white min-[390px]:h-7 min-[390px]:w-7 min-[390px]:text-lg lg:h-8 lg:w-8 lg:text-xl"
+                >
+                  &#8250;
+                </button>
+              )}
+
+            {selectedAchievement.description && (
+              <p className="mx-auto mt-2 max-w-2xl whitespace-pre-line break-words text-left text-[10px] leading-4 text-[#E5E7EB]/80 min-[390px]:text-[11px] lg:mt-5 lg:text-sm lg:leading-7">
+                {selectedAchievement.description}
+              </p>
+            )}
+
+            <p className="mt-2 text-center text-[8px] font-semibold tracking-[0.15em] text-neutral-500 lg:mt-5 lg:text-[10px]">
+              {selectedAchievementIndex + 1} / {achievements.length}
+            </p>
+          </div>
+
+
+        </div>
+      )}
     </main>
   )
 }

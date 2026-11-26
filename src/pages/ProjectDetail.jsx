@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { apiRequest } from '../services/api'
 
@@ -9,7 +9,18 @@ function ProjectDetail() {
   const [loadedProjectId, setLoadedProjectId] = useState(null)
   const isLoading = loadedProjectId !== id
   const [error, setError] = useState('')
-  const [selectedImage, setSelectedImage] = useState(null)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null)
+
+  // Menggabungkan cover dan foto detail menjadi satu urutan galeri.
+  const lightboxImages = [
+    project?.cover?.image_path,
+    ...(Array.isArray(project?.gallery)
+      ? project.gallery.map((photo) => photo.image_path)
+      : []),
+  ].filter(Boolean)
+
+  // Menyimpan posisi awal sentuhan untuk mendeteksi gesture swipe.
+  const touchStartX = useRef(null)
 
   // Mengambil data proyek berdasarkan ID dari database.
   useEffect(() => {
@@ -34,12 +45,12 @@ function ProjectDetail() {
 
         if (isMounted) {
           setError('')
-          setSelectedImage(null)
+          setSelectedImageIndex(null)
           setProject(selectedProject)
         }
       } catch (error) {
         if (isMounted) {
-          setSelectedImage(null)
+          setSelectedImageIndex(null)
           setError(error.message || 'Failed to load project.')
         }
       } finally {
@@ -56,11 +67,27 @@ function ProjectDetail() {
     }
   }, [id])
 
-  // Menutup lightbox ketika tombol Escape ditekan.
+  // Mengatur keyboard untuk menutup dan berpindah foto.
   useEffect(() => {
     function handleKeyDown(event) {
+      if (selectedImageIndex === null) return
+
       if (event.key === 'Escape') {
-        setSelectedImage(null)
+        setSelectedImageIndex(null)
+      }
+
+      if (lightboxImages.length > 1 && event.key === 'ArrowRight') {
+        event.preventDefault()
+        setSelectedImageIndex((current) =>
+          (current + 1) % lightboxImages.length
+        )
+      }
+
+      if (lightboxImages.length > 1 && event.key === 'ArrowLeft') {
+        event.preventDefault()
+        setSelectedImageIndex((current) =>
+          (current - 1 + lightboxImages.length) % lightboxImages.length
+        )
       }
     }
 
@@ -69,7 +96,7 @@ function ProjectDetail() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [selectedImageIndex, lightboxImages.length])
 
   if (isLoading) {
     return (
@@ -152,7 +179,7 @@ function ProjectDetail() {
           <div className="mx-auto mb-8 sm:mb-10 md:mb-12 max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]">
             <button
               type="button"
-              onClick={() => setSelectedImage(cover.image_path)}
+              onClick={() => setSelectedImageIndex(0)}
               className="block w-full cursor-zoom-in"
               aria-label="Enlarge project cover photo"
             >
@@ -191,7 +218,7 @@ function ProjectDetail() {
                 <button
                   key={photo.id || photo.image_path}
                   type="button"
-                  onClick={() => setSelectedImage(photo.image_path)}
+                  onClick={() => setSelectedImageIndex(index + (cover?.image_path ? 1 : 0))}
                   className="relative block min-w-0 cursor-zoom-in overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1b] shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_10px_24px_rgba(0,0,0,0.35)]"
                   aria-label={`Enlarge project photo ${index + 1}`}
                 >
@@ -228,31 +255,90 @@ function ProjectDetail() {
       </div>
 
       {/* LIGHTBOX */}
-      {selectedImage && (
+      {selectedImageIndex !== null && (
         <div
           role="dialog"
           aria-modal="true"
           aria-label="Enlarged project photo"
-          onClick={() => setSelectedImage(null)}
+          onClick={() => setSelectedImageIndex(null)}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 sm:p-5"
         >
           <button
             type="button"
-            onClick={() => setSelectedImage(null)}
-            className="absolute right-3 top-3 sm:right-6 sm:top-6 z-10 inline-flex items-center rounded-full border border-white/30 bg-white/[0.02] px-4 py-2 min-[390px]:px-5 sm:px-6 sm:py-2.5 text-[9px] min-[390px]:text-[10px] sm:text-xs font-bold uppercase tracking-[0.16em] text-white transition-all duration-500 ease-out hover:border-white hover:bg-white/[0.06] hover:shadow-[0_0_22px_rgba(255,255,255,0.10)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+            onClick={() => setSelectedImageIndex(null)}
+            className="absolute right-3 top-3 z-20 inline-flex items-center rounded-full border border-white/30 bg-black/40 px-4 py-2 text-[9px] font-bold uppercase tracking-[0.16em] text-white transition-all hover:border-white hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white min-[390px]:right-4 min-[390px]:top-4 sm:right-6 sm:top-6 sm:px-6 sm:py-2.5 sm:text-xs"
+            aria-label="Close enlarged photo"
           >
             Close ×
           </button>
 
           <div
-            className="flex h-full w-full items-center justify-center"
+            className="relative flex h-full w-full items-center justify-center touch-pan-y"
             onClick={(event) => event.stopPropagation()}
+            onTouchStart={(event) => {
+              touchStartX.current = event.touches[0].clientX
+            }}
+            onTouchEnd={(event) => {
+              const startX = touchStartX.current
+              touchStartX.current = null
+
+              if (startX === null || lightboxImages.length < 2) return
+
+              const deltaX = startX - event.changedTouches[0].clientX
+              if (Math.abs(deltaX) < 50) return
+
+              setSelectedImageIndex((current) =>
+                deltaX > 0
+                  ? (current + 1) % lightboxImages.length
+                  : (current - 1 + lightboxImages.length) % lightboxImages.length
+              )
+            }}
+            onTouchCancel={() => {
+              touchStartX.current = null
+            }}
           >
+            {lightboxImages.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedImageIndex((current) =>
+                      (current - 1 + lightboxImages.length) % lightboxImages.length
+                    )
+                  }
+                  aria-label="Previous project photo"
+                  className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-2xl text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-3 sm:h-12 sm:w-12"
+                >
+                  &#8249;
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedImageIndex((current) =>
+                      (current + 1) % lightboxImages.length
+                    )
+                  }
+                  aria-label="Next project photo"
+                  className="absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/50 text-2xl text-white transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-3 sm:h-12 sm:w-12"
+                >
+                  &#8250;
+                </button>
+              </>
+            )}
+
             <img
-              src={selectedImage}
-              alt="Enlarged project"
-              className="max-h-[75vh] max-w-[94vw] sm:max-h-[80vh] sm:max-w-[90vw] rounded-sm object-contain"
+              src={lightboxImages[selectedImageIndex]}
+              alt={`${project.vehicle_name} photo ${selectedImageIndex + 1}`}
+              className="max-h-[75vh] max-w-[84vw] rounded-sm object-contain sm:max-h-[80vh] sm:max-w-[90vw]"
+              draggable="false"
             />
+
+            {lightboxImages.length > 1 && (
+              <p className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-4 py-2 text-[10px] font-semibold tracking-widest text-white sm:bottom-5 sm:text-xs">
+                {selectedImageIndex + 1} / {lightboxImages.length}
+              </p>
+            )}
           </div>
         </div>
       )}
