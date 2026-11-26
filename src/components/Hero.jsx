@@ -153,7 +153,7 @@ function Hero({ content, isLoading = false, hasError = false }) {
   return (
     <section
       id="home"
-      className="relative flex min-h-screen items-center justify-center overflow-visible bg-[#100C08] pb-20 pt-8 md:pt-[120px]"
+      className="relative flex min-h-screen items-center justify-center overflow-visible bg-[#100C08] pb-20 pt-8 min-[1024px]:pt-[120px]"
     >
       {/* Hero image */}
       {!isLoading && !hasError && (
